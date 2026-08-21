@@ -185,7 +185,7 @@ async def _search_course_chunks(
             collection_name=f"course_{course_id}",
             filter={"course_id": course_id},
         )
-    except RuntimeError:
+    except Exception:
         vector_hits = []
 
     vector_scored = []
@@ -290,14 +290,6 @@ def _json_context(data: Dict[str, Any], max_chars: int = 9000) -> str:
     if len(text) <= max_chars:
         return text
     return text[:max_chars] + "\n...（上下文过长，已截断）"
-
-
-AGENT_MODE_CONFIG = {
-    "course_material": {"label": "课程资料", "needs_rag": True, "needs_business": True},
-    "assignment_submission": {"label": "作业提交", "needs_rag": False, "needs_business": True},
-    "teaching_advice": {"label": "教学建议", "needs_rag": True, "needs_business": True},
-    "other": {"label": "其他问题", "needs_rag": False, "needs_business": False},
-}
 
 
 async def _collect_agent_memory(
@@ -585,7 +577,6 @@ async def _collect_agent_business_context(
 
 def _fallback_agent_answer(
     question: str,
-    mode: str,
     business_context: Optional[Dict[str, Any]],
     citations: List[Dict[str, Any]],
 ) -> str:
@@ -621,14 +612,10 @@ def _fallback_agent_answer(
         ))
     if parts:
         return "我先根据系统里能查到的数据整理如下：\n" + "\n".join(f"- {part}" for part in parts)
-    if mode == "course_material":
-        return "请先选择一门课程，或先为该课程建立 RAG 索引后再提问课程资料。"
     return "我是校园学习助手，可以回答学习方法、课程安排建议、作业推进思路等问题；我不能实时联网查询外部信息。"
 
 
-def _build_course_material_status(mode: str, citations: List[Dict[str, Any]], business_context: Optional[Dict[str, Any]]) -> str:
-    if mode != "course_material":
-        return "非课程资料模式。"
+def _build_course_material_status(citations: List[Dict[str, Any]], business_context: Optional[Dict[str, Any]]) -> str:
     if citations:
         return "本次已命中已索引课程资料，请优先依据课程资料回答。"
     courses = (business_context or {}).get("courses") or []
@@ -736,7 +723,7 @@ async def index_course_documents(
             try:
                 vector_store.add_documents(docs, collection_name=f"course_{course_id}")
                 vector_status = "INDEXED"
-            except RuntimeError as exc:
+            except Exception as exc:
                 vector_error = str(exc)
 
         job.status = "COMPLETED"
@@ -795,7 +782,7 @@ async def index_course_documents(
             try:
                 vector_store.add_documents(docs, collection_name=f"course_{course_id}")
                 vector_status = "INDEXED"
-            except RuntimeError as exc:
+            except Exception as exc:
                 vector_error = str(exc)
 
         total_chunks += len(doc_chunks)
@@ -933,8 +920,13 @@ async def agent_chat(
     """统一 Agent 对话：RAG、业务 API、综合建议、校园学习问答。"""
     question = req.question.strip()
     course_id = req.course_id
-    mode = req.mode
-    mode_config = AGENT_MODE_CONFIG[mode]
+    mode = "smart_education"
+    intent = _classify_agent_mode(question, course_id)
+    mode_config = {
+        "label": "智慧教育机器人",
+        "needs_rag": intent in {"rag", "hybrid"},
+        "needs_business": intent in {"business", "hybrid"},
+    }
     memory = await _collect_agent_memory(db, user, course_id)
     service = AiToolService(db)
     start = time.time()
@@ -942,7 +934,7 @@ async def agent_chat(
         user_id=user.id,
         role=user.role,
         workflow="agent_chat",
-        input_summary=f"{mode}: {question[:120]}",
+        input_summary=f"智慧教育机器人: {question[:120]}",
     )
 
     business_context: Optional[Dict[str, Any]] = None
@@ -973,7 +965,7 @@ async def agent_chat(
                 {"hit_count": len(citations), "citations": citations},
                 latency_ms=int((time.time() - tool_start) * 1000),
             )
-        elif mode == "course_material" and not course_id:
+        elif mode_config["needs_rag"] and not course_id:
             answer = "请先选择一门课程，再提问课程资料相关问题。"
             latency = int((time.time() - start) * 1000)
             await service.log_qa(
@@ -995,12 +987,12 @@ async def agent_chat(
                 memory_count=len(memory),
             ))
 
-        if mode == "course_material" and not citations and not ((business_context or {}).get("courses") or []):
+        if mode_config["needs_rag"] and course_id and not citations and not ((business_context or {}).get("courses") or []):
             answer = "当前课程资料无法支持该问题。你可以先让教师索引课程资料，或换一个更贴近已上传资料的问题。"
         else:
             rag_context = _build_rag_context(citations) if citations else "无"
             api_context = _json_context(business_context or {}) if business_context else "无"
-            course_material_status = _build_course_material_status(mode, citations, business_context)
+            course_material_status = _build_course_material_status(citations, business_context)
             try:
                 llm = get_llm(temperature=0.25)
                 memory_context = _build_agent_memory_context(memory)
@@ -1038,16 +1030,16 @@ async def agent_chat(
                 await service.log_tool_call_json(
                     run.id,
                     "llm_answer",
-                    {"mode": mode, "question": question},
+                {"assistant": mode, "intent": intent, "question": question},
                     {"answer": answer},
                     latency_ms=int((time.time() - llm_start) * 1000),
                 )
             except Exception as e:
-                answer = _fallback_agent_answer(question, mode, business_context, citations)
+                answer = _fallback_agent_answer(question, business_context, citations)
                 await service.log_tool_call_json(
                     run.id,
                     "llm_answer",
-                    {"mode": mode, "question": question},
+                    {"assistant": mode, "intent": intent, "question": question},
                     {"fallback_answer": answer},
                     error=str(e),
                 )
@@ -1100,7 +1092,6 @@ async def agent_runtime_chat(
         result = await runtime.run(
             question=question,
             course_id=req.course_id,
-            mode=req.mode,
             session_id=session_id,
             confirm=req.confirm,
         )
@@ -1108,7 +1099,7 @@ async def agent_runtime_chat(
         return ApiResponse.ok(
             data=AgentChatResponse(
                 answer=result["answer"],
-                mode=req.mode,
+                mode="smart_education",
                 citations=result.get("citations", []),
                 confidence=result.get("confidence", 0.0),
                 run_id=result.get("run_id"),

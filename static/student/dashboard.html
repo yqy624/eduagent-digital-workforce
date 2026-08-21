@@ -18,9 +18,6 @@
     .global-overview-progress span{display:block;height:100%;border-radius:999px;background:var(--accent)}
     .global-next-action{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--bg-card)}
     .ai-workspace-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.75fr);gap:14px}
-    .ai-mode-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-    .ai-mode-button{border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:var(--text-main);padding:7px 12px;font-size:13px}
-    .ai-mode-button.active{border-color:var(--accent);background:var(--accent);color:#fff}
     .ai-chat-history{display:flex;flex-direction:column;gap:12px;max-height:520px;overflow:auto;padding:4px}
     .ai-chat-message{display:flex;flex-direction:column;gap:4px;max-width:92%}
     .ai-chat-message.user{align-self:flex-end;align-items:flex-end}
@@ -47,6 +44,11 @@
     .learning-progress{height:8px;border-radius:999px;background:rgba(148,163,184,.18);overflow:hidden}
     .learning-progress span{display:block;height:100%;border-radius:999px;background:var(--accent)}
     .learning-task-list,.learning-grade-list,.learning-peer-list{display:grid;gap:12px}
+    .assignment-course-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+    .assignment-course-button{border:1px solid var(--border);border-radius:10px;background:var(--bg-soft);color:var(--text-main);padding:12px;text-align:left;min-height:82px}
+    .assignment-course-button.active{border-color:var(--accent);background:rgba(16,185,129,.1);box-shadow:0 0 0 2px rgba(16,185,129,.08)}
+    .assignment-course-name{font-weight:800;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .assignment-course-meta{font-size:12px;color:var(--text-muted);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     .learning-task-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
     .learning-task-copy{min-width:0}
     .learning-task-desc{margin-top:8px;color:var(--text-muted);font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -84,7 +86,7 @@
     <div class="nav-item" data-tab="assignments"><i class="fa-solid fa-file-circle-check"></i> 作业</div>
     <div class="nav-item" data-tab="peer-reviews"><i class="fa-solid fa-comments"></i> 互评</div>
     <div class="nav-item" data-tab="grades"><i class="fa-solid fa-chart-column"></i> 成绩</div>
-    <div class="nav-item" data-tab="ai-agent"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Agent</div>
+    <div class="nav-item" data-tab="ai-agent"><i class="fa-solid fa-wand-magic-sparkles"></i> 智慧教育机器人</div>
   </aside>
   <main class="main-area">
     <div class="topbar mb-3">
@@ -272,6 +274,7 @@ document.getElementById("heroName").textContent = displayName;
 var tabs = Array.from(document.querySelectorAll(".nav-item"));
 var coursePage = 1;
 var assignmentPage = 1;
+var selectedAssignmentCourseId = Number(localStorage.getItem("studentAssignmentCourseId") || 0);
 var gradePage = 1;
 var activityPage = 1;
 var pageSize = 5;
@@ -279,18 +282,11 @@ var assignmentSubmissions = {};
 var studentAssignmentsById = {};
 var peerReviewGroups = [];
 var studentAiCourses = [];
-var studentAiMode = localStorage.getItem("studentAiMode") || "course_material";
 var studentAiMessages = readStudentAiMessages();
 var studentAiSessions = readStudentAiSessions();
 var studentAiSessionId = localStorage.getItem("studentAiSessionId") ||
   ("student_" + Date.now() + "_" + Math.random().toString(36).slice(2));
 localStorage.setItem("studentAiSessionId", studentAiSessionId);
-var studentAiModeLabels = {
-  course_material: "课程资料",
-  assignment_submission: "作业提交",
-  teaching_advice: "教学建议",
-  other: "其他问题"
-};
 function readStudentAiMessages() {
   try {
     var saved = JSON.parse(localStorage.getItem("studentAiMessages") || "[]");
@@ -329,13 +325,6 @@ function formatStudentAiSessionTime(value) {
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
-function setStudentAiMode(mode) {
-  studentAiMode = studentAiModeLabels[mode] ? mode : "other";
-  localStorage.setItem("studentAiMode", studentAiMode);
-  document.querySelectorAll("#studentAiModes .ai-mode-button").forEach(function(button) {
-    button.classList.toggle("active", button.dataset.mode === studentAiMode);
-  });
-}
 function renderStudentAiCitations(citations) {
   // 引用来源由后端日志记录，仅后端可查，前端不展示
   return "";
@@ -352,13 +341,13 @@ function renderStudentAiChat() {
   var history = document.getElementById("studentAiChatHistory");
   if (!history) return;
   if (!studentAiMessages.length) {
-    history.innerHTML = '<div class="text-muted small">从上面的分类开始提问，助手会记住本次浏览器中的对话，并结合账户历史继续回答。</div>';
+    history.innerHTML = '<div class="text-muted small">直接输入问题即可，智慧教育机器人会结合课程、作业、成绩和历史对话判断你的意思。</div>';
     return;
   }
   history.innerHTML = studentAiMessages.map(function(item, index) {
     var roleLabel = item.role === "user" ? "我" : "助手";
     return '<div class="ai-chat-message ' + (item.role === "user" ? "user" : "assistant") + '">' +
-      '<div class="ai-chat-meta">' + roleLabel + (item.mode ? ' · ' + App.escapeHtml(studentAiModeLabels[item.mode] || item.mode) : '') + '</div>' +
+      '<div class="ai-chat-meta">' + roleLabel + '</div>' +
        '<div class="ai-chat-bubble">' + App.escapeHtml(App.cleanAiText(item.text || "")) + renderStudentAiCitations(item.citations) + renderStudentAiTrace(item, index) + '</div></div>';
   }).join("");
   history.scrollTop = history.scrollHeight;
@@ -371,8 +360,7 @@ function renderStudentAiSessions() {
     return;
   }
   list.innerHTML = studentAiSessions.map(function(session) {
-    var modeText = studentAiModeLabels[session.mode] || session.mode || "对话";
-    var meta = (session.courseName || "未选择课程") + " · " + modeText + " · " + (session.messageCount || (session.messages || []).length) + " 条";
+    var meta = (session.courseName || "未选择课程") + " · 智慧教育机器人 · " + (session.messageCount || (session.messages || []).length) + " 条";
     return '<div class="ai-session-item">' +
       '<button type="button" class="ai-session-open" data-id="' + App.escapeAttr(session.id) + '" onclick="openStudentAiSession(this.dataset.id)" title="打开会话">' +
         '<div class="ai-session-title">' + App.escapeHtml(session.title || "AI 对话") + '</div>' +
@@ -396,10 +384,10 @@ function endStudentAiSession() {
   var messages = studentAiMessages.map(function(item) { return Object.assign({}, item); });
   var session = {
     id: "session_" + Date.now(),
+    agentSessionId: studentAiSessionId,
     title: makeStudentAiSessionTitle(messages),
     courseId: courseId,
     courseName: getStudentAiCourseName(courseId),
-    mode: studentAiMode,
     createdAt: messages[0] && messages[0].createdAt ? messages[0].createdAt : now,
     endedAt: now,
     messageCount: messages.length,
@@ -419,10 +407,13 @@ function endStudentAiSession() {
 function openStudentAiSession(sessionId) {
   var session = studentAiSessions.find(function(item) { return item.id === sessionId; });
   if (!session) return;
-  if (session.mode) setStudentAiMode(session.mode);
   var courseEl = document.getElementById("studentAiCourse");
   if (courseEl && session.courseId) courseEl.value = String(session.courseId);
   studentAiMessages = (session.messages || []).map(function(item) { return Object.assign({}, item); }).slice(-30);
+  if (session.agentSessionId) {
+    studentAiSessionId = session.agentSessionId;
+    localStorage.setItem("studentAiSessionId", studentAiSessionId);
+  }
   saveStudentAiMessages();
   renderStudentAiChat();
   App.showToast("已打开历史会话");
@@ -447,6 +438,19 @@ function deleteStudentAiSession(sessionId) {
   renderStudentAiSessions();
   App.showToast("历史会话已删除");
 }
+function startNewStudentAiSession() {
+  if (studentAiMessages.length) {
+    endStudentAiSession();
+    App.showToast("已开启新对话");
+    return;
+  }
+  studentAiSessionId = "student_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+  localStorage.setItem("studentAiSessionId", studentAiSessionId);
+  studentAiMessages = [];
+  saveStudentAiMessages();
+  renderStudentAiChat();
+  App.showToast("已开启新对话");
+}
 function hasEcharts() {
   return typeof window.echarts !== "undefined";
 }
@@ -470,7 +474,7 @@ function switchTab(tab) {
   tabs.forEach(function(x) { x.classList.toggle("active", x.dataset.tab === tab); });
   document.querySelectorAll(".view").forEach(function(v) { v.classList.add("d-none"); });
   document.getElementById("view-" + tab).classList.remove("d-none");
-  var title = {dashboard:"概览", courses:"课程", assignments:"作业", "peer-reviews":"互评", grades:"成绩", "ai-agent":"AI Agent"}[tab];
+  var title = {dashboard:"概览", courses:"课程", assignments:"作业", "peer-reviews":"互评", grades:"成绩", "ai-agent":"智慧教育机器人"}[tab];
   document.getElementById("titleText").textContent = title;
   App.setBreadcrumb(["学生工作台", title]);
   if (tab === "dashboard") {
@@ -527,9 +531,10 @@ function handleKpiKey(event, tab) {
   }
 }
 
-function renderPager(total, page, target, action) {
+function renderPager(total, page, target, action, unitLabel) {
+  var label = unitLabel || "行";
   var pages = Math.max(1, Math.ceil(total / pageSize));
-  var html = '<div class="d-flex justify-content-end align-items-center gap-2 mt-3"><span class="small text-muted">每页 ' + pageSize + ' 行，第 ' + page + ' / ' + pages + ' 页</span>';
+  var html = '<div class="d-flex justify-content-end align-items-center gap-2 mt-3"><span class="small text-muted">每页 ' + pageSize + ' ' + label + '，第 ' + page + ' / ' + pages + ' 页</span>';
   html += '<button class="btn btn-outline-secondary btn-sm" onclick="' + action + '(' + Math.max(1, page - 1) + ')" ' + (page <= 1 ? "disabled" : "") + '>上一页</button>';
   for (var i = 1; i <= pages; i++) {
     html += '<button class="btn ' + (i === page ? "btn-primary" : "btn-outline-secondary") + ' btn-sm" onclick="' + action + '(' + i + ')">' + i + '</button>';
@@ -694,9 +699,9 @@ async function loadCourses() {
           '<span><i class="fa-solid fa-graduation-cap"></i>' + (c.credits != null ? c.credits : '未设置') + ' 学分</span>' +
         '</div>' +
         '<div><div class="d-flex justify-content-between small text-muted mb-1"><span>课程容量</span><span>' + enrolledCount + '/' + maxStudents + '</span></div><div class="learning-progress"><span style="width:' + capacity + '%"></span></div></div>' +
-        '<div class="mt-auto">' + (enrolled ? '<button class="btn btn-outline-primary btn-sm" onclick="switchTab(\'assignments\')"><i class="fa-solid fa-file-circle-check me-1"></i>查看作业</button>' : '<button class="btn btn-primary btn-sm" onclick="enrollCourse(' + c.id + ')"><i class="fa-solid fa-plus me-1"></i>加入课程</button>') + '</div>' +
+        '<div class="mt-auto">' + (enrolled ? '<button class="btn btn-outline-primary btn-sm" onclick="openCourseAssignments(' + c.id + ')"><i class="fa-solid fa-file-circle-check me-1"></i>查看作业</button>' : '<button class="btn btn-primary btn-sm" onclick="enrollCourse(' + c.id + ')"><i class="fa-solid fa-plus me-1"></i>加入课程</button>') + '</div>' +
       '</div>';
-    }).join('') + '</div>' + renderPager(courses.length, coursePage, 'courses', 'goCoursePage');
+    }).join('') + '</div>' + renderPager(courses.length, coursePage, 'courses', 'goCoursePage', '门');
 }
 
 function goCoursePage(page) {
@@ -721,34 +726,49 @@ async function loadAssignments() {
   assignmentSubmissions = {};
   studentAssignmentsById = {};
   grades.forEach(function(g) { if (g.assignmentId) assignmentSubmissions[g.assignmentId] = g; });
-  var rows = [];
-  for (var ci = 0; ci < courses.length; ci++) {
-    var c = courses[ci];
-    var assignments = await api("/student/courses/" + c.id + "/assignments");
-    assignments.forEach(function(a) {
-      studentAssignmentsById[a.id] = a;
-      var submission = assignmentSubmissions[a.id] || (a.submissionId ? {
-        assignmentId: a.id,
-        assignmentTitle: a.title,
-        status: a.submissionStatus,
-        content: a.content,
-        filePaths: a.filePaths,
-        fileName: a.fileName
-      } : null);
-      rows.push({ course: c, assignment: a, submission: submission });
-    });
-  }
-  if (!rows.length) {
-    document.getElementById("assignmentBox").innerHTML = '<div class="section-head"><h5 class="mb-0">作业列表</h5></div>' + renderEmptyPanel('暂无作业任务', '选课后发布的作业会集中显示在这里。', false, '去选课', "switchTab('courses')", 'fa-book');
+  if (!courses.length) {
+    document.getElementById("assignmentBox").innerHTML = '<div class="section-head"><h5 class="mb-0">学习任务</h5></div>' + renderEmptyPanel('暂无已选课程', '请先选择课程，再查看该课程下的作业。', false, '去选课', "switchTab('courses')", 'fa-book');
     return;
   }
+
+  var selectedCourse = courses.find(function(c) { return Number(c.id) === selectedAssignmentCourseId; }) || courses[0];
+  selectedAssignmentCourseId = Number(selectedCourse.id);
+  localStorage.setItem("studentAssignmentCourseId", String(selectedAssignmentCourseId));
+
+  var rows = [];
+  var assignments = await api("/student/courses/" + selectedAssignmentCourseId + "/assignments");
+  assignments.forEach(function(a) {
+    studentAssignmentsById[a.id] = a;
+    var submission = assignmentSubmissions[a.id] || (a.submissionId ? {
+      assignmentId: a.id,
+      assignmentTitle: a.title,
+      status: a.submissionStatus,
+      content: a.content,
+      filePaths: a.filePaths,
+      fileName: a.fileName
+    } : null);
+    rows.push({ course: selectedCourse, assignment: a, submission: submission });
+  });
+
+  var coursePicker = '<div class="assignment-course-strip mb-3">' + courses.map(function(c) {
+    var active = Number(c.id) === selectedAssignmentCourseId;
+    return '<button type="button" class="assignment-course-button ' + (active ? 'active' : '') + '" onclick="selectAssignmentCourse(' + c.id + ')">' +
+      '<div class="d-flex align-items-start justify-content-between gap-2"><div class="assignment-course-name">' + App.escapeHtml(c.name || '未命名课程') + '</div>' + (active ? '<span class="badge-soft bg-success bg-opacity-10 text-success"><i class="fa-solid fa-check me-1"></i>当前</span>' : '') + '</div>' +
+      '<div class="assignment-course-meta">' + App.escapeHtml(c.description || c.schedule || '查看这门课程的作业') + '</div>' +
+    '</button>';
+  }).join('') + '</div>';
+
+  if (!rows.length) {
+    document.getElementById("assignmentBox").innerHTML = '<div class="section-head"><h5 class="mb-0">学习任务</h5><span class="metric-muted">请选择课程查看对应作业</span></div>' + coursePicker + renderEmptyPanel('这门课程暂无作业', '可以切换上方其他课程查看作业任务。', false, '刷新', 'loadAssignments()', 'fa-rotate');
+    return;
+  }
+
   var pages = Math.max(1, Math.ceil(rows.length / pageSize));
   if (assignmentPage > pages) assignmentPage = pages;
   var start = (assignmentPage - 1) * pageSize;
   var pageRows = rows.slice(start, start + pageSize);
-  var html = '<div class="section-head"><h5 class="mb-0">学习任务</h5><span class="metric-muted">共 ' + rows.length + ' 项作业</span></div><div class="learning-task-list">';
-  pageRows.forEach(function(row, index) {
-    var c = row.course;
+  var html = '<div class="section-head"><h5 class="mb-0">学习任务</h5><span class="metric-muted">' + App.escapeHtml(selectedCourse.name || '未命名课程') + ' · 共 ' + rows.length + ' 项作业</span></div>' + coursePicker + '<div class="learning-task-list">';
+  pageRows.forEach(function(row) {
     var a = row.assignment;
     var submitted = row.submission && row.submission.content ? App.escapeHtml(row.submission.content) : '尚未提交正文';
     var detailBtn = '<button class="btn btn-outline-secondary btn-sm me-2" onclick="openSubmissionDetail(' + a.id + ')"><i class="fa-solid fa-eye me-1"></i>详情</button>';
@@ -766,14 +786,28 @@ async function loadAssignments() {
     var peerBadge = a.peerReviewEnabled ? '<span class="badge-soft bg-info bg-opacity-10 text-info"><i class="fa-solid fa-comments me-1"></i>互评开放</span>' : '<span class="badge-soft bg-secondary bg-opacity-10 text-secondary">互评未开放</span>';
     html += '<div class="learning-task-item">' +
       '<div class="learning-task-copy">' +
-        '<div class="learning-task-head"><div><div class="learning-task-title">' + App.escapeHtml(a.title || '未命名作业') + '</div><div class="small text-muted mt-1">' + App.escapeHtml(c.name || '未命名课程') + ' · 截止 ' + (App.fmtTime(a.dueDate) || '无截止时间') + ' · 满分 ' + (a.totalPoints || 100) + '</div></div><span class="badge-soft ' + status.cls + '"><i class="fa-solid ' + status.icon + ' me-1"></i>' + status.text + '</span></div>' +
+        '<div class="learning-task-head"><div><div class="learning-task-title">' + App.escapeHtml(a.title || '未命名作业') + '</div><div class="small text-muted mt-1">截止 ' + (App.fmtTime(a.dueDate) || '无截止时间') + ' · 满分 ' + (a.totalPoints || 100) + '</div></div><span class="badge-soft ' + status.cls + '"><i class="fa-solid ' + status.icon + ' me-1"></i>' + status.text + '</span></div>' +
         '<div class="learning-task-desc">' + App.escapeHtml(a.description || a.detail || submitted) + '</div>' +
         '<div class="d-flex flex-wrap gap-2 mt-3"><span class="badge-soft bg-primary bg-opacity-10 text-primary"><i class="fa-solid fa-file-lines me-1"></i>' + submitted + '</span>' + peerBadge + '</div>' +
       '</div>' +
       '<div class="learning-task-actions">' + detailBtn + '<button class="btn btn-primary btn-sm" data-title="' + App.escapeAttr(a.title || '未命名作业') + '" onclick="openSubmit(' + a.id + ', this.dataset.title)" ' + (canSubmit ? '' : 'disabled') + '><i class="fa-solid fa-upload me-1"></i>' + submitText + '</button></div>' +
     '</div>';
   });
-  document.getElementById("assignmentBox").innerHTML = html + '</div>' + renderPager(rows.length, assignmentPage, 'assignments', 'goAssignmentPage');
+  document.getElementById("assignmentBox").innerHTML = html + '</div>' + renderPager(rows.length, assignmentPage, 'assignments', 'goAssignmentPage', '项');
+}
+
+function selectAssignmentCourse(courseId) {
+  selectedAssignmentCourseId = Number(courseId);
+  localStorage.setItem("studentAssignmentCourseId", String(selectedAssignmentCourseId));
+  assignmentPage = 1;
+  loadAssignments();
+}
+
+function openCourseAssignments(courseId) {
+  selectedAssignmentCourseId = Number(courseId);
+  localStorage.setItem("studentAssignmentCourseId", String(selectedAssignmentCourseId));
+  assignmentPage = 1;
+  switchTab('assignments');
 }
 
 function goAssignmentPage(page) {
@@ -980,20 +1014,17 @@ function goGradePage(page) {
   loadGrades();
 }
 
-function setStudentAiPrompt(text, mode) {
+function setStudentAiPrompt(text) {
   var input = document.getElementById("studentAiQuestion");
   if (input) {
     input.value = text;
     input.focus();
   }
-  if (mode && studentAiModeLabels[mode]) {
-    setStudentAiMode(mode);
-  }
 }
 
 async function loadStudentAiAgent() {
   var box = document.getElementById("studentAiBox");
-  box.innerHTML = '<div class="section-head"><h5 class="mb-0">AI Agent</h5><span class="metric-muted">课程资料、个人学习数据与校园问答</span></div><div class="text-muted small">加载中...</div>';
+  box.innerHTML = '<div class="section-head"><h5 class="mb-0">智慧教育机器人</h5><span class="metric-muted">课程资料、个人学习数据与校园问答</span></div><div class="text-muted small">加载中...</div>';
   try {
     studentAiCourses = await api("/student/my-courses");
     var studentAiGrades = await api("/student/grades");
@@ -1001,13 +1032,13 @@ async function loadStudentAiAgent() {
       return '<option value="' + c.id + '">' + App.escapeHtml(c.name || '未命名课程') + '</option>';
     }).join('') : '<option value="">暂无课程</option>';
     var promptButtons = [
-      { label: "解释当前课程的重点", text: "请用适合复习的方式总结这门课最近需要掌握的重点。", mode: "course_material" },
-      { label: "分析我的薄弱点", text: "请根据我的作业和成绩反馈，指出最应该优先补强的 3 个点。", mode: "learning_analysis" },
-      { label: "生成一周学习安排", text: "请把我的复习任务拆成一周计划，每天给出重点和预计用时。", mode: "teaching_advice" },
-      { label: "校园事务咨询", text: "如果我遇到课程学习或平台使用问题，应该按什么步骤处理？", mode: "campus_faq" }
+      { label: "解释当前课程的重点", text: "请用适合复习的方式总结这门课最近需要掌握的重点。" },
+      { label: "分析我的薄弱点", text: "请根据我的作业和成绩反馈，指出最应该优先补强的 3 个点。" },
+      { label: "生成一周学习安排", text: "请把我的复习任务拆成一周计划，每天给出重点和预计用时。" },
+      { label: "校园事务咨询", text: "如果我遇到课程学习或平台使用问题，应该按什么步骤处理？" }
     ];
     box.innerHTML =
-      '<div class="section-head"><h5 class="mb-0">AI Agent</h5><span class="metric-muted">连续对话与个性化学习助手</span></div>' +
+      '<div class="section-head"><h5 class="mb-0">智慧教育机器人</h5><span class="metric-muted">连续对话与个性化学习助手</span></div>' +
       '<div class="ai-workspace-grid">' +
         '<div class="section-surface">' +
           '<label class="form-label" for="studentAiCourse">课程</label><select id="studentAiCourse" class="form-select mb-2" ' + (!studentAiCourses.length ? 'disabled' : '') + '>' + options + '</select>' +
@@ -1017,19 +1048,14 @@ async function loadStudentAiAgent() {
             '<div class="learning-ai-readiness-card"><strong>' + studentAiGrades.length + '</strong><span>学习记录</span></div>' +
             '<div class="learning-ai-readiness-card"><strong>' + studentAiSessions.length + '</strong><span>历史会话</span></div>' +
           '</div>' +
-          '<div id="studentAiModes" class="ai-mode-tabs" role="tablist">' +
-            Object.keys(studentAiModeLabels).map(function(mode) {
-              return '<button type="button" class="ai-mode-button ' + (mode === studentAiMode ? 'active' : '') + '" data-mode="' + mode + '" onclick="setStudentAiMode(\'' + mode + '\')">' + studentAiModeLabels[mode] + '</button>';
-            }).join("") +
-          '</div>' +
-          '<label class="form-label" for="studentAiQuestion">对话内容</label><textarea id="studentAiQuestion" class="form-control mb-2" rows="3" placeholder="先选择问题分类，再输入你的问题"></textarea>' +
-          '<div class="d-flex flex-wrap gap-2 mb-3"><button class="btn btn-primary btn-sm" onclick="askStudentCourseQa()"><i class="fa-solid fa-paper-plane me-1"></i>发送</button><button class="btn btn-outline-primary btn-sm" onclick="generateStudentPlan()" ' + (!studentAiCourses.length ? 'disabled' : '') + '><i class="fa-solid fa-calendar-check me-1"></i>生成学习计划</button><button class="btn btn-outline-secondary btn-sm" onclick="endStudentAiSession()"><i class="fa-solid fa-box-archive me-1"></i>结束对话</button></div>' +
+          '<label class="form-label" for="studentAiQuestion">对话内容</label><textarea id="studentAiQuestion" class="form-control mb-2" rows="3" placeholder="直接输入你的问题，例如推荐课程、解释资料、查询作业或安排复习"></textarea>' +
+          '<div class="d-flex flex-wrap gap-2 mb-3"><button class="btn btn-primary btn-sm" onclick="askStudentCourseQa()"><i class="fa-solid fa-paper-plane me-1"></i>发送</button><button class="btn btn-outline-primary btn-sm" onclick="startNewStudentAiSession()"><i class="fa-solid fa-plus me-1"></i>新对话</button><button class="btn btn-outline-primary btn-sm" onclick="generateStudentPlan()" ' + (!studentAiCourses.length ? 'disabled' : '') + '><i class="fa-solid fa-calendar-check me-1"></i>生成学习计划</button><button class="btn btn-outline-secondary btn-sm" onclick="endStudentAiSession()"><i class="fa-solid fa-box-archive me-1"></i>结束对话</button></div>' +
           '<div id="studentAiChatHistory" class="ai-chat-history"></div>' +
         '</div>' +
         '<div class="section-surface">' +
           '<div class="fw-semibold mb-2">建议提问</div>' +
           '<div class="ai-prompt-grid mb-3">' + promptButtons.map(function(item) {
-            return '<button type="button" class="ai-prompt-btn" data-text="' + App.escapeAttr(item.text) + '" data-mode="' + item.mode + '" onclick="setStudentAiPrompt(this.dataset.text, this.dataset.mode)"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>' + App.escapeHtml(item.label) + '</button>';
+            return '<button type="button" class="ai-prompt-btn" data-text="' + App.escapeAttr(item.text) + '" onclick="setStudentAiPrompt(this.dataset.text)"><i class="fa-solid fa-wand-magic-sparkles me-1"></i>' + App.escapeHtml(item.label) + '</button>';
           }).join('') + '</div>' +
           '<div class="d-flex align-items-center justify-content-between gap-2 mb-2"><div class="fw-semibold">历史会话</div><span class="badge-soft bg-primary bg-opacity-10 text-primary">本机保存</span></div>' +
           '<div class="small text-muted mb-3">结束当前对话后，会话包会保存到这里，后续可以打开继续查看，也可以下载 JSON 备份。</div>' +
@@ -1047,7 +1073,7 @@ async function loadStudentAiAgent() {
     renderStudentAiChat();
     renderStudentAiSessions();
   } catch (err) {
-    box.innerHTML = renderEmptyPanel('AI Agent 加载失败', err.message || '暂时无法加载 AI 功能。', false, '重新加载', 'loadStudentAiAgent()', 'fa-rotate');
+    box.innerHTML = renderEmptyPanel('智慧教育机器人加载失败', err.message || '暂时无法加载 AI 功能。', false, '重新加载', 'loadStudentAiAgent()', 'fa-rotate');
   }
 }
 
@@ -1062,10 +1088,10 @@ async function askStudentCourseQa() {
   var answerBox = document.getElementById("studentAiChatHistory");
   answerBox.innerHTML = '<div class="text-muted small">正在回复...</div>';
   try {
-    var data = await api('/ai/agent/chat', 'POST', { question: question, course_id: courseId, mode: studentAiMode, session_id: studentAiSessionId });
+    var data = await api('/ai/agent/chat', 'POST', { question: question, course_id: courseId, session_id: studentAiSessionId });
     var now = new Date().toISOString();
-    studentAiMessages.push({ role: "user", text: question, mode: studentAiMode, createdAt: now });
-    studentAiMessages.push({ role: "assistant", text: data.answer || "", mode: studentAiMode, status: data.status, confirmationRequired: data.confirmationRequired || data.confirmation_required || false, request: { question: question, courseId: courseId, mode: studentAiMode, sessionId: studentAiSessionId }, createdAt: new Date().toISOString() });
+    studentAiMessages.push({ role: "user", text: question, createdAt: now });
+    studentAiMessages.push({ role: "assistant", text: data.answer || "", status: data.status, confirmationRequired: data.confirmationRequired || data.confirmation_required || false, request: { question: question, courseId: courseId, sessionId: studentAiSessionId }, createdAt: new Date().toISOString() });
     saveStudentAiMessages();
     document.getElementById("studentAiQuestion").value = "";
     renderStudentAiChat();
@@ -1081,7 +1107,6 @@ async function confirmStudentAgent(messageIndex) {
     var data = await api('/ai/agent/chat', 'POST', {
       question: item.request.question,
       course_id: item.request.courseId,
-      mode: item.request.mode,
       session_id: item.request.sessionId,
       confirm: true
     });
@@ -1112,7 +1137,7 @@ async function generateStudentPlan() {
         return (item.day || '-') + '：' + (item.focus || '-') + '，' + (item.duration_hours || item.durationHours || 0) + ' 小时，优先级 ' + (item.priority || '-');
       }).join('\n') : '') +
       (basis.length ? '\n依据：' + basis.map(function(item) { return item.name + ' ' + item.value; }).join('，') : '');
-    studentAiMessages.push({ role: "assistant", text: planText, mode: "teaching_advice", createdAt: new Date().toISOString() });
+    studentAiMessages.push({ role: "assistant", text: planText, createdAt: new Date().toISOString() });
     saveStudentAiMessages();
     renderStudentAiChat();
   } catch (err) {

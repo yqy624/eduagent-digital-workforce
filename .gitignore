@@ -33,6 +33,9 @@ ai/data/vector_store/
 data/chroma/
 chroma/
 
+# 本地 embedding 模型(932MB, 不入库)
+models/
+
 # OS
 .DS_Store
 Thumbs.db

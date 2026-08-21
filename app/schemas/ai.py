@@ -32,10 +32,7 @@ class AgentChatRequest(BaseModel):
     """Agent 对话请求"""
     question: str = Field(..., min_length=1, max_length=2000)
     course_id: Optional[int] = None
-    mode: str = Field(
-        default="other",
-        pattern="^(course_material|assignment_submission|teaching_advice|other)$",
-    )
+    mode: Optional[str] = Field(default=None, max_length=50)
     session_id: Optional[str] = Field(default=None, max_length=100)
     confirm: bool = False
 
@@ -43,7 +40,7 @@ class AgentChatRequest(BaseModel):
 class AgentChatResponse(BaseModel):
     """Agent 对话响应"""
     answer: str
-    mode: str
+    mode: str = "smart_education"
     citations: List[Citation] = []
     confidence: float = 0.0
     run_id: Optional[int] = None

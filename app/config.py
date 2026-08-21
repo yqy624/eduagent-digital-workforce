@@ -62,6 +62,9 @@ class Settings(BaseSettings):
     vector_store: str = "faiss"
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     chroma_persist_dir: str = "data/chroma"
+    agent_memory_load_limit: int = Field(default=8, ge=1, le=50)
+    agent_memory_prompt_limit: int = Field(default=6, ge=1, le=50)
+    agent_execution_context_chars: int = Field(default=16000, ge=1000, le=100000)
 
     # LLM API Keys
     openai_api_key: Optional[str] = None

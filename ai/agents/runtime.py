@@ -5,11 +5,12 @@ import re
 import time
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 
 from ai.llm import get_llm
 from ai.agents.memory import AgentMemoryStore
 from ai.agents.tool_registry import AgentToolError, AgentToolRegistry
+from app.config import settings
 
 
 class AgentPlanStep(BaseModel):
@@ -72,11 +73,35 @@ class AgentRuntime:
             retrieve_materials=retrieve_materials,
         )
 
+    def _is_course_recommendation_request(self, question: str) -> bool:
+        normalized = re.sub(r"\s+", "", question.lower())
+        has_course = any(word in normalized for word in ("课", "课程", "选课", "course"))
+        has_recommend = any(
+            word in normalized
+            for word in ("推荐", "选一个", "选一门", "让我选择", "建议上", "适合我", "recommend")
+        )
+        asks_existing = any(
+            word in normalized
+            for word in ("已有", "现有", "可选", "课程里", "列表", "available", "existing")
+        )
+        return has_course and has_recommend and asks_existing
+
     async def _heuristic_plan(
-        self, question: str, course_id: Optional[int], mode: str
+        self, question: str, course_id: Optional[int]
     ) -> AgentPlan:
         text = question.lower()
         steps: List[AgentPlanStep] = []
+        if self._is_course_recommendation_request(question):
+            return AgentPlan(
+                objective=f"从已有课程中推荐一门适合用户偏好的课程：{question[:900]}",
+                steps=[
+                    AgentPlanStep(
+                        tool="get_course_overview",
+                        reason="需要先读取真实可选课程清单，避免编造课程名称",
+                        args={},
+                    )
+                ],
+            )
         material_intent = any(
             word in text
             for word in (
@@ -90,14 +115,14 @@ class AgentRuntime:
                 "作业", "任务", "截止", "待办", "提交", "交了", "交了吗",
                 "assignment", "deadline", "submit", "submission",
             )
-        ) or mode == "assignment_submission"
+        )
         submission_intent = any(
             word in text
             for word in (
                 "提交", "交了", "交了吗", "未交", "没交", "没提交", "已交",
                 "已提交", "submit", "submission", "submitted", "missing",
             )
-        ) or mode == "assignment_submission"
+        )
         grade_intent = any(
             word in text
             for word in ("成绩", "分数", "低分", "薄弱", "grade", "score", "weak")
@@ -105,7 +130,7 @@ class AgentRuntime:
         plan_intent = any(
             word in text
             for word in ("建议", "教学", "计划", "规划", "复习", "提升", "安排", "plan", "review")
-        ) or mode == "teaching_advice"
+        )
 
         if material_intent and course_id:
             steps.append(
@@ -183,66 +208,17 @@ class AgentRuntime:
         self,
         question: str,
         course_id: Optional[int],
-        mode: str,
         memory: List[Dict[str, Any]],
     ) -> tuple[AgentPlan, str]:
-        tool_catalog = self.registry.specs()
         # 启发式计划能识别明确意图时直接采用，避免慢速 LLM planner
         # （本地 8B 模型生成 JSON 计划需数分钟，业务查询毫秒级即可完成）
-        heuristic = await self._heuristic_plan(question, course_id, mode)
+        heuristic = await self._heuristic_plan(question, course_id)
         has_intent = any(
             step.tool != "get_course_overview" for step in heuristic.steps
         )
         if has_intent:
             return heuristic, "heuristic_intent"
-        if mode == "assignment_submission":
-            return (
-                await self._heuristic_plan(question, course_id, mode),
-                "heuristic_assignment_submission",
-            )
-        prompt = f"""You are the planning model inside a controlled education Agent.
-Return JSON only with this shape:
-{{"objective":"...", "steps":[{{"tool":"registered tool name","reason":"...","args":{{}}}}]}}
-Use no more than 6 steps. Only use tools from TOOL_CATALOG.
-The runtime validates permissions and arguments; never invent tool names.
-User role: {self.user.role}
-Mode: {mode}
-Course id: {course_id}
-User request: {question}
-Recent memory: {json.dumps(memory[-4:], ensure_ascii=False, default=str)}
-TOOL_CATALOG: {json.dumps(tool_catalog, ensure_ascii=False)}
-"""
-        planner_error = None
-        raw_model_output = ""
-        try:
-            llm = get_llm(temperature=0.0)
-            response = await llm.ainvoke(prompt)
-            raw_model_output = _content(response)
-            plan = AgentPlan.model_validate(_extract_json(raw_model_output))
-            return plan, "model"
-        except (Exception, ValidationError) as exc:
-            planner_error = str(exc)
-
-        # A second, smaller repair pass handles models that wrap valid plans in
-        # prose or markdown. The fallback remains explicit in the run trace.
-        try:
-            repair_prompt = (
-                "Convert the following model output into JSON only. Do not add "
-                "explanations. Preserve only objective and steps, and use the "
-                "registered tool names from the catalog.\n"
-                f"CATALOG: {json.dumps(tool_catalog, ensure_ascii=False)}\n"
-                f"MODEL_OUTPUT: {raw_model_output[:12000]}\n"
-            )
-            repaired = await get_llm(temperature=0.0).ainvoke(repair_prompt)
-            plan = AgentPlan.model_validate(_extract_json(_content(repaired)))
-            return plan, "model_repaired"
-        except Exception as exc:
-            planner_error = f"{planner_error}; repair: {exc}"
-
-        plan = await self._heuristic_plan(question, course_id, mode)
-        # The caller persists this diagnostic in the run plan and tool trace.
-        plan.objective = f"{plan.objective} [planner_fallback: {planner_error[:300]}]"
-        return plan, "heuristic_fallback"
+        return heuristic, "heuristic_context"
 
     def _prepare_step(
         self, step: AgentPlanStep, question: str, course_id: Optional[int]
@@ -277,18 +253,24 @@ TOOL_CATALOG: {json.dumps(tool_catalog, ensure_ascii=False)}
         )
         if direct_assignment_answer is not None:
             return direct_assignment_answer, "deterministic_assignment_requirements"
+        direct_course_recommendation_answer = self._direct_course_recommendation_answer(
+            question, execution
+        )
+        if direct_course_recommendation_answer is not None:
+            return direct_course_recommendation_answer, "deterministic_course_recommendation"
 
         prompt = f"""You are the answer model for EduAgent.
 Answer in Chinese unless the user asks otherwise. Be concise and actionable.
 Use only the execution results and memory below. State when data is missing.
+When recommending a course, only recommend course names present in EXECUTION.
 Do not claim an action happened if its step failed or is awaiting confirmation.
 For submission questions, use assignment_statuses/not_submitted_assignments first.
 NOT_SUBMITTED means the current student has no submission record for that assignment;
 never infer that an assignment was submitted just because it is absent from submissions.
 USER: {question}
             PLAN: {json.dumps(plan.model_dump(), ensure_ascii=False, default=str)}
-EXECUTION: {json.dumps(execution, ensure_ascii=False, default=str)[:16000]}
-MEMORY: {json.dumps(memory[-6:], ensure_ascii=False, default=str)}
+EXECUTION: {json.dumps(execution, ensure_ascii=False, default=str)[:settings.agent_execution_context_chars]}
+MEMORY: {json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=False, default=str)}
 """
         try:
             llm = get_llm(temperature=0.25)
@@ -371,6 +353,75 @@ MEMORY: {json.dumps(memory[-6:], ensure_ascii=False, default=str)}
         lines.append(f"总分：{points_text}")
         return "\n".join(lines)
 
+    def _direct_course_recommendation_answer(
+        self,
+        question: str,
+        execution: List[Dict[str, Any]],
+    ) -> Optional[str]:
+        if not self._is_course_recommendation_request(question):
+            return None
+
+        courses: List[Dict[str, Any]] = []
+        for trace in execution:
+            if trace.get("status") != "COMPLETED":
+                continue
+            if trace.get("tool") != "get_course_overview":
+                continue
+            output = trace.get("output") or {}
+            if output.get("course"):
+                courses.append(output["course"])
+            courses.extend(output.get("courses") or [])
+
+        if not courses:
+            return "我没有查到当前可选的已有课程，暂时不能替你推荐具体课程。"
+
+        normalized_question = re.sub(r"\s+", "", question.lower())
+        art_terms = (
+            "文艺", "艺术", "美术", "绘画", "设计", "摄影", "视觉", "创作",
+            "写作", "文学", "音乐", "唱歌", "声乐", "表演", "戏剧", "影视", "电影",
+        )
+        preference_terms = [term for term in art_terms if term in normalized_question]
+        if "文艺" in normalized_question and not preference_terms:
+            preference_terms = list(art_terms)
+        elif "文艺" in normalized_question:
+            preference_terms = list(dict.fromkeys(["文艺", *art_terms, *preference_terms]))
+
+        def score_course(course: Dict[str, Any]) -> int:
+            haystack = "".join(
+                str(course.get(key) or "").lower()
+                for key in ("name", "description", "category")
+            )
+            score = 0
+            for term in preference_terms:
+                if term in haystack:
+                    score += 3 if term in str(course.get("name") or "").lower() else 2
+            return score
+
+        ranked = sorted(
+            courses,
+            key=lambda item: (score_course(item), item.get("id") or 0),
+            reverse=True,
+        )
+        selected = ranked[0]
+        selected_score = score_course(selected)
+        name = selected.get("name") or "未命名课程"
+        category = selected.get("category") or "未标注类别"
+        description = (selected.get("description") or "暂无课程简介").strip()
+        schedule = selected.get("schedule") or "未设置"
+        credits = selected.get("credits")
+        credits_text = f"{credits} 学分，" if credits is not None else ""
+        reason = (
+            "它的名称、分类或简介与你提到的偏好更接近。"
+            if selected_score > 0
+            else "目前没有完全匹配“文艺类”的课程，我先从已有课程里选了一门信息最接近的。"
+        )
+        return (
+            f"我推荐你优先看《{name}》。\n"
+            f"理由：{reason}\n"
+            f"课程信息：{category}，{credits_text}上课时间 {schedule}。\n"
+            f"简介：{description}"
+        )
+
     def _direct_submission_answer(
         self,
         question: str,
@@ -444,7 +495,6 @@ MEMORY: {json.dumps(memory[-6:], ensure_ascii=False, default=str)}
         self,
         question: str,
         course_id: Optional[int],
-        mode: str,
         session_id: str,
         confirm: bool = False,
     ) -> Dict[str, Any]:
@@ -453,13 +503,13 @@ MEMORY: {json.dumps(memory[-6:], ensure_ascii=False, default=str)}
             user_id=self.user.id,
             role=self.user.role,
             workflow="agent_runtime",
-            input_summary=f"{mode}: {question[:120]}",
+            input_summary=f"智慧教育机器人: {question[:120]}",
         )
         self.active_run_id = run.id
         memory = await self.memory.load(
-            self.user.id, session_id, course_id, limit=8
+            self.user.id, session_id, course_id, limit=settings.agent_memory_load_limit
         )
-        plan, planner_source = await self.plan(question, course_id, mode, memory)
+        plan, planner_source = await self.plan(question, course_id, memory)
         prepared_steps: List[AgentPlanStep] = []
         rejected: List[Dict[str, Any]] = []
         for step in plan.steps:
@@ -482,7 +532,7 @@ MEMORY: {json.dumps(memory[-6:], ensure_ascii=False, default=str)}
         await self.service.log_tool_call_json(
             run.id,
             "agent_planner",
-            {"question": question, "mode": mode},
+            {"question": question, "assistant": "smart_education"},
             {
                 "source": planner_source,
                 "plan": plan.model_dump(),

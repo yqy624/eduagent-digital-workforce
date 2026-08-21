@@ -58,4 +58,7 @@ def get_embeddings():
 
     from langchain_community.embeddings import HuggingFaceEmbeddings
 
-    return HuggingFaceEmbeddings(model_name=model)
+    return HuggingFaceEmbeddings(
+        model_name=model,
+        model_kwargs={"local_files_only": True},
+    )

@@ -121,15 +121,37 @@ class AgentToolRegistry:
                     "schedule": course.schedule,
                     "credits": course.credits,
                     "category": course.category,
+                    "enrolled_count": course.enrolled_count,
+                    "max_students": course.max_students,
                 }
             }
         if self.user.role == "STUDENT":
             rows = await self.db.execute(
-                select(Course)
-                .join(Enrollment, Enrollment.course_id == Course.id)
-                .where(Enrollment.student_id == self.user.id)
+                select(Course, Enrollment.id.label("enrollment_id"))
+                .outerjoin(
+                    Enrollment,
+                    (Enrollment.course_id == Course.id)
+                    & (Enrollment.student_id == self.user.id),
+                )
+                .where(Course.visible == True)
                 .order_by(Course.id.desc())
             )
+            return {
+                "courses": [
+                    {
+                        "id": course.id,
+                        "name": course.name,
+                        "description": course.description,
+                        "schedule": course.schedule,
+                        "credits": course.credits,
+                        "category": course.category,
+                        "enrolled_count": course.enrolled_count,
+                        "max_students": course.max_students,
+                        "enrolled": enrollment_id is not None,
+                    }
+                    for course, enrollment_id in rows.all()
+                ]
+            }
         else:
             query = select(Course).order_by(Course.id.desc())
             if self.user.role == "TEACHER":
@@ -137,7 +159,16 @@ class AgentToolRegistry:
             rows = await self.db.execute(query)
         return {
             "courses": [
-                {"id": c.id, "name": c.name, "description": c.description}
+                {
+                    "id": c.id,
+                    "name": c.name,
+                    "description": c.description,
+                    "schedule": c.schedule,
+                    "credits": c.credits,
+                    "category": c.category,
+                    "enrolled_count": c.enrolled_count,
+                    "max_students": c.max_students,
+                }
                 for c in rows.scalars().all()
             ]
         }
