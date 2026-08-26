@@ -7,7 +7,10 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.models import Assignment, Course, Enrollment, Submission, User
+from app.schemas.assignment import AssignmentCreate
 from app.services.ai_tool_service import AiToolService
+from app.services.student_service import StudentService
+from app.services.teacher_service import TeacherService
 from ai.tools.notification_tools import NotificationTools
 
 
@@ -58,6 +61,8 @@ class AgentToolRegistry:
         self.service = service
         self.retrieve_materials = retrieve_materials
         self.notification_tools = NotificationTools(db)
+        self.teacher_service = TeacherService(db)
+        self.student_service = StudentService(db)
         self._tools = self._build_tools()
 
     def specs(self) -> List[Dict[str, Any]]:
@@ -328,6 +333,13 @@ class AgentToolRegistry:
         course_id = int(args["course_id"])
         await self._ensure_course_access(course_id)
         citations = await self.retrieve_materials(course_id, str(args["question"]))
+        excluded_source_types = set(args.get("exclude_source_types") or [])
+        if excluded_source_types:
+            citations = [
+                citation
+                for citation in citations
+                if citation.get("source_type") not in excluded_source_types
+            ]
         return {"course_id": course_id, "hit_count": len(citations), "citations": citations}
 
     async def _analyze_learning_gaps(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -358,28 +370,97 @@ class AgentToolRegistry:
     async def _generate_learning_plan(self, args: Dict[str, Any]) -> Dict[str, Any]:
         course_id = int(args["course_id"])
         await self._ensure_course_access(course_id)
+        course_overview = (await self._get_course_overview({"course_id": course_id})).get(
+            "course", {}
+        )
+
+        material_query_parts = [
+            str(args.get("focus") or "").strip(),
+            str(course_overview.get("name") or "").strip(),
+            str(course_overview.get("description") or "").strip(),
+            "课程内容 知识点 学习目标 重点 难点",
+        ]
+        material_query = " ".join(part for part in material_query_parts if part)
+        material_result: Dict[str, Any] = {
+            "course_id": course_id,
+            "hit_count": 0,
+            "citations": [],
+        }
+        material_error = None
+        if self.retrieve_materials is not None:
+            try:
+                material_result = await self._retrieve_materials(
+                    {
+                        "course_id": course_id,
+                        "question": material_query,
+                        "exclude_source_types": [
+                            "assignment",
+                            "assignment_attachment",
+                            "submission_text",
+                            "submission_attachment",
+                        ],
+                    }
+                )
+            except Exception as exc:
+                material_error = str(exc)
+
         gaps = await self._analyze_learning_gaps({"course_id": course_id})
         assignments = (await self._get_course_assignments({"course_id": course_id})).get(
             "assignments", []
         )
         weak_titles = {item.get("title") for item in gaps["weak_assignments"]}
+        materials = material_result.get("citations") or []
+        material_sources = []
+        for item in materials:
+            source = str(item.get("source") or item.get("file_name") or "").strip()
+            if source and source not in material_sources:
+                material_sources.append(source)
+
         tasks = []
         for index, assignment in enumerate(assignments[:5], start=1):
             focus = "复习并完成"
             if assignment["title"] in weak_titles:
                 focus = "重点复习并订正"
+            material_hint = (
+                f"结合课程资料：{material_sources[(index - 1) % len(material_sources)]}"
+                if material_sources
+                else "先回看课程简介和课堂内容"
+            )
             tasks.append(
                 {
                     "day": index,
                     "focus": f"{focus}：{assignment['title']}",
                     "duration_hours": 1.0 if assignment["title"] in weak_titles else 0.5,
                     "priority": "HIGH" if assignment["title"] in weak_titles else "NORMAL",
+                    "basis": material_hint,
                 }
             )
+        if not tasks:
+            base_focus = course_overview.get("name") or "当前课程"
+            for index in range(1, 4):
+                material_hint = (
+                    material_sources[(index - 1) % len(material_sources)]
+                    if material_sources
+                    else "课程简介与课堂内容"
+                )
+                tasks.append(
+                    {
+                        "day": index,
+                        "focus": f"梳理《{base_focus}》第 {index} 组核心内容",
+                        "duration_hours": 0.75,
+                        "priority": "NORMAL",
+                        "basis": f"依据：{material_hint}",
+                    }
+                )
         return {
             "course_id": course_id,
             "focus": args.get("focus") or "根据成绩和待办作业动态安排",
+            "course": course_overview,
+            "materials": materials[:5],
+            "material_hit_count": material_result.get("hit_count", len(materials)),
+            "material_error": material_error,
             "weakness": gaps,
+            "assignments": assignments[:5],
             "daily_tasks": tasks,
             "total_hours": round(sum(item["duration_hours"] for item in tasks), 1),
         }
@@ -430,6 +511,75 @@ class AgentToolRegistry:
         )
         return {"sent": True, **result}
 
+    async def _publish_assignment(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        title = str(args["title"]).strip()
+        if not title:
+            raise AgentToolError("Assignment title cannot be empty")
+
+        payload: Dict[str, Any] = {
+            "course_id": int(args["course_id"]),
+            "title": title,
+        }
+        for key in (
+            "description",
+            "detail",
+            "due_date",
+            "total_points",
+            "peer_review_enabled",
+            "peer_review_open_at",
+            "peer_review_close_at",
+            "peer_review_required_count",
+            "peer_review_bonus_per_review",
+            "peer_review_bonus_cap",
+            "peer_review_prompt",
+        ):
+            if key in args and args[key] is not None:
+                payload[key] = args[key]
+        if "total_points" in payload:
+            payload["total_points"] = int(float(payload["total_points"]))
+        if "peer_review_required_count" in payload:
+            payload["peer_review_required_count"] = int(payload["peer_review_required_count"])
+        for key in ("peer_review_bonus_per_review", "peer_review_bonus_cap"):
+            if key in payload:
+                payload[key] = float(payload[key])
+
+        assignment = await self.teacher_service.create_assignment(
+            AssignmentCreate(**payload),
+            self.user,
+        )
+        return {
+            "published": True,
+            "assignment_id": assignment.get("id"),
+            "course_id": assignment.get("courseId") or assignment.get("course_id"),
+            "title": assignment.get("title"),
+            "due_date": assignment.get("dueDate") or assignment.get("due_date"),
+            "total_points": assignment.get("totalPoints") or assignment.get("total_points"),
+            "assignment": assignment,
+        }
+
+    async def _submit_assignment(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        content = str(args["content"]).strip()
+        if not content:
+            raise AgentToolError("Submission content cannot be empty")
+        response = await self.student_service.submit_assignment(
+            assignment_id=int(args["assignment_id"]),
+            student=self.user,
+            content=content,
+            file_path=args.get("file_path"),
+            file_name=args.get("file_name"),
+            file_ids=args.get("file_ids"),
+        )
+        data = response.model_dump()
+        return {
+            "submitted": True,
+            "submission_id": data.get("id"),
+            "assignment_id": data.get("assignment_id"),
+            "assignment_title": data.get("assignment_title"),
+            "status": data.get("status"),
+            "submitted_at": data.get("submitted_at"),
+            "submission": data,
+        }
+
     def _build_tools(self) -> Dict[str, ToolDefinition]:
         everyone = {"ADMIN", "TEACHER", "STUDENT"}
         students = {"STUDENT"}
@@ -459,7 +609,7 @@ class AgentToolRegistry:
                 "retrieve_course_material",
                 "Retrieve indexed course material with citations.",
                 {"course_id", "question"},
-                set(),
+                {"exclude_source_types"},
                 everyone,
                 True,
                 False,
@@ -497,7 +647,7 @@ class AgentToolRegistry:
             ),
             "generate_learning_plan": ToolDefinition(
                 "generate_learning_plan",
-                "Create a study plan from grades, weaknesses, and assignments.",
+                "Create a study plan after reading course overview/materials, then grades, weaknesses, and assignments.",
                 {"course_id"},
                 {"focus"},
                 students,
@@ -524,5 +674,37 @@ class AgentToolRegistry:
                 False,
                 True,
                 self._send_notification,
+            ),
+            "publish_assignment": ToolDefinition(
+                "publish_assignment",
+                "Publish a text assignment to a course after explicit confirmation.",
+                {"course_id", "title"},
+                {
+                    "description",
+                    "detail",
+                    "due_date",
+                    "total_points",
+                    "peer_review_enabled",
+                    "peer_review_open_at",
+                    "peer_review_close_at",
+                    "peer_review_required_count",
+                    "peer_review_bonus_per_review",
+                    "peer_review_bonus_cap",
+                    "peer_review_prompt",
+                },
+                staff,
+                False,
+                True,
+                self._publish_assignment,
+            ),
+            "submit_assignment": ToolDefinition(
+                "submit_assignment",
+                "Submit text content for the current student's assignment after explicit confirmation.",
+                {"assignment_id", "content"},
+                {"file_ids", "file_name", "file_path"},
+                students,
+                False,
+                True,
+                self._submit_assignment,
             ),
         }

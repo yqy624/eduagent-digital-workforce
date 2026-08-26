@@ -83,6 +83,8 @@ class GradingSuggestionResponse(BaseModel):
     submission_id: int
     suggested_score: float
     rubric: Dict[str, Any] = {}
+    critique: Dict[str, Any] = {}
+    critique_source: Optional[str] = None
     comment: str
     strengths: List[str] = []
     weaknesses: List[str] = []

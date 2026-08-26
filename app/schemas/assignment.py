@@ -59,6 +59,7 @@ class AssignmentCreate(BaseModel):
     due_date: Optional[str] = None
     total_points: Optional[int] = None
     attachment_paths: Optional[str] = None
+    attachment_file_ids: Optional[List[int]] = None
     peer_review_enabled: bool = False
     peer_review_open_at: Optional[str] = None
     peer_review_close_at: Optional[str] = None
@@ -75,6 +76,7 @@ class AssignmentUpdate(BaseModel):
     due_date: Optional[str] = None
     total_points: Optional[int] = Field(None, ge=0)
     attachment_paths: Optional[str] = None
+    attachment_file_ids: Optional[List[int]] = None
 
 
 class PeerReviewConfigUpdate(BaseModel):
@@ -98,6 +100,7 @@ class AssignmentResponse(BaseModel):
     course_name: Optional[str] = None
     teacher_id: int
     created_at: Optional[str] = None
+    attachment_paths: Optional[str] = None
     peer_review_enabled: bool
     status: str = "PUBLISHED"
     submission_count: int = 0
@@ -123,6 +126,7 @@ class SubmissionResponse(BaseModel):
 class SubmissionSubmit(BaseModel):
     content: Optional[str] = None
     file_id: Optional[int] = None
+    file_ids: Optional[List[int]] = None
     file_path: Optional[str] = None
     file_name: Optional[str] = None
 

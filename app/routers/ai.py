@@ -1,19 +1,18 @@
 """AI 路由 — RAG 问答、学情诊断、学习计划、批改建议"""
 import json
+import re
 import time
 from uuid import uuid4
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import delete, func, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import PROJECT_ROOT, settings
 from app.database import get_db
 from app.middleware.auth import get_current_user, require_teacher
-from app.models.models import Assignment, Course, Enrollment, Notification, StoredFile, Submission, User
-from app.models.ai_models import AiDocumentChunk, AiGradingSuggestion, AiIndexJob, AiQaLog
+from app.models.models import Assignment, Course, Enrollment, Notification, PeerReview, Submission, User
+from app.models.ai_models import AiDocumentChunk, AiGradingSuggestion, AiQaLog
 from app.schemas.assignment import GradeRequest
 from app.schemas.ai import (
     AgentChatRequest,
@@ -30,8 +29,8 @@ from app.services.teacher_service import TeacherService
 from app.services.ai_tool_service import AiToolService
 from ai.llm import get_llm
 from ai.agents.runtime import AgentRuntime
-from ai.rag.loader import DocumentLoader, TextSplitter
 from ai.rag.vector_store import VectorStoreManager
+from ai.rag.indexer import reindex_course_documents
 from ai.workflows.learning_plan_chain import build_learning_plan_chain, LearningPlanState
 from ai.workflows.grading_chain import build_grading_chain, GradingState
 
@@ -134,25 +133,11 @@ async def _ensure_teacher_feedback_access(
     return suggestion
 
 
-def _resolve_material_path(file: StoredFile) -> Optional[Path]:
-    raw = Path(file.storage_path)
-    candidates = []
-    if raw.is_absolute():
-        candidates.append(raw)
-    else:
-        candidates.append(PROJECT_ROOT / raw)
-        candidates.append(settings.upload_path / file.object_key)
-    for candidate in candidates:
-        resolved = candidate.resolve()
-        if resolved.exists() and resolved.is_file():
-            return resolved
-    return None
-
-
 async def _search_course_chunks(
     db: AsyncSession,
     course_id: int,
     question: str,
+    user: Optional[User] = None,
     max_citations: int = 5,
     threshold: float = 0.18,
 ) -> List[Dict[str, Any]]:
@@ -162,6 +147,43 @@ async def _search_course_chunks(
         .order_by(AiDocumentChunk.file_id, AiDocumentChunk.chunk_index)
     )
     chunks = list(result.scalars().all())
+
+    if user is not None and user.role == "STUDENT":
+        own_submission_ids = set(
+            (
+                await db.execute(
+                    select(Submission.id)
+                    .join(Assignment, Assignment.id == Submission.assignment_id)
+                    .where(
+                        Assignment.course_id == course_id,
+                        Submission.student_id == user.id,
+                    )
+                )
+            ).scalars().all()
+        )
+        review_submission_ids = set(
+            (
+                await db.execute(
+                    select(PeerReview.target_submission_id)
+                    .join(Submission, Submission.id == PeerReview.target_submission_id)
+                    .join(Assignment, Assignment.id == Submission.assignment_id)
+                    .where(
+                        Assignment.course_id == course_id,
+                        PeerReview.reviewer_id == user.id,
+                    )
+                )
+            ).scalars().all()
+        )
+        allowed_submission_ids = own_submission_ids | review_submission_ids
+
+        def can_access_chunk(chunk: AiDocumentChunk) -> bool:
+            if chunk.source_type not in {"submission_attachment", "submission_text"}:
+                return True
+            match = re.search(r":submission:(\d+):", chunk.vector_id or "")
+            return bool(match and int(match.group(1)) in allowed_submission_ids)
+
+        chunks = [chunk for chunk in chunks if can_access_chunk(chunk)]
+
     chunk_lookup = {
         (chunk.file_id, chunk.chunk_index): chunk
         for chunk in chunks
@@ -176,6 +198,7 @@ async def _search_course_chunks(
             "similarity": similarity,
             "source": chunk.source or "课程资料",
             "file_name": chunk.source or None,
+            "source_type": chunk.source_type,
         }
 
     try:
@@ -232,26 +255,15 @@ def _build_rag_context(citations: List[Dict[str, Any]]) -> str:
     )
 
 
-def _assignment_material_text(assignment: Assignment) -> str:
-    due_date = assignment.due_date.isoformat() if assignment.due_date else "未设置"
-    total_points = assignment.total_points if assignment.total_points is not None else "未设置"
-    description = (assignment.description or "暂无要求").strip()
-    detail = (assignment.detail or "暂无详情").strip()
-    return (
-        f"作业标题：{assignment.title}\n"
-        f"作业要求：{description}\n"
-        f"作业详情：{detail}\n"
-        f"截止时间：{due_date}\n"
-        f"总分：{total_points}"
-    )
-
-
 def _boost_course_material_similarity(question: str, chunk: AiDocumentChunk, similarity: float) -> float:
     question_text = (question or "").strip()
     if not question_text:
         return similarity
-    assignment_intents = ("作业", "任务", "提交", "截止", "截止时间", "总分", "分数", "要求")
-    if chunk.source_type == "assignment" and any(keyword in question_text for keyword in assignment_intents):
+    assignment_intents = ("作业", "任务", "提交", "截止", "截止时间", "总分", "分数", "要求", "附件", "文件")
+    if chunk.source_type in {"assignment", "assignment_attachment"} and any(keyword in question_text for keyword in assignment_intents):
+        return max(similarity, 0.82)
+    submission_intents = ("提交", "学生", "答案", "作答", "附件", "文件", "批改")
+    if chunk.source_type in {"submission_text", "submission_attachment"} and any(keyword in question_text for keyword in submission_intents):
         return max(similarity, 0.82)
     return similarity
 
@@ -638,181 +650,8 @@ async def index_course_documents(
     if user.role not in {"ADMIN", "TEACHER"}:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only teachers or admins can index documents")
 
-    result = await db.execute(
-        select(StoredFile)
-        .where(StoredFile.course_id == course_id)
-        .order_by(StoredFile.created_at.desc(), StoredFile.id.desc())
-    )
-    files = list(result.scalars().all())
-    assignment_result = await db.execute(
-        select(Assignment)
-        .where(Assignment.course_id == course_id)
-        .order_by(Assignment.created_at.desc(), Assignment.id.desc())
-    )
-    assignments = list(assignment_result.scalars().all())
-
-    loader = DocumentLoader()
-    splitter = TextSplitter(chunk_size=700, chunk_overlap=80)
-    vector_store = VectorStoreManager()
-    vector_store.delete_collection(f"course_{course_id}")
-    await db.execute(delete(AiDocumentChunk).where(AiDocumentChunk.course_id == course_id))
-    indexed_files = []
-    total_chunks = 0
-
-    for file in files:
-        job = AiIndexJob(
-            file_id=file.id,
-            course_id=course_id,
-            status="RUNNING",
-            created_at=datetime.now(),
-        )
-        db.add(job)
-        await db.flush()
-
-        path = _resolve_material_path(file)
-        if path is None:
-            job.status = "FAILED"
-            job.error_message = "文件不存在"
-            job.finished_at = datetime.now()
-            indexed_files.append({"file_id": file.id, "name": file.original_name, "status": "FAILED", "error": job.error_message})
-            continue
-
-        text = loader.load(str(path))
-        if not text:
-            job.status = "FAILED"
-            job.error_message = "无法解析文件内容"
-            job.finished_at = datetime.now()
-            indexed_files.append({"file_id": file.id, "name": file.original_name, "status": "FAILED", "error": job.error_message})
-            continue
-
-        chunks = [chunk.strip() for chunk in splitter.split_text(text) if chunk and chunk.strip()]
-        doc_chunks = []
-        for index, content in enumerate(chunks):
-            chunk = AiDocumentChunk(
-                course_id=course_id,
-                file_id=file.id,
-                chunk_index=index,
-                content=content,
-                content_hash=VectorStoreManager.compute_content_hash(content),
-                source=file.original_name,
-                source_type=file.extension or "unknown",
-                char_count=len(content),
-                vector_id=f"course:{course_id}:file:{file.id}:chunk:{index}",
-                created_at=datetime.now(),
-            )
-            db.add(chunk)
-            doc_chunks.append(chunk)
-
-        vector_status = "SKIPPED"
-        vector_error = None
-        if doc_chunks:
-            from langchain_core.documents import Document
-            docs = [
-                Document(
-                    page_content=chunk.content or "",
-                    metadata={
-                        "course_id": course_id,
-                        "document_id": file.id,
-                        "file_id": file.id,
-                        "chunk_index": chunk.chunk_index,
-                        "source": chunk.source,
-                    },
-                )
-                for chunk in doc_chunks
-            ]
-            try:
-                vector_store.add_documents(docs, collection_name=f"course_{course_id}")
-                vector_status = "INDEXED"
-            except Exception as exc:
-                vector_error = str(exc)
-
-        job.status = "COMPLETED"
-        job.total_chunks = len(doc_chunks)
-        job.finished_at = datetime.now()
-        total_chunks += len(doc_chunks)
-        indexed_files.append({
-            "file_id": file.id,
-            "name": file.original_name,
-            "status": "COMPLETED",
-            "chunk_count": len(doc_chunks),
-            "vector_status": vector_status,
-            "vector_error": vector_error,
-        })
-
-    for assignment in assignments:
-        text = _assignment_material_text(assignment)
-        chunks = [chunk.strip() for chunk in splitter.split_text(text) if chunk and chunk.strip()]
-        doc_chunks = []
-        document_id = -assignment.id
-        for index, content in enumerate(chunks):
-            chunk = AiDocumentChunk(
-                course_id=course_id,
-                file_id=document_id,
-                chunk_index=index,
-                content=content,
-                content_hash=VectorStoreManager.compute_content_hash(content),
-                source=f"作业：{assignment.title}",
-                source_type="assignment",
-                char_count=len(content),
-                vector_id=f"course:{course_id}:assignment:{assignment.id}:chunk:{index}",
-                created_at=datetime.now(),
-            )
-            db.add(chunk)
-            doc_chunks.append(chunk)
-
-        vector_status = "SKIPPED"
-        vector_error = None
-        if doc_chunks:
-            from langchain_core.documents import Document
-            docs = [
-                Document(
-                    page_content=chunk.content or "",
-                    metadata={
-                        "course_id": course_id,
-                        "document_id": document_id,
-                        "file_id": document_id,
-                        "assignment_id": assignment.id,
-                        "chunk_index": chunk.chunk_index,
-                        "source": chunk.source,
-                        "source_type": "assignment",
-                    },
-                )
-                for chunk in doc_chunks
-            ]
-            try:
-                vector_store.add_documents(docs, collection_name=f"course_{course_id}")
-                vector_status = "INDEXED"
-            except Exception as exc:
-                vector_error = str(exc)
-
-        total_chunks += len(doc_chunks)
-        indexed_files.append({
-            "file_id": document_id,
-            "assignment_id": assignment.id,
-            "name": f"作业：{assignment.title}",
-            "status": "COMPLETED",
-            "chunk_count": len(doc_chunks),
-            "vector_status": vector_status,
-            "vector_error": vector_error,
-        })
-
-    if not indexed_files:
-        return ApiResponse.ok(data={
-            "course_id": course_id,
-            "file_count": 0,
-            "assignment_count": 0,
-            "chunk_count": 0,
-            "indexed_files": [],
-            "message": "该课程暂无可索引的上传资料或作业内容",
-        })
-
-    return ApiResponse.ok(data={
-        "course_id": course_id,
-        "file_count": len(files),
-        "assignment_count": len(assignments),
-        "chunk_count": total_chunks,
-        "indexed_files": indexed_files,
-    })
+    data = await reindex_course_documents(db, course_id)
+    return ApiResponse.ok(data=data)
 
 
 @router.post("/courses/{course_id}/qa")
@@ -834,7 +673,7 @@ async def course_qa(
     )
 
     try:
-        citations = await _search_course_chunks(db, course_id, req.question)
+        citations = await _search_course_chunks(db, course_id, req.question, user=user)
         await service.log_tool_call_json(
             run.id,
             "retrieve_course_chunks",
@@ -956,7 +795,7 @@ async def agent_chat(
         if mode_config["needs_rag"] and course_id:
             await _ensure_course_access(db, course_id, user)
             tool_start = time.time()
-            citations = await _search_course_chunks(db, course_id, question)
+            citations = await _search_course_chunks(db, course_id, question, user=user)
             confidence = citations[0]["similarity"] if citations else 0.0
             await service.log_tool_call_json(
                 run.id,
@@ -1007,6 +846,8 @@ async def agent_chat(
 5. 其他问题可以直接回答；不要假装实时联网，也不要声称查到了互联网最新信息。
 6. 历史对话只用于理解用户偏好、学习目标和上下文；若与当前业务数据冲突，以当前业务数据为准。
 7. 课程资料状态会说明本次是否命中索引资料；没有命中资料时，不要编造上传文档内容。
+8. 业务接口/API 数据只是内部依据，不是最终回答；必须先判断用户真实意图，再综合生成内容，不要把接口结果、JSON 字段或工具名称原样展示给用户。
+9. 当用户是在请求“帮我想/设计/生成”内容时，已有作业或课程数据只能作为参考，不要改成罗列已有记录，除非用户明确要求查看列表。
 
 当前问题：
 {question}
@@ -1086,7 +927,7 @@ async def agent_runtime_chat(
             user=user,
             service=service,
             retrieve_materials=lambda selected_course_id, material_question: (
-                _search_course_chunks(db, selected_course_id, material_question)
+                _search_course_chunks(db, selected_course_id, material_question, user=user)
             ),
         )
         result = await runtime.run(
@@ -1299,6 +1140,9 @@ async def grade_suggestion(
             "submission": None,
             "assignment": None,
             "peer_reviews": None,
+            "critique": None,
+            "critique_source": None,
+            "grading_baseline": None,
             "suggested_score": None,
             "rubric": None,
             "comment": None,
@@ -1330,6 +1174,8 @@ async def grade_suggestion(
             submission_id=submission_id,
             suggested_score=result.get("suggested_score", 0),
             rubric=result.get("rubric", {}),
+            critique=result.get("critique", {}),
+            critique_source=result.get("critique_source"),
             comment=result.get("comment", ""),
             strengths=result.get("strengths", []),
             weaknesses=result.get("weaknesses", []),

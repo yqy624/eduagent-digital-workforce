@@ -187,7 +187,7 @@
         <div class="mb-2 fw-semibold" id="submitTitle"></div>
         <div class="mb-2 small text-muted" id="submittedPreview"></div>
         <textarea id="submitContent" class="form-control mb-3" rows="4" placeholder="填写作业内容"></textarea>
-        <input type="file" id="submitFile" class="form-control">
+        <input type="file" id="submitFile" class="form-control" multiple>
       </div>
       <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">取消</button><button class="btn btn-primary" onclick="submitAssignment()">提交</button></div>
     </div>
@@ -244,6 +244,10 @@
         <div class="p-3 border rounded bg-light-subtle mb-3">
           <div class="small text-muted mb-1">作业详情</div>
           <div id="detailAssignmentDetail" style="white-space:pre-wrap;"></div>
+        </div>
+        <div class="p-3 border rounded bg-light-subtle mb-3">
+          <div class="small text-muted mb-2">作业附件</div>
+          <div id="detailAssignmentFiles"></div>
         </div>
         <div class="p-3 border rounded bg-light-subtle mb-3">
           <div class="small text-muted mb-1">提交内容</div>
@@ -784,11 +788,14 @@ async function loadAssignments() {
           ? { text: '已截止', cls: 'bg-secondary bg-opacity-10 text-secondary', icon: 'fa-lock' }
           : { text: '待提交', cls: 'bg-danger bg-opacity-10 text-danger', icon: 'fa-hourglass-half' };
     var peerBadge = a.peerReviewEnabled ? '<span class="badge-soft bg-info bg-opacity-10 text-info"><i class="fa-solid fa-comments me-1"></i>互评开放</span>' : '<span class="badge-soft bg-secondary bg-opacity-10 text-secondary">互评未开放</span>';
+    var attachmentBadge = App.parseStoredFiles(a.assignmentAttachmentPaths).length
+      ? '<span class="badge-soft bg-info bg-opacity-10 text-info"><i class="fa-solid fa-paperclip me-1"></i>含作业附件</span>'
+      : '';
     html += '<div class="learning-task-item">' +
       '<div class="learning-task-copy">' +
         '<div class="learning-task-head"><div><div class="learning-task-title">' + App.escapeHtml(a.title || '未命名作业') + '</div><div class="small text-muted mt-1">截止 ' + (App.fmtTime(a.dueDate) || '无截止时间') + ' · 满分 ' + (a.totalPoints || 100) + '</div></div><span class="badge-soft ' + status.cls + '"><i class="fa-solid ' + status.icon + ' me-1"></i>' + status.text + '</span></div>' +
         '<div class="learning-task-desc">' + App.escapeHtml(a.description || a.detail || submitted) + '</div>' +
-        '<div class="d-flex flex-wrap gap-2 mt-3"><span class="badge-soft bg-primary bg-opacity-10 text-primary"><i class="fa-solid fa-file-lines me-1"></i>' + submitted + '</span>' + peerBadge + '</div>' +
+        '<div class="d-flex flex-wrap gap-2 mt-3"><span class="badge-soft bg-primary bg-opacity-10 text-primary"><i class="fa-solid fa-file-lines me-1"></i>' + submitted + '</span>' + peerBadge + attachmentBadge + '</div>' +
       '</div>' +
       '<div class="learning-task-actions">' + detailBtn + '<button class="btn btn-primary btn-sm" data-title="' + App.escapeAttr(a.title || '未命名作业') + '" onclick="openSubmit(' + a.id + ', this.dataset.title)" ' + (canSubmit ? '' : 'disabled') + '><i class="fa-solid fa-upload me-1"></i>' + submitText + '</button></div>' +
     '</div>';
@@ -819,6 +826,17 @@ function previewStoredFile(path) {
   return App.previewFile(path);
 }
 
+function renderStoredFileLinks(filePaths, emptyText) {
+  var files = App.parseStoredFiles(filePaths);
+  if (!files.length) return '<div class="text-muted small">' + App.escapeHtml(emptyText || '暂无附件') + '</div>';
+  return '<div class="d-flex flex-column gap-2">' + files.map(function(file) {
+    var safeName = App.escapeHtml(file.name || '附件');
+    var safePathAttr = App.escapeAttr(file.path || '');
+    var safeNameAttr = App.escapeAttr(file.name || '附件');
+    return '<div class="d-flex align-items-center justify-content-between gap-3 border rounded px-3 py-2 bg-white"><div><i class="fa-solid fa-paperclip me-2"></i>' + safeName + '</div><div class="d-flex gap-2"><button class="btn btn-outline-secondary btn-sm" data-path="' + safePathAttr + '" onclick="previewStoredFile(this.dataset.path)">预览</button><button class="btn btn-outline-primary btn-sm" data-path="' + safePathAttr + '" data-name="' + safeNameAttr + '" onclick="downloadStoredFile(this.dataset.path, this.dataset.name)">下载</button></div></div>';
+  }).join('') + '</div>';
+}
+
 function downloadStoredFile(path, name) {
   var fileId = App.getStoredFileId(path);
   if (!fileId) return Promise.reject(new Error('File identifier is invalid'));
@@ -844,16 +862,9 @@ function openSubmissionDetail(id) {
   detailSubmissionStatus.textContent = '状态：' + (statusMap[status] || '未提交');
   detailAssignmentRequirement.textContent = assignment.description || '暂无作业要求';
   detailAssignmentDetail.textContent = assignment.detail || '暂无作业详情';
+  detailAssignmentFiles.innerHTML = renderStoredFileLinks(assignment.assignmentAttachmentPaths, '本次作业没有附件');
   detailSubmissionContent.textContent = submission && submission.content ? submission.content : '暂无提交内容';
-  var files = App.parseStoredFiles(submission ? submission.filePaths : '');
-  detailSubmissionFiles.innerHTML = files.length
-    ? '<div class="d-flex flex-column gap-2">' + files.map(function(file) {
-        var safeName = App.escapeHtml(file.name || '附件');
-        var safePathAttr = App.escapeAttr(file.path || '');
-        var safeNameAttr = App.escapeAttr(file.name || '附件');
-        return '<div class="d-flex align-items-center justify-content-between gap-3 border rounded px-3 py-2 bg-white"><div><i class="fa-solid fa-paperclip me-2"></i>' + safeName + '</div><div class="d-flex gap-2"><button class="btn btn-outline-secondary btn-sm" data-path="' + safePathAttr + '" onclick="previewStoredFile(this.dataset.path)">预览</button><button class="btn btn-outline-primary btn-sm" data-path="' + safePathAttr + '" data-name="' + safeNameAttr + '" onclick="downloadStoredFile(this.dataset.path, this.dataset.name)">下载</button></div></div>';
-      }).join('') + '</div>'
-    : '<div class="text-muted small">本次提交没有附件</div>';
+  detailSubmissionFiles.innerHTML = renderStoredFileLinks(submission ? submission.filePaths : '', '本次提交没有附件');
   new bootstrap.Modal(submitDetailModal).show();
 }
 
@@ -869,20 +880,22 @@ function openSubmit(id, title) {
 
 async function submitAssignment() {
   var id = submitAssignmentId.value;
-  var filePath = null;
+  var fileIds = [];
   var fileName = null;
   if (submitFile.files.length) {
-    var fd = new FormData();
-    fd.append("file", submitFile.files[0]);
-    var res = await fetch("/api/files/upload", { method: "POST", headers: { Authorization: "Bearer " + TOKEN }, body: fd });
-    var data = await res.json();
-    if (data.code !== 200) throw new Error(data.message || "上传失败");
-    filePath = data.data.id;
-    fileName = data.data.originalName;
+    for (var i = 0; i < submitFile.files.length; i++) {
+      var fd = new FormData();
+      fd.append("file", submitFile.files[i]);
+      var res = await fetch("/api/files/upload?category=SUBMISSION_ATTACHMENT&assignment_id=" + encodeURIComponent(id), { method: "POST", headers: { Authorization: "Bearer " + TOKEN }, body: fd });
+      var data = await res.json();
+      if (data.code !== 200) throw new Error(data.message || "上传失败");
+      fileIds.push(Number(data.data.id));
+      if (!fileName) fileName = data.data.originalName;
+    }
   }
   await api("/student/assignments/" + id + "/submit", "POST", {
     content: submitContent.value.trim(),
-    file_path: filePath,
+    file_ids: fileIds.length ? fileIds : null,
     file_name: fileName
   });
   bootstrap.Modal.getInstance(submitModal).hide();

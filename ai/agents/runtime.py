@@ -73,136 +73,8 @@ class AgentRuntime:
             retrieve_materials=retrieve_materials,
         )
 
-    def _is_course_recommendation_request(self, question: str) -> bool:
-        normalized = re.sub(r"\s+", "", question.lower())
-        has_course = any(word in normalized for word in ("课", "课程", "选课", "course"))
-        has_recommend = any(
-            word in normalized
-            for word in ("推荐", "选一个", "选一门", "让我选择", "建议上", "适合我", "recommend")
-        )
-        asks_existing = any(
-            word in normalized
-            for word in ("已有", "现有", "可选", "课程里", "列表", "available", "existing")
-        )
-        return has_course and has_recommend and asks_existing
-
-    async def _heuristic_plan(
-        self, question: str, course_id: Optional[int]
-    ) -> AgentPlan:
-        text = question.lower()
-        steps: List[AgentPlanStep] = []
-        if self._is_course_recommendation_request(question):
-            return AgentPlan(
-                objective=f"从已有课程中推荐一门适合用户偏好的课程：{question[:900]}",
-                steps=[
-                    AgentPlanStep(
-                        tool="get_course_overview",
-                        reason="需要先读取真实可选课程清单，避免编造课程名称",
-                        args={},
-                    )
-                ],
-            )
-        material_intent = any(
-            word in text
-            for word in (
-                "资料", "课件", "文档", "讲义", "知识点", "概念", "原理", "material",
-                "document", "concept", "explain",
-            )
-        )
-        assignment_intent = any(
-            word in text
-            for word in (
-                "作业", "任务", "截止", "待办", "提交", "交了", "交了吗",
-                "assignment", "deadline", "submit", "submission",
-            )
-        )
-        submission_intent = any(
-            word in text
-            for word in (
-                "提交", "交了", "交了吗", "未交", "没交", "没提交", "已交",
-                "已提交", "submit", "submission", "submitted", "missing",
-            )
-        )
-        grade_intent = any(
-            word in text
-            for word in ("成绩", "分数", "低分", "薄弱", "grade", "score", "weak")
-        )
-        plan_intent = any(
-            word in text
-            for word in ("建议", "教学", "计划", "规划", "复习", "提升", "安排", "plan", "review")
-        )
-
-        if material_intent and course_id:
-            steps.append(
-                AgentPlanStep(
-                    tool="retrieve_course_material",
-                    reason="需要从课程索引中检索可引用的材料",
-                    args={"course_id": course_id, "question": question},
-                )
-            )
-        if assignment_intent and course_id:
-            steps.append(
-                AgentPlanStep(
-                    tool="get_course_assignments",
-                    reason="需要读取课程作业和截止时间",
-                    args={"course_id": course_id},
-                )
-            )
-        if submission_intent and self.user.role == "STUDENT":
-            args = {"course_id": course_id} if course_id else {}
-            if not any(step.tool == "get_my_submissions" for step in steps):
-                steps.append(
-                    AgentPlanStep(
-                        tool="get_my_submissions",
-                        reason="Read explicit per-assignment submission status for the current student.",
-                        args=args,
-                    )
-                )
-        if (grade_intent or plan_intent) and self.user.role in {"ADMIN", "TEACHER"} and course_id:
-            steps.append(
-                AgentPlanStep(
-                    tool="get_course_statistics",
-                    reason="需要读取课程教学统计支撑建议",
-                    args={"course_id": course_id},
-                )
-            )
-        elif grade_intent or plan_intent:
-            if course_id:
-                steps.append(
-                    AgentPlanStep(
-                        tool="analyze_learning_gaps",
-                        reason="需要基于成绩计算薄弱项",
-                        args={"course_id": course_id},
-                    )
-                )
-            else:
-                steps.append(
-                    AgentPlanStep(
-                        tool="get_my_grades",
-                        reason="需要读取当前用户的成绩数据",
-                        args={},
-                    )
-                )
-        if plan_intent and course_id and self.user.role == "STUDENT":
-            steps.append(
-                AgentPlanStep(
-                    tool="generate_learning_plan",
-                    reason="把成绩分析和作业转换为可执行任务",
-                    args={"course_id": course_id},
-                )
-            )
-        if not steps:
-            steps.append(
-                AgentPlanStep(
-                    tool="get_course_overview",
-                    reason="先获取当前用户可见的课程上下文",
-                    args={"course_id": course_id} if course_id else {},
-                )
-            )
-        return AgentPlan(
-            objective=f"完成用户请求：{question[:900]}",
-            steps=steps,
-        )
+    def _needs_clarification_plan(self, message: str) -> AgentPlan:
+        return AgentPlan(objective=f"NEEDS_CLARIFICATION: {message}", steps=[])
 
     async def plan(
         self,
@@ -210,15 +82,93 @@ class AgentRuntime:
         course_id: Optional[int],
         memory: List[Dict[str, Any]],
     ) -> tuple[AgentPlan, str]:
-        # 启发式计划能识别明确意图时直接采用，避免慢速 LLM planner
-        # （本地 8B 模型生成 JSON 计划需数分钟，业务查询毫秒级即可完成）
-        heuristic = await self._heuristic_plan(question, course_id)
-        has_intent = any(
-            step.tool != "get_course_overview" for step in heuristic.steps
-        )
-        if has_intent:
-            return heuristic, "heuristic_intent"
-        return heuristic, "heuristic_context"
+        return await self._llm_plan(question, course_id, memory)
+
+    async def _llm_plan(
+        self,
+        question: str,
+        course_id: Optional[int],
+        memory: List[Dict[str, Any]],
+    ) -> tuple[AgentPlan, str]:
+        tool_specs = self.registry.specs()
+        prompt = f"""You are EduAgent's tool planner.
+Decide the user's intent with reasoning, then output a JSON object only.
+
+The planner must decide whether to use an assignment skill or any other tool
+from the user's natural language request. Do not use keyword matching rules.
+Use the user's role, current course context, conversation memory, and tool
+contracts to infer intent.
+
+Current user role: {self.user.role}
+Current selected course_id: {course_id}
+
+Available tools for this role:
+{json.dumps(tool_specs, ensure_ascii=False, default=str)}
+
+Assignment-actions skill contract:
+- Drafting an assignment idea does not publish it. Use read/context tools only.
+- Publishing an assignment requires clear intent to publish/assign/send to students.
+- `publish_assignment` needs course_id and title. It is a confirmed write tool.
+- Submitting homework requires clear intent to submit and needs assignment_id and content.
+- `submit_assignment` is student-only and is a confirmed write tool.
+- Status questions such as whether homework is submitted should use read tools.
+- If required information is missing, return no steps and put a Chinese clarification
+  message in objective prefixed with `NEEDS_CLARIFICATION:`.
+- If the user's role cannot perform the requested action, return no steps and put a
+  Chinese boundary message in objective prefixed with `NEEDS_CLARIFICATION:`.
+
+Study-plan skill contract:
+- If the user asks to generate, design, explain requirements for, or prepare a
+  study plan for the selected course, first understand what the course is about:
+  use `get_course_overview`, then `retrieve_course_material` for course content.
+- Only after course content/context is collected, use student learning evidence
+  such as `analyze_learning_gaps`/`get_my_grades`, and then inspect assignments
+  or use `generate_learning_plan` as the final planning step.
+- When retrieving course content for study planning, exclude assignment and
+  submission source types unless the user explicitly asks for homework details.
+- If no course_id is available for a course-specific study plan, ask the user to
+  select a course instead of checking assignments directly.
+
+Planning rules:
+- Output only tools from the Available tools list.
+- For every tool, use only its required_args and optional_args.
+- If a selected course_id is provided, you may use it as course_id when the user
+  refers to "this/current/selected course".
+- Write tools may be selected when intended; runtime will request confirmation.
+- Do not invent IDs. If an id is not in the request or context, ask for it.
+- Keep steps short and necessary. Maximum 4 steps for ordinary requests.
+
+Return this JSON shape:
+{{
+  "objective": "short Chinese objective, or NEEDS_CLARIFICATION: ...",
+  "steps": [
+    {{
+      "tool": "tool_name",
+      "reason": "Chinese reason",
+      "args": {{}}
+    }}
+  ]
+}}
+
+USER_QUESTION:
+{question}
+
+RECENT_MEMORY:
+{json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=False, default=str)}
+"""
+        try:
+            llm = get_llm(temperature=0)
+            response = await llm.ainvoke(prompt)
+            payload = _extract_json(_content(response))
+            plan = AgentPlan(**payload)
+            return plan, "llm_planner"
+        except Exception as exc:
+            return (
+                self._needs_clarification_plan(
+                    f"我暂时无法完成 LLM 意图规划：{exc}。请更明确说明你要查询、发布还是提交作业。"
+                ),
+                "llm_planner_error",
+            )
 
     def _prepare_step(
         self, step: AgentPlanStep, question: str, course_id: Optional[int]
@@ -231,10 +181,15 @@ class AgentRuntime:
                 "retrieve_course_material",
                 "analyze_learning_gaps",
                 "generate_learning_plan",
+                "publish_assignment",
             }:
                 args["course_id"] = course_id
         if step.tool == "retrieve_course_material":
             args.setdefault("question", question)
+        if step.tool in {"publish_assignment", "submit_assignment"}:
+            for key, value in list(args.items()):
+                if isinstance(value, str):
+                    args[key] = value.strip()
         normalized = self.registry.prepare(step.tool, args)
         return AgentPlanStep(tool=step.tool, reason=step.reason, args=normalized)
 
@@ -245,25 +200,23 @@ class AgentRuntime:
         execution: List[Dict[str, Any]],
         memory: List[Dict[str, Any]],
     ) -> tuple[str, str]:
-        direct_submission_answer = self._direct_submission_answer(question, execution)
-        if direct_submission_answer is not None:
-            return direct_submission_answer, "deterministic_submission_status"
-        direct_assignment_answer = self._direct_assignment_requirements_answer(
-            question, execution
-        )
-        if direct_assignment_answer is not None:
-            return direct_assignment_answer, "deterministic_assignment_requirements"
-        direct_course_recommendation_answer = self._direct_course_recommendation_answer(
-            question, execution
-        )
-        if direct_course_recommendation_answer is not None:
-            return direct_course_recommendation_answer, "deterministic_course_recommendation"
+        direct_action_answer = self._direct_action_answer(execution)
+        if direct_action_answer is not None:
+            return direct_action_answer, "deterministic_action"
 
         prompt = f"""You are the answer model for EduAgent.
 Answer in Chinese unless the user asks otherwise. Be concise and actionable.
 Use only the execution results and memory below. State when data is missing.
+Tool/API results are internal evidence, not final user-facing content:
+- Analyze the user's intent and synthesize a natural answer from the evidence.
+- Do not expose raw API payloads, JSON fields, tool names, or messages like "the API returned".
+- Do not simply list every record unless the user explicitly asks for a full list.
+- For action requests, do not claim an action happened if its step failed or is awaiting confirmation.
+- When publish_assignment or submit_assignment succeeds, clearly say the assignment was published/submitted.
+- When an action tool fails, state that the action was not completed and include the business reason.
+- If the user asks to create, draft, design, or think up a new assignment, produce an original assignment draft.
+- For new-assignment requests, do not answer by listing existing assignments, and do not imply that a new assignment was published.
 When recommending a course, only recommend course names present in EXECUTION.
-Do not claim an action happened if its step failed or is awaiting confirmation.
 For submission questions, use assignment_statuses/not_submitted_assignments first.
 NOT_SUBMITTED means the current student has no submission record for that assignment;
 never infer that an assignment was submitted just because it is absent from submissions.
@@ -277,219 +230,185 @@ MEMORY: {json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=F
             response = await llm.ainvoke(prompt)
             return _content(response), "model"
         except Exception:
-            successful = [
-                item for item in execution if item.get("status") == "COMPLETED"
-            ]
-            if not successful:
-                return "我暂时没有取得足够的业务数据来回答这个问题。", "fallback"
-            fragments = []
-            for item in successful:
-                output = item.get("output") or {}
-                if item["tool"] == "retrieve_course_material":
-                    fragments.append(
-                        "检索到课程材料："
+            return self._fallback_synthesis(question, execution), "fallback"
+
+    def _direct_action_answer(self, execution: List[Dict[str, Any]]) -> Optional[str]:
+        action_tools = {"publish_assignment", "submit_assignment", "send_notification"}
+        action_traces = [item for item in execution if item.get("tool") in action_tools]
+        if not action_traces:
+            return None
+
+        lines: List[str] = []
+        for item in action_traces:
+            if item.get("status") == "FAILED":
+                lines.append(f"操作没有完成：{item.get('error') or '业务校验未通过'}")
+                continue
+            if item.get("status") != "COMPLETED":
+                continue
+            output = item.get("output") or {}
+            if item.get("tool") == "publish_assignment":
+                title = output.get("title") or "未命名作业"
+                due_date = output.get("due_date") or "未设置截止时间"
+                lines.append(f"作业已发布：《{title}》，截止时间：{due_date}。")
+            elif item.get("tool") == "submit_assignment":
+                title = output.get("assignment_title") or f"作业 {output.get('assignment_id')}"
+                lines.append(f"已提交作业：《{title}》。")
+            elif item.get("tool") == "send_notification":
+                lines.append("通知已发送。")
+        return "\n".join(lines) if lines else None
+
+    def _fallback_synthesis(
+        self,
+        question: str,
+        execution: List[Dict[str, Any]],
+    ) -> str:
+        """Summarize tool evidence without leaking raw API payloads."""
+        successful = [item for item in execution if item.get("status") == "COMPLETED"]
+        failed_actions = [
+            item
+            for item in execution
+            if item.get("status") == "FAILED"
+            and item.get("tool") in {"publish_assignment", "submit_assignment", "send_notification"}
+        ]
+        if failed_actions and not successful:
+            return "操作没有完成：" + "；".join(
+                str(item.get("error") or "业务校验未通过") for item in failed_actions
+            )
+        if not successful:
+            return "我暂时没有取得足够的业务数据来回答这个问题。"
+
+        lines: List[str] = ["模型生成暂时不可用，我先根据系统里查到的信息做一个简要整理："]
+        for item in successful:
+            output = item.get("output") or {}
+            tool = item.get("tool")
+            if tool == "publish_assignment":
+                title = output.get("title") or "未命名作业"
+                due_date = output.get("due_date") or "未设置截止时间"
+                lines.append(f"作业已发布：《{title}》，截止时间：{due_date}。")
+                continue
+            if tool == "submit_assignment":
+                title = output.get("assignment_title") or f"作业 {output.get('assignment_id')}"
+                lines.append(f"已提交作业：《{title}》。")
+                continue
+            if tool == "retrieve_course_material":
+                citations = output.get("citations") or []
+                if citations:
+                    snippets = [
+                        str(citation.get("content") or "").strip()[:120]
+                        for citation in citations[:3]
+                        if citation.get("content")
+                    ]
+                    if snippets:
+                        lines.append("课程资料要点：" + "；".join(snippets))
+                continue
+            if tool == "get_course_assignments":
+                assignments = output.get("assignments") or []
+                if assignments:
+                    summary = "；".join(
+                        self._format_assignment_brief(assignment)
+                        for assignment in assignments[:5]
+                    )
+                    lines.append(f"可见作业：{summary}")
+                continue
+            if tool == "get_my_submissions":
+                statuses = output.get("assignment_statuses") or []
+                missing = [
+                    item
+                    for item in statuses
+                    if item.get("submission_status") == "NOT_SUBMITTED"
+                ]
+                submitted_count = output.get("submitted_count", 0)
+                if missing:
+                    titles = "、".join(
+                        f"《{item.get('title') or '未命名作业'}》" for item in missing[:5]
+                    )
+                    lines.append(f"你还有 {len(missing)} 项作业未提交：{titles}。")
+                else:
+                    lines.append(f"当前可见作业中已有 {submitted_count} 项提交记录。")
+                continue
+            if tool == "get_my_grades":
+                grades = output.get("grades") or []
+                if grades:
+                    lines.append(
+                        "近期成绩："
                         + "；".join(
-                            str(c.get("content", ""))[:180]
-                            for c in output.get("citations", [])[:3]
+                            f"《{grade.get('title') or '未命名作业'}》{grade.get('score')}"
+                            for grade in grades[:5]
                         )
                     )
-                elif item["tool"] == "generate_learning_plan":
-                    fragments.append(
-                        "已生成学习计划："
-                        + json.dumps(output.get("daily_tasks", []), ensure_ascii=False)
-                    )
-                else:
-                    fragments.append(
-                        f"{item['tool']} 返回 {json.dumps(output, ensure_ascii=False)[:600]}"
-                    )
-            return "\n".join(fragments), "fallback"
-
-    def _direct_assignment_requirements_answer(
-        self,
-        question: str,
-        execution: List[Dict[str, Any]],
-    ) -> Optional[str]:
-        """作业要求类问题直接格式化最近作业，跳过慢速 LLM synthesis。"""
-        normalized_question = re.sub(r"\s+", "", question.lower())
-        asks_requirement = any(
-            word in normalized_question
-            for word in ("作业要求", "作业的内容", "作业内容", "要求是什么", "作业是什么", "作业是")
-        )
-        asks_latest = any(
-            word in normalized_question
-            for word in ("最新", "最近", "新布置", "刚布置", "新发布", "刚发布")
-        )
-        if not (asks_requirement or asks_latest):
-            return None
-
-        assignments: List[Dict[str, Any]] = []
-        for trace in execution:
-            if trace.get("status") != "COMPLETED":
                 continue
-            output = trace.get("output") or {}
-            if trace.get("tool") == "get_course_assignments":
-                assignments.extend(output.get("assignments") or [])
-
-        if not assignments:
-            return None
-
-        latest = max(
-            assignments,
-            key=lambda item: item.get("id") or 0,
-        )
-        title = latest.get("title") or "未命名作业"
-        description = (latest.get("description") or "暂无要求").strip()
-        detail = (latest.get("detail") or "").strip()
-        due_date = latest.get("due_date") or "未设置"
-        total_points = latest.get("total_points")
-        points_text = str(total_points) if total_points is not None else "未设置"
-        lines = [
-            f"该课程最新发布的作业是《{title}》",
-            f"作业要求：{description}",
-        ]
-        if detail:
-            lines.append(f"作业详情：{detail}")
-        lines.append(f"截止时间：{due_date}")
-        lines.append(f"总分：{points_text}")
+            if tool == "analyze_learning_gaps":
+                summary = output.get("summary")
+                average = output.get("average_percentage")
+                if summary:
+                    suffix = f"，平均完成度约 {average}%" if average is not None else ""
+                    lines.append(f"学情判断：{summary}{suffix}。")
+                continue
+            if tool == "generate_learning_plan":
+                tasks = output.get("daily_tasks") or []
+                if tasks:
+                    lines.append(
+                        "学习安排："
+                        + "；".join(
+                            f"第 {task.get('day')} 天 {task.get('focus')}"
+                            for task in tasks[:5]
+                        )
+                    )
+                continue
+            if tool == "get_course_overview":
+                course = output.get("course")
+                courses = output.get("courses") or []
+                if course:
+                    lines.append(self._format_course_brief(course))
+                elif courses:
+                    lines.append(
+                        "可见课程："
+                        + "、".join(
+                            str(course.get("name") or "未命名课程")
+                            for course in courses[:5]
+                        )
+                    )
+                continue
+            if tool == "get_course_statistics":
+                lines.append(
+                    "教学概览："
+                    f"学生 {output.get('student_count', 0)} 人，"
+                    f"作业 {output.get('assignment_count', 0)} 项，"
+                    f"待批改 {output.get('pending_grading', 0)} 份，"
+                    f"已评分 {output.get('graded_count', 0)} 份。"
+                )
         return "\n".join(lines)
 
-    def _direct_course_recommendation_answer(
-        self,
-        question: str,
-        execution: List[Dict[str, Any]],
-    ) -> Optional[str]:
-        if not self._is_course_recommendation_request(question):
-            return None
+    def _format_assignment_brief(self, assignment: Dict[str, Any]) -> str:
+        title = assignment.get("title") or "未命名作业"
+        due_date = assignment.get("due_date") or "未设置截止时间"
+        description = (assignment.get("description") or "").strip()
+        description_text = f"，要求：{description[:80]}" if description else ""
+        return f"《{title}》（截止：{due_date}{description_text}）"
 
-        courses: List[Dict[str, Any]] = []
-        for trace in execution:
-            if trace.get("status") != "COMPLETED":
-                continue
-            if trace.get("tool") != "get_course_overview":
-                continue
-            output = trace.get("output") or {}
-            if output.get("course"):
-                courses.append(output["course"])
-            courses.extend(output.get("courses") or [])
+    def _format_course_brief(self, course: Dict[str, Any]) -> str:
+        name = course.get("name") or "未命名课程"
+        schedule = course.get("schedule") or "未设置"
+        description = (course.get("description") or "暂无课程简介").strip()
+        return f"课程《{name}》：上课时间 {schedule}，简介：{description}"
 
-        if not courses:
-            return "我没有查到当前可选的已有课程，暂时不能替你推荐具体课程。"
-
-        normalized_question = re.sub(r"\s+", "", question.lower())
-        art_terms = (
-            "文艺", "艺术", "美术", "绘画", "设计", "摄影", "视觉", "创作",
-            "写作", "文学", "音乐", "唱歌", "声乐", "表演", "戏剧", "影视", "电影",
-        )
-        preference_terms = [term for term in art_terms if term in normalized_question]
-        if "文艺" in normalized_question and not preference_terms:
-            preference_terms = list(art_terms)
-        elif "文艺" in normalized_question:
-            preference_terms = list(dict.fromkeys(["文艺", *art_terms, *preference_terms]))
-
-        def score_course(course: Dict[str, Any]) -> int:
-            haystack = "".join(
-                str(course.get(key) or "").lower()
-                for key in ("name", "description", "category")
+    def _format_confirmation_step(self, step: AgentPlanStep) -> str:
+        args = step.args
+        if step.tool == "publish_assignment":
+            due_date = args.get("due_date") or "未设置截止时间"
+            total_points = args.get("total_points")
+            points_text = f"，总分 {total_points}" if total_points is not None else ""
+            return (
+                f"发布作业《{args.get('title')}》到课程 {args.get('course_id')}"
+                f"，截止时间 {due_date}{points_text}。"
             )
-            score = 0
-            for term in preference_terms:
-                if term in haystack:
-                    score += 3 if term in str(course.get("name") or "").lower() else 2
-            return score
-
-        ranked = sorted(
-            courses,
-            key=lambda item: (score_course(item), item.get("id") or 0),
-            reverse=True,
-        )
-        selected = ranked[0]
-        selected_score = score_course(selected)
-        name = selected.get("name") or "未命名课程"
-        category = selected.get("category") or "未标注类别"
-        description = (selected.get("description") or "暂无课程简介").strip()
-        schedule = selected.get("schedule") or "未设置"
-        credits = selected.get("credits")
-        credits_text = f"{credits} 学分，" if credits is not None else ""
-        reason = (
-            "它的名称、分类或简介与你提到的偏好更接近。"
-            if selected_score > 0
-            else "目前没有完全匹配“文艺类”的课程，我先从已有课程里选了一门信息最接近的。"
-        )
-        return (
-            f"我推荐你优先看《{name}》。\n"
-            f"理由：{reason}\n"
-            f"课程信息：{category}，{credits_text}上课时间 {schedule}。\n"
-            f"简介：{description}"
-        )
-
-    def _direct_submission_answer(
-        self,
-        question: str,
-        execution: List[Dict[str, Any]],
-    ) -> Optional[str]:
-        statuses: List[Dict[str, Any]] = []
-        for trace in execution:
-            if trace.get("status") != "COMPLETED":
-                continue
-            output = trace.get("output") or {}
-            statuses.extend(output.get("assignment_statuses") or [])
-            for assignment in output.get("assignments") or []:
-                if "submission_status" in assignment:
-                    statuses.append(assignment)
-        if not statuses:
-            return None
-
-        deduped: Dict[tuple[Any, Any], Dict[str, Any]] = {}
-        for item in statuses:
-            key = (item.get("course_id"), item.get("assignment_id") or item.get("id"))
-            deduped[key] = item
-        statuses = list(deduped.values())
-
-        normalized_question = re.sub(r"\s+", "", question.lower())
-        matched = [
-            item
-            for item in statuses
-            if item.get("title")
-            and re.sub(r"\s+", "", str(item["title"]).lower()) in normalized_question
-        ]
-        if matched:
-            item = max(matched, key=lambda value: len(str(value.get("title") or "")))
-            return self._format_single_submission_answer(item)
-
-        asks_missing = any(
-            word in normalized_question
-            for word in ("未交", "没交", "没提交", "待提交", "missing")
-        )
-        asks_all_done = any(
-            word in normalized_question
-            for word in ("都交", "全部交", "所有作业", "allsubmitted")
-        )
-        if asks_missing or asks_all_done:
-            missing = [
-                item
-                for item in statuses
-                if item.get("submission_status") == "NOT_SUBMITTED"
-            ]
-            if not missing:
-                return "当前可见作业都已有提交记录。"
-            titles = "、".join(f"《{item.get('title', '未命名作业')}》" for item in missing)
-            return f"还有 {len(missing)} 项作业没有提交：{titles}。"
-        return None
-
-    def _format_single_submission_answer(self, item: Dict[str, Any]) -> str:
-        title = item.get("title") or "这项作业"
-        status = item.get("submission_status") or item.get("status")
-        if status == "NOT_SUBMITTED":
-            return f"《{title}》还没有提交，当前没有你的提交记录。"
-        if status == "GRADED":
-            score = item.get("score")
-            score_text = f"，分数是 {score}" if score is not None else ""
-            return f"《{title}》已经提交并已批改{score_text}。"
-        if status == "SUBMITTED":
-            submitted_at = item.get("submitted_at")
-            time_text = f"，提交时间：{submitted_at}" if submitted_at else ""
-            return f"《{title}》已经提交，当前等待批改{time_text}。"
-        return f"《{title}》当前提交状态是 {status or '未知'}。"
+        if step.tool == "submit_assignment":
+            content = str(args.get("content") or "")
+            summary = content[:80] + ("..." if len(content) > 80 else "")
+            return f"提交作业 {args.get('assignment_id')}，内容摘要：{summary}"
+        if step.tool == "send_notification":
+            return f"发送通知给 {args.get('recipient_username')}：{args.get('title')}"
+        return step.tool
 
     async def run(
         self,
@@ -510,6 +429,40 @@ MEMORY: {json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=F
             self.user.id, session_id, course_id, limit=settings.agent_memory_load_limit
         )
         plan, planner_source = await self.plan(question, course_id, memory)
+        if plan.objective.startswith("NEEDS_CLARIFICATION:"):
+            answer = plan.objective.split(":", 1)[1].strip()
+            await self.service.update_run_plan(
+                run.id,
+                {
+                    "planner_source": planner_source,
+                    "objective": plan.objective,
+                    "steps": [],
+                    "rejected": [],
+                },
+            )
+            await self.service.log_tool_call_json(
+                run.id,
+                "agent_planner",
+                {"question": question, "assistant": "smart_education"},
+                {"source": planner_source, "plan": plan.model_dump(), "rejected": []},
+            )
+            await self.service.update_run_status(
+                run.id,
+                "NEEDS_INPUT",
+                output_summary=answer,
+            )
+            return {
+                "answer": answer,
+                "status": "NEEDS_INPUT",
+                "plan": plan.model_dump(),
+                "executed_steps": [],
+                "requires_confirmation": [],
+                "memory": {"session_id": session_id, "used_count": len(memory)},
+                "run_id": run.id,
+                "citations": [],
+                "confidence": 0.0,
+                "confirmation_required": False,
+            }
         prepared_steps: List[AgentPlanStep] = []
         rejected: List[Dict[str, Any]] = []
         for step in plan.steps:
@@ -546,9 +499,8 @@ MEMORY: {json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=F
         ]
         if pending:
             answer = (
-                "计划中包含需要确认的操作："
-                + "、".join(step.tool for step in pending)
-                + "。请确认后再次提交同一请求。"
+                "请确认以下操作，确认后我再执行：\n"
+                + "\n".join(f"- {self._format_confirmation_step(step)}" for step in pending)
             )
             await self.service.update_run_status(
                 run.id,

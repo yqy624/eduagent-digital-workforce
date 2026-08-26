@@ -206,6 +206,7 @@ class TeacherService:
             "courseId": assignment.course_id,
             "teacherId": assignment.teacher_id,
             "createdAt": assignment.created_at.isoformat() if assignment.created_at else None,
+            "attachmentPaths": assignment.attachment_paths,
             "peerReviewEnabled": assignment.peer_review_enabled,
             "submissionCount": submission_count,
             "status": self.assignment_service.assignment_status(assignment),

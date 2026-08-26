@@ -213,6 +213,7 @@ class StudentService:
                 "courseId": a.course_id,
                 "teacherId": a.teacher_id,
                 "createdAt": a.created_at.isoformat() if a.created_at else None,
+                "assignmentAttachmentPaths": a.attachment_paths,
                 "peerReviewEnabled": a.peer_review_enabled,
                 "status": self.assignment_service.assignment_status(a),
                 "submissionStatus": sub_obj.status if sub_obj else "NOT_SUBMITTED",
@@ -234,9 +235,10 @@ class StudentService:
         content: Optional[str] = None,
         file_path: Optional[str] = None,
         file_name: Optional[str] = None,
+        file_ids: Optional[List[int]] = None,
     ) -> SubmissionResponse:
         submission = await self.assignment_service.submit(
-            assignment_id, student, content, file_path, file_name
+            assignment_id, student, content, file_path, file_name, file_ids
         )
         return await self.assignment_service.to_submission_response(submission)
 
