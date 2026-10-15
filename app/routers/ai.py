@@ -1,5 +1,6 @@
 """AI 路由 — RAG 问答、学情诊断、学习计划、批改建议"""
 import json
+import logging
 import re
 import time
 from uuid import uuid4
@@ -10,9 +11,17 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.config import settings
+from app.core.models.contracts import RetrievalRequest
+from app.core.models.registry import get_retrieval_provider
 from app.middleware.auth import get_current_user, require_teacher
 from app.models.models import Assignment, Course, Enrollment, Notification, PeerReview, Submission, User
-from app.models.ai_models import AiDocumentChunk, AiGradingSuggestion, AiQaLog
+from app.models.ai_models import (
+    AiDocumentChunk,
+    AiGradingSuggestion,
+    AiQaLog,
+    RagDocument,
+)
 from app.schemas.assignment import GradeRequest
 from app.schemas.ai import (
     AgentChatRequest,
@@ -35,6 +44,8 @@ from ai.workflows.learning_plan_chain import build_learning_plan_chain, Learning
 from ai.workflows.grading_chain import build_grading_chain, GradingState
 
 router = APIRouter(prefix="/api/ai", tags=["AI 智能助手"])
+
+logger = logging.getLogger(__name__)
 
 
 async def _ensure_course_access(db: AsyncSession, course_id: int, user: User) -> Course:
@@ -133,6 +144,170 @@ async def _ensure_teacher_feedback_access(
     return suggestion
 
 
+# ============================================================
+# 检索：外部知识库优先，本地实现兜底
+# ============================================================
+#
+# 分工：外部知识库（rag-go）负责解析/切块/embedding/召回/重排，
+# edu 只负责「权限判定」与「业务语义还原」。
+#
+# 权限必须**前置收窄**：先在本课程可见文档里算出白名单，
+# 再把 doc_ids 传过去，而不是等结果回来再过滤——
+# 后者会让召回数量被动缩水，且越权内容已经在网络上流转过了。
+
+
+def _external_retrieval_enabled() -> bool:
+    return (settings.rag_backend or "").strip().lower() == "http-rag"
+
+
+def _library_name_for(course_id: int) -> str:
+    """课程到逻辑库的映射。需与知识库侧约定一致（默认 course_{id}）。"""
+    prefix = (settings.rag_library_prefix or "course_").strip()
+    return f"{prefix}{course_id}"
+
+
+async def _visible_rag_documents(
+    db: AsyncSession,
+    course_id: int,
+    user: Optional[User],
+) -> List[RagDocument]:
+    """算出该用户在本课程可见的知识库文档白名单。
+
+    规则与本地实现保持一致，但判定依据从 ``vector_id`` 正则
+    （``re.search(r":submission:(\\d+):", ...)``）换成了结构化的
+    ``submission_id`` 列——同样语义，但不再依赖字符串格式。
+    """
+    result = await db.execute(
+        select(RagDocument).where(
+            RagDocument.course_id == course_id,
+            # 只排除确定失败的；pending/processing 也要放行。
+            # 理由：知识库侧才是"哪些 chunk 已索引"的权威，edu 这里的状态
+            # 只是同步过来的快照，可能滞后。若只认 ready，新上传的文件在
+            # 状态同步完成前会整段时间检索不到，甚至永久检索不到。
+            RagDocument.ingest_status != "failed",
+        )
+    )
+    documents = list(result.scalars().all())
+
+    if user is None or user.role != "STUDENT":
+        # 教师（课程 owner）与 ADMIN 可见本课程全部资料
+        return documents
+
+    own_submission_ids = set(
+        (
+            await db.execute(
+                select(Submission.id)
+                .join(Assignment, Assignment.id == Submission.assignment_id)
+                .where(
+                    Assignment.course_id == course_id,
+                    Submission.student_id == user.id,
+                )
+            )
+        ).scalars().all()
+    )
+    review_submission_ids = set(
+        (
+            await db.execute(
+                select(PeerReview.target_submission_id)
+                .join(Submission, Submission.id == PeerReview.target_submission_id)
+                .join(Assignment, Assignment.id == Submission.assignment_id)
+                .where(
+                    Assignment.course_id == course_id,
+                    PeerReview.reviewer_id == user.id,
+                )
+            )
+        ).scalars().all()
+    )
+    allowed_submission_ids = own_submission_ids | review_submission_ids
+
+    return [
+        doc
+        for doc in documents
+        # submission_id 为空 = 课程资料/作业附件，全班可见；
+        # 非空 = 学生提交，仅提交者与互评人可见
+        if doc.submission_id is None or doc.submission_id in allowed_submission_ids
+    ]
+
+
+async def _search_via_external(
+    db: AsyncSession,
+    course_id: int,
+    question: str,
+    user: Optional[User],
+    max_citations: int,
+) -> tuple[Optional[List[Dict[str, Any]]], str]:
+    """走外部知识库检索。
+
+    返回值语义（调用方据此决定是否回落本地）：
+    - ``(None, 原因)``  外置不可用／本课程尚未入库 → 应回落本地
+    - ``(列表, "")``    外置正常回答，列表可能为空（确实没有相关材料）
+    """
+    documents = await _visible_rag_documents(db, course_id, user)
+    if not documents:
+        # 该课程还没往知识库投递过 → 说明还没迁移，交给本地实现，
+        # 这样外置可以按课程逐步灰度，而不是一刀切
+        return None, "no-documents-in-library"
+
+    by_doc_id = {doc.rag_doc_id: doc for doc in documents}
+
+    provider = get_retrieval_provider("http-rag")
+    request = RetrievalRequest(
+        query=question,
+        libraries=[_library_name_for(course_id)],
+        doc_ids=list(by_doc_id),
+        text_top_k=min(20, max(1, max_citations * 3)),
+    )
+    result = await provider.invoke(request)
+    if not result.ok or result.data is None:
+        error = result.error
+        return None, f"{error.kind.value}: {error.message}" if error else "unknown-error"
+
+    # 图片按文档归组，挂到对应引用上，供图文回答与 PPT 插图消费
+    images_by_doc: Dict[str, List[Dict[str, Any]]] = {}
+    for image in result.data.images:
+        images_by_doc.setdefault(image.doc_id, []).append(
+            {
+                "image_id": image.image_id,
+                "url": image.image_url,
+                "caption": image.caption,
+                "score": image.score,
+            }
+        )
+
+    citations: List[Dict[str, Any]] = []
+    for index, hit in enumerate(result.data.hits):
+        if len(citations) >= max_citations:
+            break
+        document = by_doc_id.get(hit.doc_id)
+        if document is None:
+            # 返回了白名单之外的文档：直接丢弃，不做"事后过滤后的兜底"
+            continue
+        citations.append(
+            {
+                # document_id 语义是"edu 侧文件 id"，知识库的 doc_id 另放
+                # rag_doc_id —— 两者不是一回事，混用会让前端跳转失效
+                "document_id": document.file_id,
+                "rag_doc_id": hit.doc_id,
+                # 外置检索不再有本地 chunk 序号，按召回顺序编号，
+                # 保证下游 prompt 拼装与前端的 chunk_index 字段不缺失
+                "chunk_index": index,
+                "content": (hit.snippet or "")[:800],
+                # score 语义随底层向量库与检索模式变化，**这里不做阈值过滤**，
+                # 只用它排序（外部已排序），避免把本地标定的 0.18 误用过来
+                "score": hit.score,
+                "similarity": hit.score,
+                "source": document.source,
+                "file_name": document.filename or document.source,
+                "source_type": document.source_type,
+                "page_start": hit.page_start,
+                "page_end": hit.page_end,
+                "locator_status": hit.locator_status,
+                "images": images_by_doc.get(hit.doc_id, []),
+            }
+        )
+    return citations, ""
+
+
 async def _search_course_chunks(
     db: AsyncSession,
     course_id: int,
@@ -141,6 +316,27 @@ async def _search_course_chunks(
     max_citations: int = 5,
     threshold: float = 0.18,
 ) -> List[Dict[str, Any]]:
+    """检索课程材料，返回引用列表。
+
+    ``RAG_BACKEND=http-rag`` 时优先走外部知识库；外部不可用或该课程尚未
+    入库时按 ``rag_fallback_to_local`` 决定是否回落到本地实现。
+
+    ``threshold`` 只对本地实现生效：外置检索的 score 语义由底层向量库决定，
+    不可跨库比较，因此外部路径只用它排序、不套阈值。
+    """
+    if _external_retrieval_enabled():
+        citations, reason = await _search_via_external(
+            db, course_id, question, user, max_citations
+        )
+        if citations is not None:
+            return citations
+        if not settings.rag_fallback_to_local:
+            # 明确不允许降级：宁可返回空，也不要静默换一套检索口径
+            return []
+        logger.warning(
+            "外部检索不可用（%s），课程 %s 回落到本地实现", reason, course_id
+        )
+
     result = await db.execute(
         select(AiDocumentChunk)
         .where(AiDocumentChunk.course_id == course_id, AiDocumentChunk.content.isnot(None))
@@ -639,6 +835,85 @@ def _build_course_material_status(citations: List[Dict[str, Any]], business_cont
     return "本次没有命中已索引课程资料，也没有可用课程基础信息。"
 
 
+@router.post("/agent/chat", include_in_schema=False)
+async def agent_runtime_chat(
+    req: AgentChatRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Execute a bounded Agent: planning, tools, memory, and synthesis.
+
+    正式入口为 POST /api/knowledge/agent/chat（见 app/routers/knowledge.py），
+    本函数是它的实现体；此处同时保留 /api/ai/agent/chat 直连路径，但不进 OpenAPI 清单。
+    """
+    question = req.question.strip()
+    session_id = req.session_id or str(uuid4())
+    runtime = None
+    service = AiToolService(db)
+    try:
+        runtime = AgentRuntime(
+            db=db,
+            user=user,
+            service=service,
+            retrieve_materials=lambda selected_course_id, material_question: (
+                _search_course_chunks(db, selected_course_id, material_question, user=user)
+            ),
+        )
+        result = await runtime.run(
+            question=question,
+            course_id=req.course_id,
+            session_id=session_id,
+            confirm=req.confirm,
+        )
+        memory = result.get("memory") or {}
+        return ApiResponse.ok(
+            data=AgentChatResponse(
+                answer=result["answer"],
+                mode="smart_education",
+                citations=result.get("citations", []),
+                confidence=result.get("confidence", 0.0),
+                run_id=result.get("run_id"),
+                memory_count=memory.get("used_count", 0),
+                status=result.get("status", "COMPLETED"),
+                plan=result.get("plan", {}),
+                executed_steps=result.get("executed_steps", []),
+                requires_confirmation=result.get("requires_confirmation", []),
+                memory=memory,
+                confirmation_required=result.get("confirmation_required", False),
+            )
+        )
+    except Exception as exc:
+        if runtime is not None and runtime.active_run_id is not None:
+            await service.fail_run(
+                runtime.active_run_id,
+                error=str(exc),
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Agent runtime failed: {exc}",
+        )
+
+
+async def list_agent_tools(user: User, db: AsyncSession) -> ApiResponse:
+    """列出当前登录角色可调用的 Agent 工具（只读）。
+
+    数据源是 ``AgentToolRegistry.specs()`` —— 与运行时真正执行工具时用的是
+    同一份注册表，因此这里展示的清单不会与运行行为脱节。构造注册表不需要 LLM，
+    所以即使模型未配置，本接口依然可用。
+    """
+    from ai.agents.tool_registry import AgentToolRegistry
+
+    registry = AgentToolRegistry(db, user, AiToolService(db))
+    specs = registry.specs()
+    return ApiResponse.ok(
+        data={
+            "role": user.role,
+            "count": len(specs),
+            "tools": specs,
+        }
+    )
+
+
 @router.post("/courses/{course_id}/documents/index")
 async def index_course_documents(
     course_id: int,
@@ -748,218 +1023,6 @@ async def course_qa(
         latency = int((time.time() - start) * 1000)
         await service.fail_run(run.id, error=str(e), latency_ms=latency)
         return ApiResponse.error(message=f"AI 问答失败: {str(e)}", code=500)
-
-
-@router.post("/agent/chat-legacy", include_in_schema=False)
-async def agent_chat(
-    req: AgentChatRequest,
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-):
-    """统一 Agent 对话：RAG、业务 API、综合建议、校园学习问答。"""
-    question = req.question.strip()
-    course_id = req.course_id
-    mode = "smart_education"
-    intent = _classify_agent_mode(question, course_id)
-    mode_config = {
-        "label": "智慧教育机器人",
-        "needs_rag": intent in {"rag", "hybrid"},
-        "needs_business": intent in {"business", "hybrid"},
-    }
-    memory = await _collect_agent_memory(db, user, course_id)
-    service = AiToolService(db)
-    start = time.time()
-    run = await service.create_run(
-        user_id=user.id,
-        role=user.role,
-        workflow="agent_chat",
-        input_summary=f"智慧教育机器人: {question[:120]}",
-    )
-
-    business_context: Optional[Dict[str, Any]] = None
-    citations: List[Dict[str, Any]] = []
-    confidence = 0.0
-
-    try:
-        if mode_config["needs_business"]:
-            tool_start = time.time()
-            business_context = await _collect_agent_business_context(db, user, course_id)
-            await service.log_tool_call_json(
-                run.id,
-                "business_api_context",
-                {"course_id": course_id, "role": user.role},
-                business_context,
-                latency_ms=int((time.time() - tool_start) * 1000),
-            )
-
-        if mode_config["needs_rag"] and course_id:
-            await _ensure_course_access(db, course_id, user)
-            tool_start = time.time()
-            citations = await _search_course_chunks(db, course_id, question, user=user)
-            confidence = citations[0]["similarity"] if citations else 0.0
-            await service.log_tool_call_json(
-                run.id,
-                "retrieve_course_chunks",
-                {"course_id": course_id, "question": question, "threshold": 0.18, "max_citations": 5},
-                {"hit_count": len(citations), "citations": citations},
-                latency_ms=int((time.time() - tool_start) * 1000),
-            )
-        elif mode_config["needs_rag"] and not course_id:
-            answer = "请先选择一门课程，再提问课程资料相关问题。"
-            latency = int((time.time() - start) * 1000)
-            await service.log_qa(
-                course_id=0,
-                user_id=user.id,
-                question=question,
-                answer=answer,
-                citations="[]",
-                confidence=0.0,
-                latency_ms=latency,
-            )
-            await service.complete_run(run.id, output_summary=answer, latency_ms=latency)
-            return ApiResponse.ok(data=AgentChatResponse(
-                answer=answer,
-                mode=mode,
-                citations=[],
-                confidence=0.0,
-                run_id=run.id,
-                memory_count=len(memory),
-            ))
-
-        if mode_config["needs_rag"] and course_id and not citations and not ((business_context or {}).get("courses") or []):
-            answer = "当前课程资料无法支持该问题。你可以先让教师索引课程资料，或换一个更贴近已上传资料的问题。"
-        else:
-            rag_context = _build_rag_context(citations) if citations else "无"
-            api_context = _json_context(business_context or {}) if business_context else "无"
-            course_material_status = _build_course_material_status(citations, business_context)
-            try:
-                llm = get_llm(temperature=0.25)
-                memory_context = _build_agent_memory_context(memory)
-                prompt = f"""你是 EduAgent 的校园学习对话助手。你正在和一名{('学生' if user.role == 'STUDENT' else '教师')}连续对话。
-当前对话类型：{mode_config['label']}。
-
-回答规则：
-1. 直接回答当前问题，不要让用户重新解释已经在历史对话中说明过的内容。
-2. 保持自然对话风格：先给结论，再给必要的解释或步骤；信息不足时只追问最关键的一点。
-3. 课程资料类问题优先依据 RAG_CONTEXT；作业提交类问题优先依据 BUSINESS_API_CONTEXT。
-4. 教学建议可以结合课程资料、教学数据和历史对话，但不能编造系统中没有的数据。
-5. 其他问题可以直接回答；不要假装实时联网，也不要声称查到了互联网最新信息。
-6. 历史对话只用于理解用户偏好、学习目标和上下文；若与当前业务数据冲突，以当前业务数据为准。
-7. 课程资料状态会说明本次是否命中索引资料；没有命中资料时，不要编造上传文档内容。
-8. 业务接口/API 数据只是内部依据，不是最终回答；必须先判断用户真实意图，再综合生成内容，不要把接口结果、JSON 字段或工具名称原样展示给用户。
-9. 当用户是在请求“帮我想/设计/生成”内容时，已有作业或课程数据只能作为参考，不要改成罗列已有记录，除非用户明确要求查看列表。
-
-当前问题：
-{question}
-
-历史对话记忆：
-{memory_context}
-
-课程资料状态：
-{course_material_status}
-
-业务数据：
-{api_context}
-
-课程资料：
-{rag_context}
-
-请用中文回答，像一位耐心、连续跟进的老师，保持具体、简洁、可执行。"""
-                llm_start = time.time()
-                response = await llm.ainvoke(prompt)
-                answer = response.content if hasattr(response, "content") else str(response)
-                await service.log_tool_call_json(
-                    run.id,
-                    "llm_answer",
-                {"assistant": mode, "intent": intent, "question": question},
-                    {"answer": answer},
-                    latency_ms=int((time.time() - llm_start) * 1000),
-                )
-            except Exception as e:
-                answer = _fallback_agent_answer(question, business_context, citations)
-                await service.log_tool_call_json(
-                    run.id,
-                    "llm_answer",
-                    {"assistant": mode, "intent": intent, "question": question},
-                    {"fallback_answer": answer},
-                    error=str(e),
-                )
-
-        latency = int((time.time() - start) * 1000)
-        await service.log_qa(
-            course_id=course_id or 0,
-            user_id=user.id,
-            question=question,
-            answer=answer,
-            citations=json.dumps(citations, ensure_ascii=False),
-            confidence=confidence,
-            latency_ms=latency,
-        )
-        await service.complete_run(run.id, output_summary=answer[:500], latency_ms=latency)
-        return ApiResponse.ok(data=AgentChatResponse(
-            answer=answer,
-            mode=mode,
-            citations=citations,
-            confidence=confidence,
-            run_id=run.id,
-            memory_count=len(memory),
-        ))
-    except Exception as e:
-        latency = int((time.time() - start) * 1000)
-        await service.fail_run(run.id, error=str(e), latency_ms=latency)
-        return ApiResponse.error(message=f"Agent 对话失败: {str(e)}", code=500)
-
-
-@router.post("/agent/chat")
-async def agent_runtime_chat(
-    req: AgentChatRequest,
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-):
-    """Execute a bounded Agent: planning, tools, memory, and synthesis."""
-    question = req.question.strip()
-    session_id = req.session_id or str(uuid4())
-    runtime = None
-    service = AiToolService(db)
-    try:
-        runtime = AgentRuntime(
-            db=db,
-            user=user,
-            service=service,
-            retrieve_materials=lambda selected_course_id, material_question: (
-                _search_course_chunks(db, selected_course_id, material_question, user=user)
-            ),
-        )
-        result = await runtime.run(
-            question=question,
-            course_id=req.course_id,
-            session_id=session_id,
-            confirm=req.confirm,
-        )
-        memory = result.get("memory") or {}
-        return ApiResponse.ok(
-            data=AgentChatResponse(
-                answer=result["answer"],
-                mode="smart_education",
-                citations=result.get("citations", []),
-                confidence=result.get("confidence", 0.0),
-                run_id=result.get("run_id"),
-                memory_count=memory.get("used_count", 0),
-                status=result.get("status", "COMPLETED"),
-                plan=result.get("plan", {}),
-                executed_steps=result.get("executed_steps", []),
-                requires_confirmation=result.get("requires_confirmation", []),
-                memory=memory,
-                confirmation_required=result.get("confirmation_required", False),
-            )
-        )
-    except Exception as exc:
-        if runtime is not None and runtime.active_run_id is not None:
-            await service.fail_run(
-                runtime.active_run_id,
-                error=str(exc),
-            )
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Agent runtime failed: {exc}")
 
 
 @router.post("/students/{student_id}/diagnosis")
@@ -1092,23 +1155,6 @@ async def generate_learning_plan(
         return ApiResponse.error(message=f"生成学习计划失败: {str(e)}", code=500)
 
 
-@router.post("/me/learning-plan")
-async def generate_my_learning_plan(
-    course_id: int = Query(..., description="课程 ID"),
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-):
-    """当前学生重新生成学习计划。"""
-    if user.role != "STUDENT":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only students can use this endpoint")
-    return await generate_learning_plan(
-        student_id=user.id,
-        course_id=course_id,
-        user=user,
-        db=db,
-    )
-
-
 @router.post("/teacher/submissions/{submission_id}/grade-suggestion")
 async def grade_suggestion(
     submission_id: int,
@@ -1223,7 +1269,7 @@ async def get_run_tool_calls(
     return ApiResponse.ok(data=calls)
 
 
-@router.post("/feedback/{suggestion_id}/approve")
+# 由 app/routers/review.py 的 /api/review/feedback/{id}/approve 包装暴露，不再单独注册路由
 async def approve_feedback(
     suggestion_id: int,
     user: User = Depends(require_teacher),
@@ -1288,7 +1334,7 @@ async def update_feedback(
     }, message="AI 建议已修改并应用")
 
 
-@router.post("/feedback/{suggestion_id}/regenerate")
+# 由 app/routers/review.py 的 /api/review/feedback/{id}/regenerate 包装暴露，不再单独注册路由
 async def regenerate_feedback(
     suggestion_id: int,
     user: User = Depends(require_teacher),

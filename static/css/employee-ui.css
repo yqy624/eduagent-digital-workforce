@@ -1,0 +1,418 @@
+/* ==========================================================================
+   employee-ui.css —— 数字员工平台 · 通用样式层（主题令牌 + emp- 组件）
+   --------------------------------------------------------------------------
+   设计基底：hifi.css 的组件与令牌（不改既有令牌与组件）。
+   本文件只做两件事：
+     1. 注册第 5 套品牌主题 [data-theme="edu"]（沿用平台既有身份色：
+        墨蓝 ink #0e1826 / 纸灰 paper #eaeef3 / 琥珀 signal #e0a021 / 感知青 scan #0e8f9c）
+     2. 补充本平台专有组件的布局类（统一 emp- 前缀，避免与组件库冲突）
+
+   【与 employee-page.css 的分工】
+     本文件 = 可复用的「内容层」，任何页面（原型 / 桌面应用 / 未来的真实前端）都可以引。
+     本文件【不】包含任何「宿主滚动方案」——那属于页面外壳的职责，见 employee-page.css
+     与 desktop.css。这样同一套组件既能跑在原型宿主里，也能跑在桌面应用外壳里。
+   ========================================================================== */
+
+/* ==========================================================================
+   1. 品牌主题：edu（智慧教育平台）
+   ========================================================================== */
+[data-theme="edu"] {
+  --brand-25: #f2f6fd; --brand-50: #e8f0fd; --brand-100: #d0e0fa;
+  --brand-200: #a7c4f2; --brand-300: #739fd8; --brand-400: #4a7cc4;
+  --brand-500: #2f6bd8; --brand-600: #2557b8; --brand-700: #1d468f;
+  --brand-800: #17386f; --brand-900: #122a53;
+  --on-brand: #ffffff;
+
+  --accent: #e0a021;          /* 琥珀信号色：机器发现 / 待处置 */
+  --scan: #0e8f9c;            /* 感知青：仅用于视觉识别相关标记 */
+
+  --bg: #eaeef3; --bg-subtle: #e2e7ee;
+  --surface: #ffffff; --surface-2: #f6f8fb; --surface-3: #eef1f6;
+  --surface-inset: #eaedf3; --surface-raised: #ffffff;
+  --border: #d8dfe9; --border-strong: #bfc9d8; --divider: #e6ebf2;
+
+  --text-1: #0e1826; --text-2: #2c3a50; --text-3: #55647d; --text-4: #79879e;
+  --text-inverse: #ffffff;
+
+  --success: #17936a; --success-bg: #e4f4ed; --success-border: #b6e0cf;
+  --warning: #c9770a; --warning-bg: #fcf0dd; --warning-border: #f0d4a3;
+  --danger: #d0443f; --danger-bg: #fbe9e8; --danger-border: #f2c3c1;
+  --info: #2f6bd8; --info-bg: #e8f0fd; --info-border: #c2d6f6;
+
+  --radius-xs: 4px; --radius-sm: 5px; --radius-md: 7px;
+  --radius-lg: 10px; --radius-xl: 14px; --radius-full: 999px;
+
+  --shadow-1: 0 1px 2px rgba(14, 24, 38, .06);
+  --shadow-2: 0 4px 14px rgba(14, 24, 38, .10);
+  --shadow-3: 0 18px 48px rgba(14, 24, 38, .18);
+  --shadow-4: 0 26px 64px rgba(14, 24, 38, .22);
+  --shadow-brand: 0 6px 16px rgba(47, 107, 216, .26);
+
+  --grad-brand: linear-gradient(135deg, #2f6bd8, #1d468f);
+  --glass: rgba(255, 255, 255, .84);
+  --illus-1: #e8f0fd; --illus-2: #d0e0fa; --illus-3: #a7c4f2;
+}
+.theme-dot[data-theme="edu"] { background: linear-gradient(135deg, #2f6bd8, #e0a021); }
+
+/* ==========================================================================
+   2. 页头与通用块
+   ========================================================================== */
+.emp-head {
+  display: flex; align-items: flex-start; gap: var(--sp-4);
+  flex-wrap: wrap; margin-bottom: var(--sp-5);
+}
+.emp-head-main { flex: 1; min-width: 260px; }
+.emp-head h2 { margin: 0 0 4px; font-size: var(--fs-xl); font-weight: var(--fw-semibold); letter-spacing: -.01em; }
+.emp-head .emp-desc { font-size: var(--fs-sm); color: var(--text-3); max-width: 74ch; }
+.emp-head-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.emp-inner { max-width: 1200px; }
+
+.emp-section { margin-top: var(--sp-6); }
+.emp-section-hd {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin-bottom: var(--sp-3); flex-wrap: wrap;
+}
+.emp-section-hd h3 { margin: 0; font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
+.emp-section-hd .emp-hint { font-size: var(--fs-xs); color: var(--text-4); }
+
+.emp-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-4); }
+.emp-cols-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+.emp-cols-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-4); }
+.emp-cols-chat { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--sp-4); align-items: start; }
+.emp-cols-side { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--sp-4); align-items: start; }
+/* 自适应网格：列数随可用宽度变化，用于「数量不固定」的卡片组（如 5 名员工） */
+.emp-grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: var(--sp-4); }
+
+/* ==========================================================================
+   3. 数字员工卡片
+   ========================================================================== */
+.emp-card {
+  position: relative; display: flex; flex-direction: column; gap: var(--sp-3);
+  padding: var(--sp-4); background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  transition: box-shadow var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out);
+}
+.emp-card:hover { box-shadow: var(--shadow-3); transform: translateY(-3px); }
+.emp-card.is-active { border-color: var(--brand-300); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-500) 14%, transparent); }
+
+.emp-card-top { display: flex; align-items: flex-start; gap: var(--sp-3); }
+.emp-avatar {
+  position: relative; flex: none; display: grid; place-items: center;
+  width: 42px; height: 42px; border-radius: var(--radius-lg);
+  background: var(--grad-brand); color: #fff; box-shadow: var(--shadow-brand);
+}
+.emp-avatar.emp-a2 { background: linear-gradient(135deg, #c9770a, #a35d05); box-shadow: 0 6px 16px rgba(201, 119, 10, .28); }
+.emp-avatar.emp-a3 { background: linear-gradient(135deg, #0e8f9c, #0b6f79); box-shadow: 0 6px 16px rgba(14, 143, 156, .26); }
+.emp-avatar.emp-a4 { background: linear-gradient(135deg, #7a5cd6, #5b41ad); box-shadow: 0 6px 16px rgba(122, 92, 214, .26); }
+.emp-avatar.emp-a5 { background: linear-gradient(135deg, #17936a, #0f7051); box-shadow: 0 6px 16px rgba(23, 147, 106, .26); }
+.emp-avatar-lg { width: 54px; height: 54px; border-radius: var(--radius-xl); }
+/* 在线状态点 */
+.emp-dot {
+  position: absolute; right: -2px; bottom: -2px; width: 11px; height: 11px;
+  border-radius: 50%; border: 2px solid var(--surface); background: var(--text-4);
+}
+.emp-dot.on { background: var(--success); }
+.emp-dot.busy { background: var(--accent, #e0a021); }
+.emp-dot.wait { background: var(--warning); }
+.emp-dot.off { background: var(--text-4); }
+
+.emp-card-name { font-size: var(--fs-base); font-weight: var(--fw-semibold); }
+.emp-card-code { font-size: var(--fs-xs); color: var(--text-4); font-family: var(--font-mono); }
+.emp-card-role { font-size: var(--fs-sm); color: var(--text-2); line-height: var(--lh-snug); }
+
+.emp-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.emp-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: var(--radius-full);
+  font-size: var(--fs-2xs); font-family: var(--font-mono);
+  background: var(--surface-3); color: var(--text-2); border: 1px solid var(--border);
+}
+.emp-chip.is-accent { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning); }
+.emp-chip.is-scan { background: #e2f3f5; border-color: #b6e1e6; color: var(--scan, #0e8f9c); }
+.emp-chip.is-ok { background: var(--success-bg); border-color: var(--success-border); color: var(--success); }
+
+.emp-kv { display: grid; grid-template-columns: auto 1fr; gap: 6px var(--sp-3); font-size: var(--fs-xs); }
+.emp-kv dt { color: var(--text-4); white-space: nowrap; }
+.emp-kv dd { margin: 0; color: var(--text-2); }
+
+/* 负载条 */
+.emp-load { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); color: var(--text-4); }
+.emp-load .progress { flex: 1; }
+
+/* ==========================================================================
+   4. 协作链路（流水线 / 事件流）
+   ========================================================================== */
+.emp-flow { display: flex; align-items: stretch; gap: var(--sp-2); flex-wrap: wrap; }
+.emp-flow-node {
+  flex: 1 1 150px; min-width: 140px; display: flex; flex-direction: column; gap: 6px;
+  padding: var(--sp-3); border-radius: var(--radius-md);
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.emp-flow-node b { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+.emp-flow-node span { font-size: var(--fs-xs); color: var(--text-3); }
+.emp-flow-node.is-gate { background: var(--warning-bg); border-color: var(--warning-border); }
+.emp-flow-node.is-vision { background: #e2f3f5; border-color: #b6e1e6; }
+.emp-flow-arrow { display: grid; place-items: center; color: var(--text-4); flex: none; }
+
+/* 竖直链路 */
+.emp-pipe { display: flex; flex-direction: column; gap: 0; }
+.emp-pipe-item { display: flex; gap: var(--sp-3); }
+.emp-pipe-rail { flex: none; width: 26px; display: flex; flex-direction: column; align-items: center; }
+.emp-pipe-mark {
+  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--brand-50); color: var(--brand-600); flex: none;
+}
+.emp-pipe-mark.done { background: var(--success-bg); color: var(--success); }
+.emp-pipe-mark.gate { background: var(--warning-bg); color: var(--warning); }
+.emp-pipe-mark.wait { background: var(--surface-3); color: var(--text-4); }
+.emp-pipe-line { flex: 1; width: 2px; background: var(--divider); margin: 4px 0; min-height: 18px; }
+.emp-pipe-body { flex: 1; padding-bottom: var(--sp-4); min-width: 0; }
+.emp-pipe-body .pt { font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+.emp-pipe-body .pd { font-size: var(--fs-xs); color: var(--text-3); margin-top: 2px; }
+
+/* ==========================================================================
+   5. 协作台（对话）
+   ========================================================================== */
+.emp-chat { display: flex; flex-direction: column; min-height: 560px; }
+.emp-chat-head {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding-bottom: var(--sp-3); border-bottom: 1px solid var(--divider); flex-wrap: wrap;
+}
+.emp-chat-stream { flex: 1; display: flex; flex-direction: column; gap: var(--sp-5); padding: var(--sp-5) 0; }
+.emp-turn { display: flex; gap: var(--sp-3); }
+.emp-turn-user { justify-content: flex-end; }
+.emp-bubble-user {
+  max-width: 76%; padding: var(--sp-3) var(--sp-4);
+  background: var(--brand-500); color: #fff;
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-lg);
+  font-size: var(--fs-sm); line-height: var(--lh-normal);
+}
+.emp-turn-bot { align-items: flex-start; }
+.emp-bot-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.emp-bot-meta { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); color: var(--text-4); flex-wrap: wrap; }
+.emp-bot-text { font-size: var(--fs-sm); line-height: var(--lh-loose); color: var(--text-1); }
+.emp-bot-text p { margin: 0 0 8px; }
+
+/* 计划与工具调用轨迹 */
+.emp-trace {
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface-2); overflow: hidden;
+}
+.emp-trace-hd {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3); font-size: var(--fs-xs); color: var(--text-3);
+  border-bottom: 1px solid var(--divider); cursor: pointer; user-select: none;
+}
+.emp-trace-hd b { font-weight: var(--fw-semibold); color: var(--text-2); }
+.emp-trace-bd { padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2); }
+.emp-step {
+  display: grid; grid-template-columns: 20px minmax(0, 1fr) auto;
+  gap: var(--sp-2); align-items: start; font-size: var(--fs-xs);
+}
+.emp-step .si { display: grid; place-items: center; color: var(--success); margin-top: 1px; }
+.emp-step.is-fail .si { color: var(--danger); }
+.emp-step.is-wait .si { color: var(--warning); }
+.emp-step .sn { font-family: var(--font-mono); color: var(--text-2); font-weight: var(--fw-medium); }
+.emp-step .sr { color: var(--text-3); margin-top: 1px; }
+.emp-step .sl { font-family: var(--font-num); color: var(--text-4); white-space: nowrap; }
+
+/* 引用 */
+.emp-cites { display: flex; flex-wrap: wrap; gap: 6px; }
+.emp-cite {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: var(--radius-full);
+  font-size: var(--fs-2xs); background: var(--info-bg);
+  border: 1px solid var(--info-border); color: var(--info);
+  cursor: pointer; transition: background var(--dur-1);
+}
+.emp-cite:hover { background: color-mix(in srgb, var(--info-bg) 70%, var(--info) 12%); }
+.emp-cite .cn { font-family: var(--font-mono); opacity: .75; }
+
+/* 人工 Gate */
+.emp-gate {
+  display: flex; gap: var(--sp-3); align-items: flex-start;
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-md);
+  background: var(--warning-bg); border: 1px solid var(--warning-border);
+}
+.emp-gate .gi { color: var(--warning); flex: none; margin-top: 1px; }
+.emp-gate b { font-size: var(--fs-sm); color: var(--text-1); }
+.emp-gate p { margin: 3px 0 0; font-size: var(--fs-xs); color: var(--text-2); line-height: var(--lh-snug); }
+
+/* 产出物 */
+.emp-artifact {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3); border-radius: var(--radius-md);
+  background: var(--surface); border: 1px solid var(--border);
+  transition: border-color var(--dur-2), box-shadow var(--dur-2);
+}
+.emp-artifact:hover { border-color: var(--brand-300); box-shadow: var(--shadow-2); }
+.emp-artifact .ai {
+  flex: none; display: grid; place-items: center; width: 34px; height: 34px;
+  border-radius: var(--radius-md); background: var(--brand-50); color: var(--brand-600);
+}
+
+/* 输入区 */
+.emp-composer {
+  border-top: 1px solid var(--divider); padding-top: var(--sp-4);
+  display: flex; flex-direction: column; gap: var(--sp-2);
+}
+.emp-composer-row { display: flex; gap: var(--sp-2); align-items: flex-end; }
+.emp-composer textarea { flex: 1; resize: none; min-height: 74px; }
+.emp-quick { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ==========================================================================
+   6. 事件流 / 告警
+   ========================================================================== */
+.emp-event {
+  display: flex; gap: var(--sp-3); align-items: flex-start;
+  padding: var(--sp-3); border-radius: var(--radius-md);
+  background: var(--surface); border: 1px solid var(--border);
+}
+.emp-event .ev-bar { flex: none; width: 3px; align-self: stretch; border-radius: 2px; background: var(--text-4); }
+.emp-event.sev-critical .ev-bar { background: var(--danger); }
+.emp-event.sev-warning .ev-bar { background: var(--warning); }
+.emp-event.sev-info .ev-bar { background: var(--info); }
+.emp-event .ev-main { flex: 1; min-width: 0; }
+.emp-event .ev-title { font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+.emp-event .ev-desc { font-size: var(--fs-xs); color: var(--text-3); margin-top: 2px; }
+.emp-event .ev-meta { font-size: var(--fs-2xs); color: var(--text-4); font-family: var(--font-mono); white-space: nowrap; }
+
+.emp-conf {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-num); font-size: var(--fs-2xs);
+  padding: 1px 6px; border-radius: var(--radius-xs);
+  background: var(--surface-3); color: var(--text-2);
+}
+.emp-conf.hi { background: var(--success-bg); color: var(--success); }
+.emp-conf.mid { background: var(--warning-bg); color: var(--warning); }
+.emp-conf.lo { background: var(--danger-bg); color: var(--danger); }
+
+/* 检测框：视觉结果的示意（纯 CSS，无外链） */
+.emp-bbox {
+  position: relative; border-radius: var(--radius-md); overflow: hidden;
+  background: linear-gradient(135deg, #24313f, #16202b);
+}
+.emp-bbox .bx {
+  position: absolute; border: 1.5px solid var(--accent, #e0a021); border-radius: 3px;
+}
+.emp-bbox .bx i {
+  position: absolute; top: -15px; left: -1.5px; font-style: normal;
+  font-size: 9px; padding: 0 4px; border-radius: 2px 2px 0 0; white-space: nowrap;
+  background: var(--accent, #e0a021); color: #201500; font-family: var(--font-mono);
+}
+.emp-bbox .bx.b2 { border-color: #4ec9b0; }
+.emp-bbox .bx.b2 i { background: #4ec9b0; color: #04231d; }
+.emp-bbox .bx.b3 { border-color: #ef6b6b; }
+.emp-bbox .bx.b3 i { background: #ef6b6b; color: #2a0808; }
+
+/* ==========================================================================
+   7. 记忆 / 规则
+   ========================================================================== */
+.emp-mem {
+  display: flex; flex-direction: column; gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-md);
+  background: var(--surface); border: 1px solid var(--border);
+}
+.emp-mem-top { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.emp-mem-top b { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+.emp-mem-body { font-size: var(--fs-xs); color: var(--text-2); line-height: var(--lh-snug); }
+.emp-mem-src { font-size: var(--fs-2xs); color: var(--text-4); font-family: var(--font-mono); }
+
+/* ==========================================================================
+   8. 总览：组织带
+   ========================================================================== */
+.emp-band {
+  display: flex; align-items: center; gap: var(--sp-4);
+  padding: var(--sp-4); border-radius: var(--radius-lg);
+  background: var(--surface); border: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.emp-band .bb { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.emp-band .bb b { font-size: var(--fs-md); font-weight: var(--fw-semibold); }
+.emp-band .bb span { font-size: var(--fs-xs); color: var(--text-4); }
+.emp-band .bdiv { width: 1px; align-self: stretch; background: var(--divider); }
+
+/* 指挥台顶部实时条 */
+.emp-live {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4); border-radius: var(--radius-full);
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: var(--fs-xs); color: var(--text-3); flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   9. 响应式（容器查询，相对 .app；与浏览器窗口宽度无关）
+   --------------------------------------------------------------------------
+   断点：桌面 ≥1025 / 平板 721–1024 / 移动 ≤720。
+   注意：这是「组件自适应」能力，属于内容层，因此留在本文件。
+   桌面端外壳（desktop.css）通过给 .app 设 min-width 让这些断点永不触发，
+   无需在这里做任何条件编译。
+   ========================================================================== */
+@container app (max-width: 1024px) {
+  .emp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .emp-cols-2, .emp-cols-3, .emp-cols-chat, .emp-cols-side { grid-template-columns: minmax(0, 1fr); }
+  .emp-grid-auto { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+}
+@container app (max-width: 720px) {
+  .emp-stats { grid-template-columns: minmax(0, 1fr); }
+  .emp-head { flex-direction: column; }
+  .emp-bubble-user { max-width: 92%; }
+  .emp-flow { flex-direction: column; }
+  .emp-flow-arrow { transform: rotate(90deg); }
+}
+
+/* ==========================================================================
+   10. 与组件库的少量补齐（均为新增，未修改 hifi.css 既有规则）
+   ========================================================================== */
+/* 视觉类图标块：沿用「感知青」，与琥珀信号色区分 */
+.stat-icon.is-scan { background: #e2f3f5; color: var(--scan, #0e8f9c); }
+
+/* 侧栏角标靠右 */
+.sidebar .nav-item .badge { flex: none; }
+
+/* 顶栏实时条在窄视口下换行不挤压标题（媒体查询相对视口，仅原型宿主需要） */
+@media (max-width: 900px) {
+  .topbar .emp-live { display: none; }
+}
+
+/* 时间线在卡片内的间距微调 */
+.card-bd .timeline .tl-item:last-child .tl-desc { margin-bottom: 0; }
+
+/* 空态插图垂直居中 */
+.empty .empty-illus { margin: 0 auto; }
+
+/* 尊重系统「减少动效」偏好 */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ==========================================================================
+   数字员工档案：编辑态相关（2026-10-13）
+   .emp-dot.off 已在上面定义；这里补职责说明、停用卡与校验错误态。
+   ========================================================================== */
+
+/* 职责说明（名册卡） */
+.emp-persona {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--text-2);
+}
+
+/* 停用员工卡：整体降权，但悬停恢复，便于查看与重新编辑 */
+.emp-card.is-off { opacity: .6; }
+.emp-card.is-off:hover { opacity: 1; }
+
+/* 校验错误：沿用 hifi 的 .field.has-error 机制，这里只补输入框描边 */
+#modal-employee .field.has-error .input,
+#modal-employee .field.has-error .textarea,
+#modal-employee .field.has-error .select {
+  border-color: var(--danger);
+}
+
+/* 工具多选可能较长，给个上限避免弹窗过高 */
+#emp-f-tools { max-height: 216px; overflow-y: auto; }
+
+/* 矩阵表里的工具 chip 更紧凑 */
+.table td .emp-chip-row { gap: 4px; }
+.table td .emp-chip { font-size: var(--fs-xs); padding: 1px 6px; }

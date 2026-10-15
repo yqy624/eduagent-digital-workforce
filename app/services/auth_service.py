@@ -40,15 +40,18 @@ class AuthService:
         await self.db.flush()
 
         token = create_access_token(user.username, user.role)
+        # 新控制台为能力维度单入口，登录后统一进入；角色只决定可见能力。
         redirect_map = {
-            "ADMIN": "/static/admin/dashboard.html",
-            "TEACHER": "/static/teacher/dashboard.html",
-            "STUDENT": "/static/student/dashboard.html",
+            "ADMIN": "/platform",
+            "TEACHER": "/platform",
+            "STUDENT": "/platform",
         }
         return LoginResponse(
+            id=user.id,
             token=token,
             username=user.username,
             display_name=user.display_name,
+            student_no=user.student_no,
             role=user.role,
             redirect_url=redirect_map.get(user.role, "/"),
             expires_in=86400000,
@@ -69,6 +72,7 @@ class AuthService:
             password=hash_password(req.password),
             display_name=req.display_name or req.username,
             email=req.email,
+            student_no=req.student_no,
             role=req.role,
             enabled=True,
             created_at=datetime.now(),
@@ -99,9 +103,11 @@ class AuthService:
         if user is None:
             raise ValueError("用户不存在")
         return ProfileResponse(
+            id=user.id,
             username=user.username,
             display_name=user.display_name,
             email=user.email,
+            student_no=user.student_no,
             role=user.role,
         )
 
@@ -122,9 +128,11 @@ class AuthService:
             user.password = hash_password(req.new_password)
         await self.db.flush()
         return ProfileResponse(
+            id=user.id,
             username=user.username,
             display_name=user.display_name,
             email=user.email,
+            student_no=user.student_no,
             role=user.role,
         )
 
@@ -134,6 +142,7 @@ class AuthService:
             username=user.username,
             display_name=user.display_name,
             email=user.email,
+            student_no=user.student_no,
             role=user.role,
             enabled=user.enabled,
             last_login=user.last_login.isoformat() if user.last_login else None,

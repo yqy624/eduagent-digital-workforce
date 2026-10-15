@@ -1,0 +1,4454 @@
+{
+  "stats": {
+    "api_routes": 130,
+    "live_routes": 112,
+    "orphan_routes": 0,
+    "orphan_and_undeclared": 0,
+    "duplicate_groups": 8
+  },
+  "orphans": [],
+  "duplicates": [
+    {
+      "sig": [
+        "service.get_dashboard"
+      ],
+      "paths": [
+        {
+          "path": "/api/admin/dashboard",
+          "file": "app/routers/admin.py:16",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26170",
+              "EduAgent_从零到一自学复现指南.md:26743",
+              "README.md:154",
+              "智慧平台_菜单配置与路由映射表.md:65",
+              "路由审计报告_2026-10-12.md:113",
+              "路由审计报告_2026-10-12.md:143",
+              "路由审计报告_2026-10-12.md:199"
+            ],
+            "script": [
+              "scripts/gen_project_word.py:391",
+              "scripts/run_demo.py:109"
+            ],
+            "menu": [
+              "static/js/menu.config.js:184",
+              "static/js/menu.config.js:515",
+              "static/js/menu.config.js:585"
+            ]
+          }
+        },
+        {
+          "path": "/api/student/dashboard",
+          "file": "app/routers/student.py:19",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26775",
+              "智慧平台_菜单配置与路由映射表.md:116",
+              "路由审计报告_2026-10-12.md:113",
+              "路由审计报告_2026-10-12.md:218"
+            ],
+            "script": [
+              "scripts/run_demo.py:138"
+            ],
+            "menu": [
+              "static/js/menu.config.js:184"
+            ],
+            "frontend": [
+              "static/js/console/pages/review.js:144",
+              "static/js/console/pages/review.js:480"
+            ]
+          }
+        },
+        {
+          "path": "/api/teacher/dashboard",
+          "file": "app/routers/teacher.py:26",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26754",
+              "智慧平台_菜单配置与路由映射表.md:94",
+              "路由审计报告_2026-10-12.md:113",
+              "路由审计报告_2026-10-12.md:156",
+              "路由审计报告_2026-10-12.md:210"
+            ],
+            "script": [
+              "scripts/run_demo.py:119"
+            ],
+            "menu": [
+              "static/js/menu.config.js:184"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "service.list_events"
+      ],
+      "paths": [
+        {
+          "path": "/api/insight/alerts",
+          "file": "app/routers/insight.py:218",
+          "live": true,
+          "calls": {
+            "docs": [
+              "交接文档_2026-10-09_视觉链路与RAG外置.md:120",
+              "智慧平台_菜单配置与路由映射表.md:242",
+              "路由审计报告_2026-10-12.md:118"
+            ],
+            "menu": [
+              "static/js/menu.config.js:402"
+            ],
+            "frontend": [
+              "static/js/console/pages/insight.js:324",
+              "static/js/console/pages/knowledge.js:380"
+            ]
+          }
+        },
+        {
+          "path": "/api/situation/alerts",
+          "file": "app/routers/situation.py:80",
+          "live": true,
+          "calls": {
+            "docs": [
+              "交接文档_2026-10-09_视觉链路与RAG外置.md:120",
+              "智慧平台_菜单配置与路由映射表.md:234",
+              "路由审计报告_2026-10-12.md:118"
+            ],
+            "menu": [
+              "static/js/menu.config.js:542"
+            ],
+            "frontend": [
+              "static/js/console/pages/situation.js:219",
+              "static/js/console/pages/situation.js:75"
+            ]
+          }
+        },
+        {
+          "path": "/api/vision/events",
+          "file": "app/routers/vision.py:114",
+          "live": true,
+          "calls": {
+            "docs": [
+              "原平台改造方案_菜单迁移与YOLO接入.md:144",
+              "桌面端接口接入说明.md:58",
+              "视觉感知链路说明_上传即感知与事件派生.md:156",
+              "路由审计报告_2026-10-12.md:118"
+            ],
+            "script": [
+              "scripts/check_prototype.py:369",
+              "scripts/smoke_app.py:129",
+              "scripts/smoke_app.py:97"
+            ],
+            "frontend": [
+              "static/js/app-shell.js:589",
+              "static/js/app-shell.js:826",
+              "static/js/console/app.js:122",
+              "static/js/console/app.js:93",
+              "static/js/console/pages/insight.js:351",
+              "static/js/console/pages/insight.js:81",
+              "static/js/console/pages/knowledge.js:73",
+              "static/js/console/pages/situation.js:257",
+              "static/js/console/pages/situation.js:281",
+              "static/js/console/pages/situation.js:294",
+              "static/js/console/pages/vision.js:300",
+              "static/js/console/pages/vision.js:577",
+              "static/js/console/pages/vision.js:600",
+              "static/js/console/pages/vision.js:651",
+              "static/js/console/pages/vision.js:678",
+              "static/js/console/pages/vision.js:697",
+              "static/js/desktop/data.js:53",
+              "static/login.html:472"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "service.update_course"
+      ],
+      "paths": [
+        {
+          "path": "/api/admin/courses/{course_id}",
+          "file": "app/routers/admin.py:175",
+          "live": false,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md",
+              "旧页面下线与路由收敛报告_2026-10-12.md",
+              "旧页面下线与路由收敛报告_2026-10-12.md:35",
+              "旧页面下线与路由收敛报告_2026-10-12.md:65",
+              "旧页面下线与路由收敛报告_2026-10-12.md:66",
+              "智慧平台_菜单配置与路由映射表.md",
+              "智慧平台_菜单配置与路由映射表.md:77",
+              "智慧平台_菜单配置与路由映射表.md:78",
+              "智慧平台_菜单配置与路由映射表.md:79",
+              "智慧平台_菜单配置与路由映射表.md:81",
+              "智慧平台_菜单配置与路由映射表.md:82",
+              "路由审计报告_2026-10-12.md",
+              "路由审计报告_2026-10-12.md:100",
+              "路由审计报告_2026-10-12.md:114",
+              "路由审计报告_2026-10-12.md:139",
+              "路由审计报告_2026-10-12.md:140",
+              "路由审计报告_2026-10-12.md:141"
+            ],
+            "menu": [
+              "static/js/menu.config.js"
+            ]
+          }
+        },
+        {
+          "path": "/api/teacher/courses/{course_id}",
+          "file": "app/routers/teacher.py:60",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26765",
+              "旧页面下线与路由收敛报告_2026-10-12.md:66",
+              "智慧平台_菜单配置与路由映射表.md:97",
+              "智慧平台_菜单配置与路由映射表.md:98",
+              "路由审计报告_2026-10-12.md:114"
+            ],
+            "script": [
+              "scripts/run_demo.py:129"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "service.delete_course"
+      ],
+      "paths": [
+        {
+          "path": "/api/admin/courses/{course_id}",
+          "file": "app/routers/admin.py:185",
+          "live": false,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md",
+              "旧页面下线与路由收敛报告_2026-10-12.md",
+              "旧页面下线与路由收敛报告_2026-10-12.md:35",
+              "旧页面下线与路由收敛报告_2026-10-12.md:65",
+              "旧页面下线与路由收敛报告_2026-10-12.md:66",
+              "智慧平台_菜单配置与路由映射表.md",
+              "智慧平台_菜单配置与路由映射表.md:77",
+              "智慧平台_菜单配置与路由映射表.md:78",
+              "智慧平台_菜单配置与路由映射表.md:79",
+              "智慧平台_菜单配置与路由映射表.md:81",
+              "智慧平台_菜单配置与路由映射表.md:82",
+              "路由审计报告_2026-10-12.md",
+              "路由审计报告_2026-10-12.md:100",
+              "路由审计报告_2026-10-12.md:114",
+              "路由审计报告_2026-10-12.md:139",
+              "路由审计报告_2026-10-12.md:140",
+              "路由审计报告_2026-10-12.md:141"
+            ],
+            "menu": [
+              "static/js/menu.config.js"
+            ]
+          }
+        },
+        {
+          "path": "/api/teacher/courses/{course_id}",
+          "file": "app/routers/teacher.py:76",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26765",
+              "旧页面下线与路由收敛报告_2026-10-12.md:66",
+              "智慧平台_菜单配置与路由映射表.md:97",
+              "智慧平台_菜单配置与路由映射表.md:98",
+              "路由审计报告_2026-10-12.md:114"
+            ],
+            "script": [
+              "scripts/run_demo.py:129"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "service.get_my_courses"
+      ],
+      "paths": [
+        {
+          "path": "/api/student/my-courses",
+          "file": "app/routers/student.py:38",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26780",
+              "EduAgent_从零到一自学复现指南.md:3203",
+              "README.md:160",
+              "旧页面下线与路由收敛报告_2026-10-12.md:126",
+              "智慧平台_菜单配置与路由映射表.md:118",
+              "路由审计报告_2026-10-12.md:115",
+              "路由审计报告_2026-10-12.md:218"
+            ],
+            "script": [
+              "scripts/run_demo.py:143"
+            ],
+            "menu": [
+              "static/js/menu.config.js:195"
+            ],
+            "frontend": [
+              "static/js/console/pages/insight.js:115",
+              "static/js/console/pages/knowledge.js:61",
+              "static/js/console/pages/review.js:521",
+              "static/js/console/pages/review.js:602",
+              "static/js/console/pages/review.js:886"
+            ]
+          }
+        },
+        {
+          "path": "/api/teacher/courses",
+          "file": "app/routers/teacher.py:37",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26171",
+              "EduAgent_从零到一自学复现指南.md:26759",
+              "EduAgent_从零到一自学复现指南.md:3201",
+              "README.md:155",
+              "README.md:156",
+              "智慧平台_菜单配置与路由映射表.md:95",
+              "智慧平台_菜单配置与路由映射表.md:96",
+              "路由审计报告_2026-10-12.md:115",
+              "路由审计报告_2026-10-12.md:154",
+              "路由审计报告_2026-10-12.md:155",
+              "路由审计报告_2026-10-12.md:209"
+            ],
+            "script": [
+              "scripts/gen_project_word.py:392",
+              "scripts/run_demo.py:124"
+            ],
+            "menu": [
+              "static/js/menu.config.js:195"
+            ],
+            "frontend": [
+              "static/js/desktop/data.js:146",
+              "static/js/desktop/data.js:149"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "service.submit_assignment"
+      ],
+      "paths": [
+        {
+          "path": "/api/review/assignments/{assignment_id}/submit",
+          "file": "app/routers/review.py:598",
+          "live": true,
+          "calls": {
+            "docs": [
+              "智慧平台_菜单配置与路由映射表.md:122",
+              "路由审计报告_2026-10-12.md:105"
+            ],
+            "script": [
+              "scripts/smoke_review_migration.py:165"
+            ],
+            "menu": [
+              "static/js/menu.config.js:213"
+            ]
+          }
+        },
+        {
+          "path": "/api/student/assignments/{assignment_id}/submit",
+          "file": "app/routers/student.py:79",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:26174",
+              "README.md:162",
+              "智慧平台_菜单配置与路由映射表.md:122",
+              "路由审计报告_2026-10-12.md:105",
+              "路由审计报告_2026-10-12.md:205"
+            ],
+            "script": [
+              "scripts/gen_project_word.py:395"
+            ],
+            "menu": [
+              "static/js/menu.config.js:218"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "registry.list_providers"
+      ],
+      "paths": [
+        {
+          "path": "/api/governance/compute",
+          "file": "app/routers/governance.py:76",
+          "live": true,
+          "calls": {
+            "docs": [
+              "智慧平台_菜单配置与路由映射表.md:222",
+              "路由审计报告_2026-10-12.md:116"
+            ],
+            "menu": [
+              "static/js/menu.config.js:613"
+            ],
+            "frontend": [
+              "static/js/console/pages/governance.js:291"
+            ]
+          }
+        },
+        {
+          "path": "/api/vision/models",
+          "file": "app/routers/vision.py:179",
+          "live": true,
+          "calls": {
+            "docs": [
+              "智慧平台_菜单配置与路由映射表.md:212",
+              "模型接入清单.md:167",
+              "路由审计报告_2026-10-12.md:116"
+            ],
+            "script": [
+              "scripts/smoke_app.py:113"
+            ],
+            "frontend": [
+              "static/js/app-shell.js:445",
+              "static/js/app-shell.js:788",
+              "static/js/console/pages/vision.js:339",
+              "static/js/console/pages/vision.js:424",
+              "static/js/console/pages/vision.js:443"
+            ],
+            "menu": [
+              "static/js/menu.config.js:62"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sig": [
+        "service.complete_run",
+        "service.create_run",
+        "service.fail_run",
+        "service.fail_run"
+      ],
+      "paths": [
+        {
+          "path": "/api/ai/students/{student_id}/learning-plan",
+          "file": "app/routers/ai.py:1070",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:25616",
+              "EduAgent_从零到一自学复现指南.md:25699",
+              "README.md:181",
+              "智慧平台_菜单配置与路由映射表.md:141",
+              "路由审计报告_2026-10-12.md:117",
+              "路由审计报告_2026-10-12.md:203"
+            ],
+            "script": [
+              "scripts/debug_lp.py:24",
+              "scripts/demo_agents.py:64"
+            ],
+            "menu": [
+              "static/js/menu.config.js:386"
+            ]
+          }
+        },
+        {
+          "path": "/api/ai/teacher/submissions/{submission_id}/grade-suggestion",
+          "file": "app/routers/ai.py:1158",
+          "live": true,
+          "calls": {
+            "docs": [
+              "EduAgent_从零到一自学复现指南.md:25576",
+              "EduAgent_从零到一自学复现指南.md:25715",
+              "EduAgent_从零到一自学复现指南.md:26179",
+              "README.md:182",
+              "智慧平台_菜单配置与路由映射表.md:143",
+              "路由审计报告_2026-10-12.md:117",
+              "路由审计报告_2026-10-12.md:204"
+            ],
+            "script": [
+              "scripts/debug_grade.py:18",
+              "scripts/demo_agents.py:79",
+              "scripts/gen_project_word.py:400"
+            ],
+            "menu": [
+              "static/js/menu.config.js:240"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "path": "/api/auth/login",
+      "methods": [
+        "POST"
+      ],
+      "func": "login",
+      "file": "app/routers/auth.py",
+      "line": 23,
+      "doc": [
+        "用户登录"
+      ],
+      "sig": [
+        "service.login"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:12363",
+          "EduAgent_从零到一自学复现指南.md:12930",
+          "EduAgent_从零到一自学复现指南.md:25495",
+          "EduAgent_从零到一自学复现指南.md:25538",
+          "EduAgent_从零到一自学复现指南.md:25572",
+          "EduAgent_从零到一自学复现指南.md:25611",
+          "EduAgent_从零到一自学复现指南.md:25660",
+          "EduAgent_从零到一自学复现指南.md:25664",
+          "EduAgent_从零到一自学复现指南.md:26169",
+          "EduAgent_从零到一自学复现指南.md:26689",
+          "EduAgent_从零到一自学复现指南.md:2921",
+          "README.md:150",
+          "旧页面下线与路由收敛报告_2026-10-12.md:97",
+          "桌面端接口接入说明.md:48"
+        ],
+        "script": [
+          "scripts/debug_ai.py:21",
+          "scripts/debug_ai2.py:14",
+          "scripts/debug_grade.py:14",
+          "scripts/debug_lp.py:20",
+          "scripts/demo_agents.py:27",
+          "scripts/demo_agents.py:31",
+          "scripts/gen_project_word.py:390",
+          "scripts/run_demo.py:58",
+          "scripts/smoke_app.py:62",
+          "scripts/smoke_review_migration.py:71"
+        ],
+        "frontend": [
+          "static/js/console/api.js:123"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/auth/register",
+      "methods": [
+        "POST"
+      ],
+      "func": "register",
+      "file": "app/routers/auth.py",
+      "line": 34,
+      "doc": [
+        "用户注册"
+      ],
+      "sig": [
+        "service.register"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:13013",
+          "EduAgent_从零到一自学复现指南.md:2922",
+          "README.md:151"
+        ],
+        "frontend": [
+          "static/js/console/api.js:131"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/auth/forgot-password",
+      "methods": [
+        "POST"
+      ],
+      "func": "forgot_password",
+      "file": "app/routers/auth.py",
+      "line": 45,
+      "doc": [
+        "找回密码"
+      ],
+      "sig": [
+        "service.forgot_password"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:13090",
+          "EduAgent_从零到一自学复现指南.md:2923",
+          "README.md:152"
+        ],
+        "frontend": [
+          "static/js/console/api.js:145"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/auth/profile",
+      "methods": [
+        "GET"
+      ],
+      "func": "get_profile",
+      "file": "app/routers/auth.py",
+      "line": 58,
+      "doc": [
+        "获取当前用户信息"
+      ],
+      "sig": [
+        "service.get_profile"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:2924",
+          "EduAgent_从零到一自学复现指南.md:2925",
+          "桌面端接口接入说明.md:49",
+          "路由审计报告_2026-10-12.md:279",
+          "路由审计报告_2026-10-12.md:88"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js:41"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/auth/profile",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_profile",
+      "file": "app/routers/auth.py",
+      "line": 69,
+      "doc": [
+        "更新个人信息"
+      ],
+      "sig": [
+        "service.update_profile"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:2924",
+          "EduAgent_从零到一自学复现指南.md:2925",
+          "桌面端接口接入说明.md:49",
+          "路由审计报告_2026-10-12.md:279",
+          "路由审计报告_2026-10-12.md:88"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js:41"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/dashboard",
+      "methods": [
+        "GET"
+      ],
+      "func": "dashboard",
+      "file": "app/routers/admin.py",
+      "line": 16,
+      "doc": [
+        "管理后台数据"
+      ],
+      "sig": [
+        "service.get_dashboard"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26170",
+          "EduAgent_从零到一自学复现指南.md:26743",
+          "README.md:154",
+          "智慧平台_菜单配置与路由映射表.md:65",
+          "路由审计报告_2026-10-12.md:113",
+          "路由审计报告_2026-10-12.md:143",
+          "路由审计报告_2026-10-12.md:199"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:391",
+          "scripts/run_demo.py:109"
+        ],
+        "menu": [
+          "static/js/menu.config.js:184",
+          "static/js/menu.config.js:515",
+          "static/js/menu.config.js:585"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/users",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_users",
+      "file": "app/routers/admin.py",
+      "line": 24,
+      "doc": [
+        "用户列表"
+      ],
+      "sig": [
+        "service.list_users"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26170",
+          "README.md:153",
+          "原平台改造方案_菜单迁移与YOLO接入.md:58",
+          "旧页面下线与路由收敛报告_2026-10-12.md:126",
+          "智慧平台_菜单配置与路由映射表.md:67",
+          "智慧平台_菜单配置与路由映射表.md:70",
+          "路由审计报告_2026-10-12.md:216",
+          "路由审计报告_2026-10-12.md:33",
+          "路由审计报告_2026-10-12.md:99"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:391"
+        ],
+        "menu": [
+          "static/js/menu.config.js:596"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:190",
+          "static/js/console/pages/governance.js:203"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/users/export",
+      "methods": [
+        "GET"
+      ],
+      "func": "export_users",
+      "file": "app/routers/admin.py",
+      "line": 37,
+      "doc": [],
+      "sig": [
+        "service.export_users_csv"
+      ],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:67",
+          "智慧平台_菜单配置与路由映射表.md:69",
+          "路由审计报告_2026-10-12.md:144",
+          "路由审计报告_2026-10-12.md:240"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/users",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_user",
+      "file": "app/routers/admin.py",
+      "line": 48,
+      "doc": [
+        "创建用户"
+      ],
+      "sig": [
+        "service.create_user"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26170",
+          "README.md:153",
+          "原平台改造方案_菜单迁移与YOLO接入.md:58",
+          "旧页面下线与路由收敛报告_2026-10-12.md:126",
+          "智慧平台_菜单配置与路由映射表.md:67",
+          "智慧平台_菜单配置与路由映射表.md:70",
+          "路由审计报告_2026-10-12.md:216",
+          "路由审计报告_2026-10-12.md:33",
+          "路由审计报告_2026-10-12.md:99"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:391"
+        ],
+        "menu": [
+          "static/js/menu.config.js:596"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:190",
+          "static/js/console/pages/governance.js:203"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/courses/{course_id}/visibility",
+      "methods": [
+        "PUT"
+      ],
+      "func": "toggle_visibility",
+      "file": "app/routers/admin.py",
+      "line": 61,
+      "doc": [
+        "切换课程可见性"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:64",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:80",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:143",
+          "路由审计报告_2026-10-12.md:199"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:607"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/activities",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_activities",
+      "file": "app/routers/admin.py",
+      "line": 85,
+      "doc": [
+        "活动列表"
+      ],
+      "sig": [
+        "service.list_activities"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:84",
+          "智慧平台_菜单配置与路由映射表.md:85",
+          "路由审计报告_2026-10-12.md:136"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/activities",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_activity",
+      "file": "app/routers/admin.py",
+      "line": 92,
+      "doc": [],
+      "sig": [
+        "service._activity_dict",
+        "service.create_activity"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:84",
+          "智慧平台_菜单配置与路由映射表.md:85",
+          "路由审计报告_2026-10-12.md:136"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/activities/{activity_id}",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_activity",
+      "file": "app/routers/admin.py",
+      "line": 112,
+      "doc": [],
+      "sig": [
+        "service._activity_dict",
+        "service.update_activity"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:65",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:86",
+          "智慧平台_菜单配置与路由映射表.md:87",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:137"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/activities/{activity_id}/republish",
+      "methods": [
+        "POST"
+      ],
+      "func": "republish_activity",
+      "file": "app/routers/admin.py",
+      "line": 127,
+      "doc": [],
+      "sig": [
+        "service._activity_dict",
+        "service.republish_activity"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:88",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:138"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/activities/{activity_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_activity",
+      "file": "app/routers/admin.py",
+      "line": 141,
+      "doc": [],
+      "sig": [
+        "service.delete_activity"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:65",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:86",
+          "智慧平台_菜单配置与路由映射表.md:87",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:137"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/monitor",
+      "methods": [
+        "GET"
+      ],
+      "func": "monitor",
+      "file": "app/routers/admin.py",
+      "line": 151,
+      "doc": [
+        "系统监控"
+      ],
+      "sig": [
+        "service.get_monitor"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:66",
+          "路由审计报告_2026-10-12.md:216"
+        ],
+        "menu": [
+          "static/js/menu.config.js:515",
+          "static/js/menu.config.js:650"
+        ],
+        "frontend": [
+          "static/js/console/pages/situation.js:109",
+          "static/js/console/pages/situation.js:511",
+          "static/js/console/pages/situation.js:66"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/courses/batch-hide",
+      "methods": [
+        "PUT"
+      ],
+      "func": "batch_hide_courses",
+      "file": "app/routers/admin.py",
+      "line": 161,
+      "doc": [],
+      "sig": [
+        "service.batch_hide_courses"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:81",
+          "路由审计报告_2026-10-12.md:140"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/courses/batch-delete",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "batch_delete_courses",
+      "file": "app/routers/admin.py",
+      "line": 168,
+      "doc": [],
+      "sig": [
+        "service.batch_delete_courses"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:82",
+          "路由审计报告_2026-10-12.md:139"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/courses/{course_id}",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_course",
+      "file": "app/routers/admin.py",
+      "line": 175,
+      "doc": [],
+      "sig": [
+        "service.update_course"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:35",
+          "旧页面下线与路由收敛报告_2026-10-12.md:65",
+          "旧页面下线与路由收敛报告_2026-10-12.md:66",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:77",
+          "智慧平台_菜单配置与路由映射表.md:78",
+          "智慧平台_菜单配置与路由映射表.md:79",
+          "智慧平台_菜单配置与路由映射表.md:81",
+          "智慧平台_菜单配置与路由映射表.md:82",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:100",
+          "路由审计报告_2026-10-12.md:114",
+          "路由审计报告_2026-10-12.md:139",
+          "路由审计报告_2026-10-12.md:140",
+          "路由审计报告_2026-10-12.md:141"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/courses/{course_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_course",
+      "file": "app/routers/admin.py",
+      "line": 185,
+      "doc": [],
+      "sig": [
+        "service.delete_course"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:35",
+          "旧页面下线与路由收敛报告_2026-10-12.md:65",
+          "旧页面下线与路由收敛报告_2026-10-12.md:66",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:77",
+          "智慧平台_菜单配置与路由映射表.md:78",
+          "智慧平台_菜单配置与路由映射表.md:79",
+          "智慧平台_菜单配置与路由映射表.md:81",
+          "智慧平台_菜单配置与路由映射表.md:82",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:100",
+          "路由审计报告_2026-10-12.md:114",
+          "路由审计报告_2026-10-12.md:139",
+          "路由审计报告_2026-10-12.md:140",
+          "路由审计报告_2026-10-12.md:141"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/users/{user_id}/toggle",
+      "methods": [
+        "PUT"
+      ],
+      "func": "toggle_user_compat",
+      "file": "app/routers/admin.py",
+      "line": 195,
+      "doc": [],
+      "sig": [
+        "service.toggle_user_enabled"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:72",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:101"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/users/{user_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_user",
+      "file": "app/routers/admin.py",
+      "line": 202,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:34",
+          "旧页面下线与路由收敛报告_2026-10-12.md:65",
+          "旧页面下线与路由收敛报告_2026-10-12.md:67",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:68",
+          "智慧平台_菜单配置与路由映射表.md:69",
+          "智慧平台_菜单配置与路由映射表.md:73",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:144",
+          "路由审计报告_2026-10-12.md:145",
+          "路由审计报告_2026-10-12.md:240",
+          "路由审计报告_2026-10-12.md:99"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/users/{user_id}/password",
+      "methods": [
+        "PUT"
+      ],
+      "func": "reset_pwd",
+      "file": "app/routers/admin.py",
+      "line": 214,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "路由审计报告_2026-10-12.md"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/admin/courses/{course_id}/enrollments",
+      "methods": [
+        "GET"
+      ],
+      "func": "course_enrollments",
+      "file": "app/routers/admin.py",
+      "line": 227,
+      "doc": [],
+      "sig": [
+        "service.get_course_enrollments"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:64",
+          "智慧平台_菜单配置与路由映射表.md",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:142"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/admin/courses/{course_id}/enrollments",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_course_enrollments",
+      "file": "app/routers/admin.py",
+      "line": 236,
+      "doc": [],
+      "sig": [
+        "service.update_course_enrollments"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:64",
+          "智慧平台_菜单配置与路由映射表.md",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:142"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/teacher/dashboard",
+      "methods": [
+        "GET"
+      ],
+      "func": "dashboard",
+      "file": "app/routers/teacher.py",
+      "line": 26,
+      "doc": [
+        "教师首页数据"
+      ],
+      "sig": [
+        "service.get_dashboard"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26754",
+          "智慧平台_菜单配置与路由映射表.md:94",
+          "路由审计报告_2026-10-12.md:113",
+          "路由审计报告_2026-10-12.md:156",
+          "路由审计报告_2026-10-12.md:210"
+        ],
+        "script": [
+          "scripts/run_demo.py:119"
+        ],
+        "menu": [
+          "static/js/menu.config.js:184"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/courses",
+      "methods": [
+        "GET"
+      ],
+      "func": "my_courses",
+      "file": "app/routers/teacher.py",
+      "line": 37,
+      "doc": [
+        "我的课程列表"
+      ],
+      "sig": [
+        "service.get_my_courses"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26171",
+          "EduAgent_从零到一自学复现指南.md:26759",
+          "EduAgent_从零到一自学复现指南.md:3201",
+          "README.md:155",
+          "README.md:156",
+          "智慧平台_菜单配置与路由映射表.md:95",
+          "智慧平台_菜单配置与路由映射表.md:96",
+          "路由审计报告_2026-10-12.md:115",
+          "路由审计报告_2026-10-12.md:154",
+          "路由审计报告_2026-10-12.md:155",
+          "路由审计报告_2026-10-12.md:209"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:392",
+          "scripts/run_demo.py:124"
+        ],
+        "menu": [
+          "static/js/menu.config.js:195"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js:146",
+          "static/js/desktop/data.js:149"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/courses",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_course",
+      "file": "app/routers/teacher.py",
+      "line": 48,
+      "doc": [
+        "创建课程"
+      ],
+      "sig": [
+        "service.create_course"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26171",
+          "EduAgent_从零到一自学复现指南.md:26759",
+          "EduAgent_从零到一自学复现指南.md:3201",
+          "README.md:155",
+          "README.md:156",
+          "智慧平台_菜单配置与路由映射表.md:95",
+          "智慧平台_菜单配置与路由映射表.md:96",
+          "路由审计报告_2026-10-12.md:115",
+          "路由审计报告_2026-10-12.md:154",
+          "路由审计报告_2026-10-12.md:155",
+          "路由审计报告_2026-10-12.md:209"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:392",
+          "scripts/run_demo.py:124"
+        ],
+        "menu": [
+          "static/js/menu.config.js:195"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js:146",
+          "static/js/desktop/data.js:149"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/courses/{course_id}",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_course",
+      "file": "app/routers/teacher.py",
+      "line": 60,
+      "doc": [
+        "更新课程"
+      ],
+      "sig": [
+        "service.update_course"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26765",
+          "旧页面下线与路由收敛报告_2026-10-12.md:66",
+          "智慧平台_菜单配置与路由映射表.md:97",
+          "智慧平台_菜单配置与路由映射表.md:98",
+          "路由审计报告_2026-10-12.md:114"
+        ],
+        "script": [
+          "scripts/run_demo.py:129"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/courses/{course_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_course",
+      "file": "app/routers/teacher.py",
+      "line": 76,
+      "doc": [
+        "删除课程"
+      ],
+      "sig": [
+        "service.delete_course"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26765",
+          "旧页面下线与路由收敛报告_2026-10-12.md:66",
+          "智慧平台_菜单配置与路由映射表.md:97",
+          "智慧平台_菜单配置与路由映射表.md:98",
+          "路由审计报告_2026-10-12.md:114"
+        ],
+        "script": [
+          "scripts/run_demo.py:129"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/courses/{course_id}/students",
+      "methods": [
+        "GET"
+      ],
+      "func": "course_students",
+      "file": "app/routers/teacher.py",
+      "line": 91,
+      "doc": [
+        "查看课程学生名单"
+      ],
+      "sig": [
+        "service.get_course_students"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:99",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:156",
+          "路由审计报告_2026-10-12.md:161",
+          "路由审计报告_2026-10-12.md:209"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:272"
+        ],
+        "script": [
+          "scripts/run_demo.py"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_assignment",
+      "file": "app/routers/teacher.py",
+      "line": 106,
+      "doc": [
+        "发布作业"
+      ],
+      "sig": [
+        "service.create_assignment"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26171",
+          "README.md:157",
+          "智慧平台_菜单配置与路由映射表.md:100",
+          "路由审计报告_2026-10-12.md:150",
+          "路由审计报告_2026-10-12.md:207"
+        ],
+        "script": [
+          "scripts/audit_routes.py:7",
+          "scripts/gen_project_word.py:392"
+        ],
+        "menu": [
+          "static/js/menu.config.js:207"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/courses/{course_id}/assignments",
+      "methods": [
+        "GET"
+      ],
+      "func": "course_assignments",
+      "file": "app/routers/teacher.py",
+      "line": 121,
+      "doc": [
+        "课程作业列表"
+      ],
+      "sig": [
+        "service.get_course_assignments"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:101",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:155"
+        ],
+        "script": [
+          "scripts/run_demo.py"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_assignment",
+      "file": "app/routers/teacher.py",
+      "line": 136,
+      "doc": [
+        "编辑作业"
+      ],
+      "sig": [
+        "service.update_assignment"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:102",
+          "智慧平台_菜单配置与路由映射表.md:103",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:150",
+          "路由审计报告_2026-10-12.md:151"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_assignment",
+      "file": "app/routers/teacher.py",
+      "line": 152,
+      "doc": [
+        "删除作业"
+      ],
+      "sig": [
+        "service.delete_assignment"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:102",
+          "智慧平台_菜单配置与路由映射表.md:103",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:150",
+          "路由审计报告_2026-10-12.md:151"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}/submissions",
+      "methods": [
+        "GET"
+      ],
+      "func": "pending_submissions",
+      "file": "app/routers/teacher.py",
+      "line": 167,
+      "doc": [
+        "查看作业提交记录"
+      ],
+      "sig": [
+        "service.get_submissions"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:104",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:153"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/submissions/{submission_id}/grade",
+      "methods": [
+        "POST"
+      ],
+      "func": "grade_submission",
+      "file": "app/routers/teacher.py",
+      "line": 182,
+      "doc": [
+        "批改作业"
+      ],
+      "sig": [
+        "service.grade_submission"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26172",
+          "README.md:158",
+          "智慧平台_菜单配置与路由映射表.md:105",
+          "路由审计报告_2026-10-12.md:210"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:393"
+        ],
+        "menu": [
+          "static/js/menu.config.js:229"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}/analysis",
+      "methods": [
+        "GET"
+      ],
+      "func": "assignment_analysis",
+      "file": "app/routers/teacher.py",
+      "line": 198,
+      "doc": [
+        "作业成绩分析"
+      ],
+      "sig": [
+        "service.get_assignment_analysis"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:106",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:151",
+          "路由审计报告_2026-10-12.md:161",
+          "路由审计报告_2026-10-12.md:207"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:305"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}/peer-review",
+      "methods": [
+        "GET"
+      ],
+      "func": "peer_review_overview",
+      "file": "app/routers/teacher.py",
+      "line": 213,
+      "doc": [
+        "互评概览"
+      ],
+      "sig": [
+        "service.get_peer_review_overview"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "README.md:171",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:107",
+          "智慧平台_菜单配置与路由映射表.md:108",
+          "智慧平台_菜单配置与路由映射表.md:109",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:152",
+          "路由审计报告_2026-10-12.md:153",
+          "路由审计报告_2026-10-12.md:208"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:261"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}/peer-review",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_peer_review_config",
+      "file": "app/routers/teacher.py",
+      "line": 242,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "README.md:171",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:107",
+          "智慧平台_菜单配置与路由映射表.md:108",
+          "智慧平台_菜单配置与路由映射表.md:109",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:152",
+          "路由审计报告_2026-10-12.md:153",
+          "路由审计报告_2026-10-12.md:208"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:261"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/teacher/assignments/{assignment_id}/peer-review",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_peer_review_config",
+      "file": "app/routers/teacher.py",
+      "line": 252,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "README.md:171",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:107",
+          "智慧平台_菜单配置与路由映射表.md:108",
+          "智慧平台_菜单配置与路由映射表.md:109",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:152",
+          "路由审计报告_2026-10-12.md:153",
+          "路由审计报告_2026-10-12.md:208"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:261"
+        ],
+        "script": [
+          "scripts/audit_routes.py"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/dashboard",
+      "methods": [
+        "GET"
+      ],
+      "func": "dashboard",
+      "file": "app/routers/student.py",
+      "line": 19,
+      "doc": [
+        "学生首页数据"
+      ],
+      "sig": [
+        "service.get_dashboard"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26775",
+          "智慧平台_菜单配置与路由映射表.md:116",
+          "路由审计报告_2026-10-12.md:113",
+          "路由审计报告_2026-10-12.md:218"
+        ],
+        "script": [
+          "scripts/run_demo.py:138"
+        ],
+        "menu": [
+          "static/js/menu.config.js:184"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:144",
+          "static/js/console/pages/review.js:480"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/courses",
+      "methods": [
+        "GET"
+      ],
+      "func": "all_courses",
+      "file": "app/routers/student.py",
+      "line": 30,
+      "doc": [
+        "全部可选课程"
+      ],
+      "sig": [
+        "service.get_all_courses"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26173",
+          "EduAgent_从零到一自学复现指南.md:3202",
+          "README.md:159",
+          "智慧平台_菜单配置与路由映射表.md:117",
+          "路由审计报告_2026-10-12.md:217"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:394"
+        ],
+        "menu": [
+          "static/js/menu.config.js:195"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:897"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/my-courses",
+      "methods": [
+        "GET"
+      ],
+      "func": "my_courses",
+      "file": "app/routers/student.py",
+      "line": 38,
+      "doc": [
+        "我的课程"
+      ],
+      "sig": [
+        "service.get_my_courses"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26780",
+          "EduAgent_从零到一自学复现指南.md:3203",
+          "README.md:160",
+          "旧页面下线与路由收敛报告_2026-10-12.md:126",
+          "智慧平台_菜单配置与路由映射表.md:118",
+          "路由审计报告_2026-10-12.md:115",
+          "路由审计报告_2026-10-12.md:218"
+        ],
+        "script": [
+          "scripts/run_demo.py:143"
+        ],
+        "menu": [
+          "static/js/menu.config.js:195"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:115",
+          "static/js/console/pages/knowledge.js:61",
+          "static/js/console/pages/review.js:521",
+          "static/js/console/pages/review.js:602",
+          "static/js/console/pages/review.js:886"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/enroll/{course_id}",
+      "methods": [
+        "POST"
+      ],
+      "func": "enroll",
+      "file": "app/routers/student.py",
+      "line": 49,
+      "doc": [
+        "选课"
+      ],
+      "sig": [
+        "service.enroll"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "README.md:161",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:64",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:119",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:148",
+          "路由审计报告_2026-10-12.md:205"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:272"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/student/courses/{course_id}/assignments",
+      "methods": [
+        "GET"
+      ],
+      "func": "course_assignments",
+      "file": "app/routers/student.py",
+      "line": 64,
+      "doc": [
+        "课程作业列表"
+      ],
+      "sig": [
+        "service.get_my_assignments"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:121",
+          "路由审计报告_2026-10-12.md"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/assignments/{assignment_id}/submit",
+      "methods": [
+        "POST"
+      ],
+      "func": "submit_assignment",
+      "file": "app/routers/student.py",
+      "line": 79,
+      "doc": [
+        "提交作业"
+      ],
+      "sig": [
+        "service.submit_assignment"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26174",
+          "README.md:162",
+          "智慧平台_菜单配置与路由映射表.md:122",
+          "路由审计报告_2026-10-12.md:105",
+          "路由审计报告_2026-10-12.md:205"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:395"
+        ],
+        "menu": [
+          "static/js/menu.config.js:218"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/grades",
+      "methods": [
+        "GET"
+      ],
+      "func": "grades",
+      "file": "app/routers/student.py",
+      "line": 98,
+      "doc": [
+        "我的成绩"
+      ],
+      "sig": [
+        "service.get_my_grades"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26785",
+          "README.md:163",
+          "智慧平台_菜单配置与路由映射表.md:125",
+          "路由审计报告_2026-10-12.md:148",
+          "路由审计报告_2026-10-12.md:206"
+        ],
+        "script": [
+          "scripts/run_demo.py:148"
+        ],
+        "menu": [
+          "static/js/menu.config.js:283"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/student/courses/{course_id}/average",
+      "methods": [
+        "GET"
+      ],
+      "func": "course_average",
+      "file": "app/routers/student.py",
+      "line": 109,
+      "doc": [
+        "课程平均分"
+      ],
+      "sig": [
+        "service.get_course_average"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:126",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:217"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:283"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/files/upload",
+      "methods": [
+        "POST"
+      ],
+      "func": "upload_file",
+      "file": "app/routers/files.py",
+      "line": 300,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:20493",
+          "EduAgent_从零到一自学复现指南.md:23226",
+          "EduAgent_从零到一自学复现指南.md:26175",
+          "README.md:169",
+          "智慧平台_菜单配置与路由映射表.md:163",
+          "视觉感知链路说明_上传即感知与事件派生.md:60",
+          "视觉感知链路说明_上传即感知与事件派生.md:63"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:396"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:355",
+          "static/js/console/pages/vision.js:566"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/files/{file_id}/preview",
+      "methods": [
+        "GET"
+      ],
+      "func": "preview_file",
+      "file": "app/routers/files.py",
+      "line": 414,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "README.md:170",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:67",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:164",
+          "视觉感知链路说明_上传即感知与事件派生.md",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:239"
+        ],
+        "script": [
+          "scripts/gen_project_word.py"
+        ],
+        "frontend": [
+          "static/js/app.js",
+          "static/js/console/pages/governance.js",
+          "static/js/console/pages/vision.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/files/{file_id}/download",
+      "methods": [
+        "GET"
+      ],
+      "func": "download_file",
+      "file": "app/routers/files.py",
+      "line": 424,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "README.md:170",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:165",
+          "视觉感知链路说明_上传即感知与事件派生.md",
+          "路由审计报告_2026-10-12.md"
+        ],
+        "script": [
+          "scripts/gen_project_word.py"
+        ],
+        "frontend": [
+          "static/js/app.js",
+          "static/js/console/pages/governance.js",
+          "static/js/console/pages/vision.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/notifications",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_notifications",
+      "file": "app/routers/notifications.py",
+      "line": 23,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:26176",
+          "EduAgent_从零到一自学复现指南.md:5473",
+          "EduAgent_从零到一自学复现指南.md:5716",
+          "README.md:172",
+          "智慧平台_功能模块重构规划.md:21",
+          "智慧平台_菜单配置与路由映射表.md:152",
+          "路由审计报告_2026-10-12.md:216"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:397"
+        ],
+        "frontend": [
+          "static/js/app.js:180",
+          "static/js/app.js:249",
+          "static/js/console/pages/situation.js:350",
+          "static/js/desktop/data.js:106",
+          "static/js/desktop/data.js:108"
+        ],
+        "menu": [
+          "static/js/menu.config.js:526",
+          "static/js/menu.config.js:557"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/notifications/unread-count",
+      "methods": [
+        "GET"
+      ],
+      "func": "unread_count",
+      "file": "app/routers/notifications.py",
+      "line": 74,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:5474",
+          "README.md:172",
+          "智慧平台_菜单配置与路由映射表.md:153",
+          "桌面端接口接入说明.md:50",
+          "路由审计报告_2026-10-12.md:89"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js:107"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/notifications/{notification_id}/read",
+      "methods": [
+        "PUT"
+      ],
+      "func": "mark_read",
+      "file": "app/routers/notifications.py",
+      "line": 88,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "EduAgent_从零到一自学复现指南.md:5475",
+          "README.md",
+          "README.md:172",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:154",
+          "桌面端接口接入说明.md",
+          "路由审计报告_2026-10-12.md"
+        ],
+        "frontend": [
+          "static/js/app.js",
+          "static/js/console/pages/situation.js",
+          "static/js/desktop/data.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/notifications/read-all",
+      "methods": [
+        "PUT"
+      ],
+      "func": "mark_all_read",
+      "file": "app/routers/notifications.py",
+      "line": 108,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:5476",
+          "README.md:172",
+          "智慧平台_菜单配置与路由映射表.md:155"
+        ],
+        "frontend": [
+          "static/js/app.js:256",
+          "static/js/console/pages/situation.js:357",
+          "static/js/desktop/data.js:109"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/notifications/{notification_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_notification",
+      "file": "app/routers/notifications.py",
+      "line": 125,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:5474",
+          "EduAgent_从零到一自学复现指南.md:5476",
+          "EduAgent_从零到一自学复现指南.md:5477",
+          "README.md:172",
+          "智慧平台_菜单配置与路由映射表.md:153",
+          "智慧平台_菜单配置与路由映射表.md:155",
+          "智慧平台_菜单配置与路由映射表.md:156",
+          "桌面端接口接入说明.md:50",
+          "路由审计报告_2026-10-12.md:89"
+        ],
+        "frontend": [
+          "static/js/app.js:256",
+          "static/js/console/pages/situation.js:357",
+          "static/js/desktop/data.js:107",
+          "static/js/desktop/data.js:109"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/scenes",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_scenes",
+      "file": "app/routers/vision.py",
+      "line": 49,
+      "doc": [
+        "可用场景清单。前端场景选择器直接消费。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "桌面端接口接入说明.md:57"
+        ],
+        "script": [
+          "scripts/smoke_app.py:132",
+          "scripts/smoke_app.py:74"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:508",
+          "static/js/console/pages/vision.js:153",
+          "static/js/desktop/data.js:50"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/tasks",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_task",
+      "file": "app/routers/vision.py",
+      "line": 65,
+      "doc": [
+        "创建并执行一次视觉分析任务。"
+      ],
+      "sig": [
+        "service.run_task"
+      ],
+      "calls": {
+        "docs": [
+          "交接文档_2026-10-09_视觉链路与RAG外置.md:216",
+          "原平台改造方案_菜单迁移与YOLO接入.md:142",
+          "视觉感知链路说明_上传即感知与事件派生.md:33"
+        ],
+        "script": [
+          "scripts/smoke_app.py:127",
+          "scripts/smoke_app.py:57",
+          "scripts/smoke_app.py:79",
+          "scripts/smoke_app.py:89"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:538",
+          "static/js/console/pages/vision.js:473",
+          "static/js/console/pages/vision.js:567"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/tasks",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_tasks",
+      "file": "app/routers/vision.py",
+      "line": 85,
+      "doc": [
+        "任务列表（分页）。"
+      ],
+      "sig": [
+        "service.paginate_tasks"
+      ],
+      "calls": {
+        "docs": [
+          "交接文档_2026-10-09_视觉链路与RAG外置.md:216",
+          "原平台改造方案_菜单迁移与YOLO接入.md:142",
+          "视觉感知链路说明_上传即感知与事件派生.md:33"
+        ],
+        "script": [
+          "scripts/smoke_app.py:127",
+          "scripts/smoke_app.py:57",
+          "scripts/smoke_app.py:79",
+          "scripts/smoke_app.py:89"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:538",
+          "static/js/console/pages/vision.js:473",
+          "static/js/console/pages/vision.js:567"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/tasks/{task_code}",
+      "methods": [
+        "GET"
+      ],
+      "func": "get_task",
+      "file": "app/routers/vision.py",
+      "line": 106,
+      "doc": [],
+      "sig": [
+        "service.get_task"
+      ],
+      "calls": {
+        "script": [
+          "scripts/smoke_app.py:94"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/events",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_events",
+      "file": "app/routers/vision.py",
+      "line": 114,
+      "doc": [
+        "事件流。学情洞察与态势告警消费的入口。"
+      ],
+      "sig": [
+        "service.list_events"
+      ],
+      "calls": {
+        "docs": [
+          "原平台改造方案_菜单迁移与YOLO接入.md:144",
+          "桌面端接口接入说明.md:58",
+          "视觉感知链路说明_上传即感知与事件派生.md:156",
+          "路由审计报告_2026-10-12.md:118"
+        ],
+        "script": [
+          "scripts/check_prototype.py:369",
+          "scripts/smoke_app.py:129",
+          "scripts/smoke_app.py:97"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:589",
+          "static/js/app-shell.js:826",
+          "static/js/console/app.js:122",
+          "static/js/console/app.js:93",
+          "static/js/console/pages/insight.js:351",
+          "static/js/console/pages/insight.js:81",
+          "static/js/console/pages/knowledge.js:73",
+          "static/js/console/pages/situation.js:257",
+          "static/js/console/pages/situation.js:281",
+          "static/js/console/pages/situation.js:294",
+          "static/js/console/pages/vision.js:300",
+          "static/js/console/pages/vision.js:577",
+          "static/js/console/pages/vision.js:600",
+          "static/js/console/pages/vision.js:651",
+          "static/js/console/pages/vision.js:678",
+          "static/js/console/pages/vision.js:697",
+          "static/js/desktop/data.js:53",
+          "static/login.html:472"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/events/{event_id}/ack",
+      "methods": [
+        "POST"
+      ],
+      "func": "acknowledge_event",
+      "file": "app/routers/vision.py",
+      "line": 128,
+      "doc": [
+        "确认（处置）一条事件。"
+      ],
+      "sig": [
+        "service.acknowledge_event"
+      ],
+      "calls": {
+        "script": [
+          "scripts/smoke_app.py"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js",
+          "static/js/console/pages/situation.js",
+          "static/js/console/pages/vision.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/identities",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_identities",
+      "file": "app/routers/vision.py",
+      "line": 141,
+      "doc": [
+        "身份映射表：视觉目标 -> 业务主体。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "桌面端接口接入说明.md:59"
+        ],
+        "script": [
+          "scripts/smoke_app.py:118"
+        ],
+        "frontend": [
+          "static/js/console/pages/vision.js:161",
+          "static/js/console/pages/vision.js:742",
+          "static/js/console/pages/vision.js:808",
+          "static/js/console/pages/vision.js:822",
+          "static/js/desktop/data.js:55"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/identities",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_identity",
+      "file": "app/routers/vision.py",
+      "line": 153,
+      "doc": [
+        "新增身份映射。座位号 + 场景 决定一个视觉目标对应哪个学生。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "桌面端接口接入说明.md:59"
+        ],
+        "script": [
+          "scripts/smoke_app.py:118"
+        ],
+        "frontend": [
+          "static/js/console/pages/vision.js:161",
+          "static/js/console/pages/vision.js:742",
+          "static/js/console/pages/vision.js:808",
+          "static/js/console/pages/vision.js:822",
+          "static/js/desktop/data.js:55"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/models",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_models",
+      "file": "app/routers/vision.py",
+      "line": 179,
+      "doc": [
+        "模型资产 + 注册表状态。"
+      ],
+      "sig": [
+        "registry.list_providers"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:212",
+          "模型接入清单.md:167",
+          "路由审计报告_2026-10-12.md:116"
+        ],
+        "script": [
+          "scripts/smoke_app.py:113"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:445",
+          "static/js/app-shell.js:788",
+          "static/js/console/pages/vision.js:339",
+          "static/js/console/pages/vision.js:424",
+          "static/js/console/pages/vision.js:443"
+        ],
+        "menu": [
+          "static/js/menu.config.js:62"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/vision/overview",
+      "methods": [
+        "GET"
+      ],
+      "func": "overview",
+      "file": "app/routers/vision.py",
+      "line": 197,
+      "doc": [
+        "视觉模块概览，供态势感知看板消费。"
+      ],
+      "sig": [
+        "service.overview"
+      ],
+      "calls": {
+        "docs": [
+          "下一步执行手册_从规划到跑通.md:283",
+          "下一步执行手册_从规划到跑通.md:297",
+          "智慧平台_菜单配置与路由映射表.md:211",
+          "智慧平台_菜单配置与路由映射表.md:271",
+          "桌面端接口接入说明.md:56",
+          "模型接入清单.md:173",
+          "视觉感知链路说明_上传即感知与事件派生.md:126"
+        ],
+        "script": [
+          "scripts/smoke_app.py:104"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:145",
+          "static/js/app-shell.js:371",
+          "static/js/app-shell.js:382",
+          "static/js/console/pages/vision.js:101",
+          "static/js/console/pages/vision.js:112",
+          "static/js/console/pages/vision.js:377",
+          "static/js/console/pages/vision.js:384",
+          "static/js/desktop/data.js:48"
+        ],
+        "menu": [
+          "static/js/menu.config.js:52"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/submissions/scan",
+      "methods": [
+        "POST"
+      ],
+      "func": "scan_submission",
+      "file": "app/routers/review.py",
+      "line": 70,
+      "doc": [
+        "拍照上传批改：对一张作业照片做题块定位。"
+      ],
+      "sig": [
+        "service.scan_submission"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:231",
+          "路由审计报告_2026-10-12.md:103",
+          "路由审计报告_2026-10-12.md:69"
+        ],
+        "menu": [
+          "static/js/menu.config.js:246"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:687"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/scan/tasks",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_scan_tasks",
+      "file": "app/routers/review.py",
+      "line": 93,
+      "doc": [
+        "教师工作台的\"待批改\"清单。"
+      ],
+      "sig": [
+        "service.list_scan_tasks"
+      ],
+      "calls": {
+        "docs": [
+          "桌面端接口接入说明.md:66",
+          "路由审计报告_2026-10-12.md:69"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:104"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:497",
+          "static/js/console/pages/review.js:694"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/submissions/{submission_id}/apply-score",
+      "methods": [
+        "POST"
+      ],
+      "func": "apply_score",
+      "file": "app/routers/review.py",
+      "line": 127,
+      "doc": [
+        "复核后写回成绩。走的是原平台既有的评分服务，不另起一套。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "路由审计报告_2026-10-12.md"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py"
+        ],
+        "frontend": [
+          "static/js/app-shell.js",
+          "static/js/console/pages/review.js"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/overview",
+      "methods": [
+        "GET"
+      ],
+      "func": "overview",
+      "file": "app/routers/review.py",
+      "line": 169,
+      "doc": [
+        "评阅总览：课程 / 作业 / 提交 / 批改 / 扫描五个口径的真实计数。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:116",
+          "智慧平台_菜单配置与路由映射表.md:94",
+          "桌面端接口接入说明.md:65"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:98"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:393",
+          "static/js/console/pages/review.js:480",
+          "static/js/console/pages/review.js:80",
+          "static/js/desktop/data.js:63"
+        ],
+        "menu": [
+          "static/js/menu.config.js:179"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/courses",
+      "methods": [
+        "GET"
+      ],
+      "func": "my_courses",
+      "file": "app/routers/review.py",
+      "line": 248,
+      "doc": [
+        "课程与班级（教师视角）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:117",
+          "智慧平台_菜单配置与路由映射表.md:178",
+          "智慧平台_菜单配置与路由映射表.md:95",
+          "智慧平台_菜单配置与路由映射表.md:96"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:99"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:655",
+          "static/js/console/pages/insight.js:115",
+          "static/js/console/pages/knowledge.js:61",
+          "static/js/console/pages/review.js:216",
+          "static/js/console/pages/review.js:521",
+          "static/js/console/pages/review.js:560",
+          "static/js/console/pages/review.js:619",
+          "static/js/console/pages/review.js:715",
+          "static/js/console/pages/review.js:850",
+          "static/js/console/pages/review.js:886"
+        ],
+        "menu": [
+          "static/js/menu.config.js:190"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_assignments",
+      "file": "app/routers/review.py",
+      "line": 258,
+      "doc": [
+        "作业发布：课程下的作业列表。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:100",
+          "智慧平台_菜单配置与路由映射表.md:101",
+          "智慧平台_菜单配置与路由映射表.md:121"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:103",
+          "scripts/smoke_review_migration.py:121",
+          "scripts/smoke_review_migration.py:136",
+          "scripts/smoke_review_migration.py:196"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:680",
+          "static/js/app-shell.js:710",
+          "static/js/console/pages/review.js:250",
+          "static/js/console/pages/review.js:277",
+          "static/js/console/pages/review.js:573",
+          "static/js/console/pages/review.js:739",
+          "static/js/console/pages/review.js:861",
+          "static/js/console/pages/review.js:871",
+          "static/js/console/pages/review.js:897",
+          "static/js/console/pages/review.js:919"
+        ],
+        "menu": [
+          "static/js/menu.config.js:202"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_assignment",
+      "file": "app/routers/review.py",
+      "line": 273,
+      "doc": [
+        "发布作业。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:100",
+          "智慧平台_菜单配置与路由映射表.md:101",
+          "智慧平台_菜单配置与路由映射表.md:121"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:103",
+          "scripts/smoke_review_migration.py:121",
+          "scripts/smoke_review_migration.py:136",
+          "scripts/smoke_review_migration.py:196"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:680",
+          "static/js/app-shell.js:710",
+          "static/js/console/pages/review.js:250",
+          "static/js/console/pages/review.js:277",
+          "static/js/console/pages/review.js:573",
+          "static/js/console/pages/review.js:739",
+          "static/js/console/pages/review.js:861",
+          "static/js/console/pages/review.js:871",
+          "static/js/console/pages/review.js:897",
+          "static/js/console/pages/review.js:919"
+        ],
+        "menu": [
+          "static/js/menu.config.js:202"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_assignment",
+      "file": "app/routers/review.py",
+      "line": 287,
+      "doc": [
+        "编辑作业。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:102",
+          "智慧平台_菜单配置与路由映射表.md:103"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:144",
+          "scripts/smoke_review_migration.py:188",
+          "scripts/smoke_review_migration.py:207"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}",
+      "methods": [
+        "DELETE"
+      ],
+      "func": "delete_assignment",
+      "file": "app/routers/review.py",
+      "line": 302,
+      "doc": [
+        "删除作业。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:102",
+          "智慧平台_菜单配置与路由映射表.md:103"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:144",
+          "scripts/smoke_review_migration.py:188",
+          "scripts/smoke_review_migration.py:207"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}/submissions",
+      "methods": [
+        "GET"
+      ],
+      "func": "list_submissions",
+      "file": "app/routers/review.py",
+      "line": 316,
+      "doc": [
+        "作业的提交记录（批改入口的下游数据）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:104"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:149"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/submissions/{submission_id}/grade",
+      "methods": [
+        "POST"
+      ],
+      "func": "grade_submission",
+      "file": "app/routers/review.py",
+      "line": 333,
+      "doc": [
+        "人工批改。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:105"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:173",
+          "scripts/smoke_review_migration.py:181"
+        ],
+        "menu": [
+          "static/js/menu.config.js:224"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/submissions/{submission_id}/ai-grade",
+      "methods": [
+        "POST"
+      ],
+      "func": "ai_grade_submission",
+      "file": "app/routers/review.py",
+      "line": 353,
+      "doc": [
+        "AI 自动批改。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:143",
+          "路由审计报告_2026-10-12.md"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:235"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py"
+        ],
+        "frontend": [
+          "static/js/app-shell.js",
+          "static/js/console/pages/review.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}/analysis",
+      "methods": [
+        "GET"
+      ],
+      "func": "assignment_analysis",
+      "file": "app/routers/review.py",
+      "line": 377,
+      "doc": [
+        "作业分析。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:106"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:152"
+        ],
+        "menu": [
+          "static/js/menu.config.js:300"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/peer-reviews",
+      "methods": [
+        "GET"
+      ],
+      "func": "peer_reviews",
+      "file": "app/routers/review.py",
+      "line": 392,
+      "doc": [
+        "同伴互评概览。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:51",
+          "智慧平台_菜单配置与路由映射表.md:107",
+          "智慧平台_菜单配置与路由映射表.md:108",
+          "智慧平台_菜单配置与路由映射表.md:123",
+          "智慧平台_菜单配置与路由映射表.md:124"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:155"
+        ],
+        "menu": [
+          "static/js/menu.config.js:256"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:749"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}/peer-review",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_peer_review",
+      "file": "app/routers/review.py",
+      "line": 407,
+      "doc": [
+        "配置同伴互评。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:52"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:159"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}/peer-review",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_peer_review",
+      "file": "app/routers/review.py",
+      "line": 422,
+      "doc": [
+        "更新同伴互评配置。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:52"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:159"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/enrollments",
+      "methods": [
+        "GET"
+      ],
+      "func": "enrollments",
+      "file": "app/routers/review.py",
+      "line": 433,
+      "doc": [
+        "选课与名单。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:119",
+          "智慧平台_菜单配置与路由映射表.md:99"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:102"
+        ],
+        "menu": [
+          "static/js/menu.config.js:267"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:630"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/comment-memories",
+      "methods": [
+        "GET"
+      ],
+      "func": "comment_memories",
+      "file": "app/routers/review.py",
+      "line": 448,
+      "doc": [
+        "教师评语库：复用历史评语，减少重复输入。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:53",
+          "智慧平台_菜单配置与路由映射表.md:110",
+          "路由审计报告_2026-10-12.md:174"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:100"
+        ],
+        "menu": [
+          "static/js/menu.config.js:311"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:107",
+          "static/js/console/pages/review.js:796"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/grading-quality",
+      "methods": [
+        "GET"
+      ],
+      "func": "grading_quality",
+      "file": "app/routers/review.py",
+      "line": 475,
+      "doc": [
+        "批改质量复核。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:232"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:101"
+        ],
+        "menu": [
+          "static/js/menu.config.js:322"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:456",
+          "static/js/console/pages/review.js:820",
+          "static/js/console/pages/review.js:91",
+          "static/js/desktop/data.js:73"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/feedback/{suggestion_id}/approve",
+      "methods": [
+        "POST"
+      ],
+      "func": "approve_feedback",
+      "file": "app/routers/review.py",
+      "line": 559,
+      "doc": [
+        "批改反馈确认：教师采用 AI 建议并写回成绩。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:144",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:71"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:289"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/review/feedback/{suggestion_id}/regenerate",
+      "methods": [
+        "POST"
+      ],
+      "func": "regenerate_feedback",
+      "file": "app/routers/review.py",
+      "line": 576,
+      "doc": [
+        "批改反馈重新生成。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:146",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:72"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/review/assignments/{assignment_id}/submit",
+      "methods": [
+        "POST"
+      ],
+      "func": "submit_assignment",
+      "file": "app/routers/review.py",
+      "line": 598,
+      "doc": [
+        "在线作答提交。"
+      ],
+      "sig": [
+        "service.submit_assignment"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:122",
+          "路由审计报告_2026-10-12.md:105"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:165"
+        ],
+        "menu": [
+          "static/js/menu.config.js:213"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/grades",
+      "methods": [
+        "GET"
+      ],
+      "func": "my_grades",
+      "file": "app/routers/review.py",
+      "line": 624,
+      "doc": [
+        "成绩查询（学生视角）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:125",
+          "智慧平台_菜单配置与路由映射表.md:126"
+        ],
+        "script": [
+          "scripts/smoke_review_migration.py:110"
+        ],
+        "menu": [
+          "static/js/menu.config.js:278"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:152",
+          "static/js/console/pages/review.js:763"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/review/my-peer-reviews",
+      "methods": [
+        "GET"
+      ],
+      "func": "my_peer_reviews",
+      "file": "app/routers/review.py",
+      "line": 633,
+      "doc": [
+        "分配给我的互评任务。"
+      ],
+      "sig": [],
+      "calls": {
+        "script": [
+          "scripts/smoke_review_migration.py:111"
+        ],
+        "frontend": [
+          "static/js/console/pages/review.js:165",
+          "static/js/console/pages/review.js:715"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/overview",
+      "methods": [
+        "GET"
+      ],
+      "func": "overview",
+      "file": "app/routers/governance.py",
+      "line": 30,
+      "doc": [
+        "治理总览：复用管理后台 dashboard 的同一份口径。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:65"
+        ],
+        "menu": [
+          "static/js/menu.config.js:580"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:116",
+          "static/js/console/pages/governance.js:60"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/users",
+      "methods": [
+        "GET"
+      ],
+      "func": "users",
+      "file": "app/routers/governance.py",
+      "line": 36,
+      "doc": [
+        "用户与权限。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:67",
+          "智慧平台_菜单配置与路由映射表.md:70"
+        ],
+        "menu": [
+          "static/js/menu.config.js:591"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:164"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/org",
+      "methods": [
+        "GET"
+      ],
+      "func": "org",
+      "file": "app/routers/governance.py",
+      "line": 47,
+      "doc": [
+        "组织架构与班级：课程即班级载体。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:47",
+          "旧页面下线与路由收敛报告_2026-10-12.md:48",
+          "智慧平台_菜单配置与路由映射表.md:177",
+          "智慧平台_菜单配置与路由映射表.md:76"
+        ],
+        "menu": [
+          "static/js/menu.config.js:602"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:226"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/audit-logs",
+      "methods": [
+        "GET"
+      ],
+      "func": "audit_logs",
+      "file": "app/routers/governance.py",
+      "line": 57,
+      "doc": [
+        "审计日志：谁在什么时候做了什么。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:74",
+          "路由审计报告_2026-10-12.md:80"
+        ],
+        "menu": [
+          "static/js/menu.config.js:634"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:387"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/monitor",
+      "methods": [
+        "GET"
+      ],
+      "func": "monitor",
+      "file": "app/routers/governance.py",
+      "line": 67,
+      "doc": [
+        "系统健康监控：运行时指标、趋势、阈值告警。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:66"
+        ],
+        "menu": [
+          "static/js/menu.config.js:645"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:424",
+          "static/js/console/pages/governance.js:465",
+          "static/js/console/pages/governance.js:489",
+          "static/js/console/pages/governance.js:511",
+          "static/js/console/pages/governance.js:94"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/compute",
+      "methods": [
+        "GET"
+      ],
+      "func": "compute",
+      "file": "app/routers/governance.py",
+      "line": 76,
+      "doc": [
+        "模型与算力资源：模型注册表 + model_assets 资产表。"
+      ],
+      "sig": [
+        "registry.list_providers"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:222",
+          "路由审计报告_2026-10-12.md:116"
+        ],
+        "menu": [
+          "static/js/menu.config.js:613"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:291"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/governance/files",
+      "methods": [
+        "GET"
+      ],
+      "func": "files",
+      "file": "app/routers/governance.py",
+      "line": 107,
+      "doc": [
+        "文件与对象存储：stored_files 表。"
+      ],
+      "sig": [],
+      "calls": {
+        "menu": [
+          "static/js/menu.config.js:623"
+        ],
+        "frontend": [
+          "static/js/console/pages/governance.js:329"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/situation/overview",
+      "methods": [
+        "GET"
+      ],
+      "func": "overview",
+      "file": "app/routers/situation.py",
+      "line": 28,
+      "doc": [
+        "态势总览：视觉事件规模 + 未读通知 + 待处置计数。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:65",
+          "桌面端接口接入说明.md:73"
+        ],
+        "menu": [
+          "static/js/menu.config.js:510"
+        ],
+        "frontend": [
+          "static/js/console/pages/situation.js:142",
+          "static/js/console/pages/situation.js:360",
+          "static/js/console/pages/situation.js:510",
+          "static/js/console/pages/situation.js:65",
+          "static/js/desktop/data.js:96"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/situation/notifications",
+      "methods": [
+        "GET"
+      ],
+      "func": "notifications",
+      "file": "app/routers/situation.py",
+      "line": 54,
+      "doc": [
+        "通知中心：收敛 notifications 表（与 /api/notifications 同源）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:152",
+          "桌面端接口接入说明.md:75"
+        ],
+        "menu": [
+          "static/js/menu.config.js:552"
+        ],
+        "frontend": [
+          "static/js/console/pages/situation.js:141",
+          "static/js/console/pages/situation.js:150",
+          "static/js/console/pages/situation.js:329",
+          "static/js/console/pages/situation.js:94",
+          "static/js/desktop/data.js:100"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/situation/alerts",
+      "methods": [
+        "GET"
+      ],
+      "func": "alerts",
+      "file": "app/routers/situation.py",
+      "line": 80,
+      "doc": [
+        "告警处置队列：warning / critical 的视觉事件，严重在前。"
+      ],
+      "sig": [
+        "service.list_events"
+      ],
+      "calls": {
+        "docs": [
+          "交接文档_2026-10-09_视觉链路与RAG外置.md:120",
+          "智慧平台_菜单配置与路由映射表.md:234",
+          "路由审计报告_2026-10-12.md:118"
+        ],
+        "menu": [
+          "static/js/menu.config.js:542"
+        ],
+        "frontend": [
+          "static/js/console/pages/situation.js:219",
+          "static/js/console/pages/situation.js:75"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/situation/rules",
+      "methods": [
+        "GET"
+      ],
+      "func": "rules",
+      "file": "app/routers/situation.py",
+      "line": 102,
+      "doc": [
+        "告警规则配置：场景 + 等级阈值 + 通知对象 + 去重窗口。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:233",
+          "桌面端接口接入说明.md:74"
+        ],
+        "menu": [
+          "static/js/menu.config.js:532"
+        ],
+        "frontend": [
+          "static/js/console/pages/situation.js:380",
+          "static/js/console/pages/situation.js:424",
+          "static/js/console/pages/situation.js:480",
+          "static/js/desktop/data.js:98"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/situation/rules",
+      "methods": [
+        "POST"
+      ],
+      "func": "create_rule",
+      "file": "app/routers/situation.py",
+      "line": 124,
+      "doc": [
+        "新增告警规则（仅管理员）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:233",
+          "桌面端接口接入说明.md:74"
+        ],
+        "menu": [
+          "static/js/menu.config.js:532"
+        ],
+        "frontend": [
+          "static/js/console/pages/situation.js:380",
+          "static/js/console/pages/situation.js:424",
+          "static/js/console/pages/situation.js:480",
+          "static/js/desktop/data.js:98"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/situation/rules/{rule_id}/enabled",
+      "methods": [
+        "PUT"
+      ],
+      "func": "toggle_rule",
+      "file": "app/routers/situation.py",
+      "line": 143,
+      "doc": [
+        "启用 / 停用一条规则（仅管理员）。"
+      ],
+      "sig": [],
+      "calls": {
+        "frontend": [
+          "static/js/console/pages/situation.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/courses/{course_id}/documents/index",
+      "methods": [
+        "POST"
+      ],
+      "func": "knowledge_index",
+      "file": "app/routers/knowledge.py",
+      "line": 37,
+      "doc": [
+        "重建课程知识索引（等价 /api/ai/courses/{id}/documents/index）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:134"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:439"
+        ],
+        "frontend": [
+          "static/js/console/pages/knowledge.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/courses/{course_id}/qa",
+      "methods": [
+        "POST"
+      ],
+      "func": "knowledge_qa",
+      "file": "app/routers/knowledge.py",
+      "line": 47,
+      "doc": [
+        "基于课程知识库的检索增强问答。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:135"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:450"
+        ],
+        "frontend": [
+          "static/js/console/pages/knowledge.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/agent/chat",
+      "methods": [
+        "POST"
+      ],
+      "func": "knowledge_agent",
+      "file": "app/routers/knowledge.py",
+      "line": 58,
+      "doc": [
+        "Agent 对话：规划 → 工具调用 → 综合。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "数字员工协作平台_设计说明.md:529",
+          "旧页面下线与路由收敛报告_2026-10-12.md:49",
+          "智慧平台_菜单配置与路由映射表.md:136",
+          "桌面端接口接入说明.md:171",
+          "桌面端接口接入说明.md:81"
+        ],
+        "menu": [
+          "static/js/menu.config.js:461"
+        ],
+        "frontend": [
+          "static/js/console/pages/knowledge.js:168",
+          "static/js/desktop/data.js:126"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/runs/{run_id}",
+      "methods": [
+        "GET"
+      ],
+      "func": "knowledge_run",
+      "file": "app/routers/knowledge.py",
+      "line": 68,
+      "doc": [
+        "Agent 运行记录。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:138",
+          "桌面端接口接入说明.md",
+          "桌面端接口接入说明.md:234",
+          "桌面端接口接入说明.md:82"
+        ],
+        "menu": [
+          "static/js/menu.config.js"
+        ],
+        "frontend": [
+          "static/js/console/pages/knowledge.js",
+          "static/js/desktop/data.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/runs/{run_id}/tool-calls",
+      "methods": [
+        "GET"
+      ],
+      "func": "knowledge_run_tool_calls",
+      "file": "app/routers/knowledge.py",
+      "line": 78,
+      "doc": [
+        "Agent 工具调用轨迹。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:139",
+          "桌面端接口接入说明.md",
+          "桌面端接口接入说明.md:83"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:482"
+        ],
+        "frontend": [
+          "static/js/console/pages/knowledge.js",
+          "static/js/desktop/data.js"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/tools",
+      "methods": [
+        "GET"
+      ],
+      "func": "knowledge_tools",
+      "file": "app/routers/knowledge.py",
+      "line": 88,
+      "doc": [
+        "当前登录角色可调用的 Agent 工具清单（只读）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "数字员工协作平台_设计说明.md:565",
+          "数字员工协作平台_设计说明.md:614"
+        ],
+        "frontend": [
+          "static/js/desktop/data.js:139"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/knowledge/regulations/match",
+      "methods": [
+        "POST"
+      ],
+      "func": "regulations_match",
+      "file": "app/routers/knowledge.py",
+      "line": 111,
+      "doc": [
+        "规范知识关联：把视觉事件类型检索到对应的规范条文。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:244"
+        ],
+        "menu": [
+          "static/js/menu.config.js:472"
+        ],
+        "frontend": [
+          "static/js/console/pages/knowledge.js:413"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/overview",
+      "methods": [
+        "GET"
+      ],
+      "func": "overview",
+      "file": "app/routers/insight.py",
+      "line": 60,
+      "doc": [
+        "学情总览：视觉输入规模 + 评分闭环进度。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:240",
+          "桌面端接口接入说明.md:67"
+        ],
+        "menu": [
+          "static/js/menu.config.js:349"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:419",
+          "static/js/console/pages/insight.js:63",
+          "static/js/desktop/data.js:82"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/students/{student_id}/profile",
+      "methods": [
+        "GET"
+      ],
+      "func": "profile",
+      "file": "app/routers/insight.py",
+      "line": 94,
+      "doc": [
+        "学生画像：课程、成绩与低分作业的原始聚合。"
+      ],
+      "sig": [],
+      "calls": {
+        "menu": [
+          "static/js/menu.config.js:359"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:227"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/students/{student_id}/diagnosis",
+      "methods": [
+        "POST"
+      ],
+      "func": "diagnosis",
+      "file": "app/routers/insight.py",
+      "line": 106,
+      "doc": [
+        "学习诊断（等价 /api/ai/students/{id}/diagnosis）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:140"
+        ],
+        "menu": [
+          "static/js/menu.config.js:370"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:241"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/students/{student_id}/learning-plan",
+      "methods": [
+        "POST"
+      ],
+      "func": "learning_plan",
+      "file": "app/routers/insight.py",
+      "line": 120,
+      "doc": [
+        "学习路径规划（等价 /api/ai/students/{id}/learning-plan）。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:50",
+          "智慧平台_菜单配置与路由映射表.md:141"
+        ],
+        "menu": [
+          "static/js/menu.config.js:381"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:255"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/students/{student_id}/engagement",
+      "methods": [
+        "GET"
+      ],
+      "func": "engagement",
+      "file": "app/routers/insight.py",
+      "line": 134,
+      "doc": [
+        "课堂参与度：用身份映射把视觉事件对到具体学生。"
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:241",
+          "身份连接键修复_2026-10-10.md:65"
+        ],
+        "menu": [
+          "static/js/menu.config.js:392"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:270"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/alerts",
+      "methods": [
+        "GET"
+      ],
+      "func": "alerts",
+      "file": "app/routers/insight.py",
+      "line": 218,
+      "doc": [
+        "学业与行为预警：以视觉事件中的关注级以上事件为输入。"
+      ],
+      "sig": [
+        "service.list_events"
+      ],
+      "calls": {
+        "docs": [
+          "交接文档_2026-10-09_视觉链路与RAG外置.md:120",
+          "智慧平台_菜单配置与路由映射表.md:242",
+          "路由审计报告_2026-10-12.md:118"
+        ],
+        "menu": [
+          "static/js/menu.config.js:402"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:324",
+          "static/js/console/pages/knowledge.js:380"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/insight/reports",
+      "methods": [
+        "POST"
+      ],
+      "func": "reports",
+      "file": "app/routers/insight.py",
+      "line": 250,
+      "doc": [
+        "学情报告：把评分、薄弱点、视觉行为合并成一份可核对的快照。"
+      ],
+      "sig": [
+        "service.get_student_profile"
+      ],
+      "calls": {
+        "docs": [
+          "智慧平台_菜单配置与路由映射表.md:243",
+          "身份连接键修复_2026-10-10.md:66"
+        ],
+        "menu": [
+          "static/js/menu.config.js:412"
+        ],
+        "frontend": [
+          "static/js/console/pages/insight.js:360",
+          "static/js/console/pages/insight.js:366"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/agent/chat",
+      "methods": [
+        "POST"
+      ],
+      "func": "agent_runtime_chat",
+      "file": "app/routers/ai.py",
+      "line": 838,
+      "doc": [
+        "Execute a bounded Agent: planning, tools, memory, and synthesis."
+      ],
+      "sig": [
+        "service.fail_run"
+      ],
+      "calls": {
+        "docs": [
+          "旧页面下线与路由收敛报告_2026-10-12.md:49",
+          "智慧平台_菜单配置与路由映射表.md:136",
+          "路由审计报告_2026-10-12.md:145",
+          "路由审计报告_2026-10-12.md:200"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/ai/courses/{course_id}/documents/index",
+      "methods": [
+        "POST"
+      ],
+      "func": "index_course_documents",
+      "file": "app/routers/ai.py",
+      "line": 917,
+      "doc": [
+        "Index uploaded course materials into DB chunks and optional vector store."
+      ],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "智慧平台_功能模块重构规划.md",
+          "智慧平台_功能模块重构规划.md:76",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:134",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:219"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:444"
+        ],
+        "script": [
+          "scripts/debug_ai.py",
+          "scripts/debug_ai2.py",
+          "scripts/demo_agents.py",
+          "scripts/gen_project_word.py"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/courses/{course_id}/qa",
+      "methods": [
+        "POST"
+      ],
+      "func": "course_qa",
+      "file": "app/routers/ai.py",
+      "line": 932,
+      "doc": [
+        "课程 RAG 问答：仅基于当前课程已索引资料回答。"
+      ],
+      "sig": [
+        "service.complete_run",
+        "service.complete_run",
+        "service.create_run",
+        "service.fail_run",
+        "service.log_qa",
+        "service.log_qa",
+        "service.log_tool_call_json",
+        "service.log_tool_call_json",
+        "service.log_tool_call_json"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:25502",
+          "EduAgent_从零到一自学复现指南.md:25543",
+          "EduAgent_从零到一自学复现指南.md:25670",
+          "EduAgent_从零到一自学复现指南.md:25673",
+          "EduAgent_从零到一自学复现指南.md:26177",
+          "README.md:179",
+          "智慧平台_菜单配置与路由映射表.md:135",
+          "路由审计报告_2026-10-12.md:200",
+          "路由审计报告_2026-10-12.md:70"
+        ],
+        "script": [
+          "scripts/debug_ai.py:27",
+          "scripts/debug_ai2.py:18",
+          "scripts/demo_agents.py:36",
+          "scripts/demo_agents.py:39",
+          "scripts/gen_project_word.py:398"
+        ],
+        "menu": [
+          "static/js/menu.config.js:455"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/students/{student_id}/diagnosis",
+      "methods": [
+        "POST"
+      ],
+      "func": "diagnose_student",
+      "file": "app/routers/ai.py",
+      "line": 1028,
+      "doc": [
+        "学情诊断"
+      ],
+      "sig": [
+        "service.complete_run",
+        "service.create_run",
+        "service.get_student_profile",
+        "service.get_weakness_analysis"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:25691",
+          "EduAgent_从零到一自学复现指南.md:26178",
+          "README.md:180",
+          "智慧平台_菜单配置与路由映射表.md:140",
+          "路由审计报告_2026-10-12.md:203"
+        ],
+        "script": [
+          "scripts/demo_agents.py:56",
+          "scripts/gen_project_word.py:399"
+        ],
+        "menu": [
+          "static/js/menu.config.js:364",
+          "static/js/menu.config.js:375"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/students/{student_id}/learning-plan",
+      "methods": [
+        "POST"
+      ],
+      "func": "generate_learning_plan",
+      "file": "app/routers/ai.py",
+      "line": 1070,
+      "doc": [
+        "生成学习计划（LangChain Agent）"
+      ],
+      "sig": [
+        "service.complete_run",
+        "service.create_run",
+        "service.fail_run",
+        "service.fail_run"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:25616",
+          "EduAgent_从零到一自学复现指南.md:25699",
+          "README.md:181",
+          "智慧平台_菜单配置与路由映射表.md:141",
+          "路由审计报告_2026-10-12.md:117",
+          "路由审计报告_2026-10-12.md:203"
+        ],
+        "script": [
+          "scripts/debug_lp.py:24",
+          "scripts/demo_agents.py:64"
+        ],
+        "menu": [
+          "static/js/menu.config.js:386"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/teacher/submissions/{submission_id}/grade-suggestion",
+      "methods": [
+        "POST"
+      ],
+      "func": "grade_suggestion",
+      "file": "app/routers/ai.py",
+      "line": 1158,
+      "doc": [
+        "AI 批改建议（LangChain Agent）"
+      ],
+      "sig": [
+        "service.complete_run",
+        "service.create_run",
+        "service.fail_run",
+        "service.fail_run"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:25576",
+          "EduAgent_从零到一自学复现指南.md:25715",
+          "EduAgent_从零到一自学复现指南.md:26179",
+          "README.md:182",
+          "智慧平台_菜单配置与路由映射表.md:143",
+          "路由审计报告_2026-10-12.md:117",
+          "路由审计报告_2026-10-12.md:204"
+        ],
+        "script": [
+          "scripts/debug_grade.py:18",
+          "scripts/demo_agents.py:79",
+          "scripts/gen_project_word.py:400"
+        ],
+        "menu": [
+          "static/js/menu.config.js:240"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/runs/{run_id}",
+      "methods": [
+        "GET"
+      ],
+      "func": "get_run_detail",
+      "file": "app/routers/ai.py",
+      "line": 1238,
+      "doc": [
+        "查看 Agent 运行轨迹"
+      ],
+      "sig": [
+        "service.get_run_detail"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:25971",
+          "EduAgent_从零到一自学复现指南.md:26180",
+          "README.md:183",
+          "旧页面下线与路由收敛报告_2026-10-12.md:126",
+          "智慧平台_菜单配置与路由映射表.md:138",
+          "路由审计报告_2026-10-12.md:220"
+        ],
+        "script": [
+          "scripts/gen_project_word.py:194",
+          "scripts/gen_project_word.py:401"
+        ],
+        "menu": [
+          "static/js/menu.config.js:487"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/runs/{run_id}/tool-calls",
+      "methods": [
+        "GET"
+      ],
+      "func": "get_run_tool_calls",
+      "file": "app/routers/ai.py",
+      "line": 1255,
+      "doc": [
+        "查看 Agent 工具调用轨迹。"
+      ],
+      "sig": [
+        "service.get_run_detail",
+        "service.get_tool_calls"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "README.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:139",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:220"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:487"
+        ],
+        "script": [
+          "scripts/gen_project_word.py"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/ai/feedback/{suggestion_id}",
+      "methods": [
+        "PUT"
+      ],
+      "func": "update_feedback",
+      "file": "app/routers/ai.py",
+      "line": 1294,
+      "doc": [
+        "教师修改或拒绝 AI 批改建议。"
+      ],
+      "sig": [
+        "teacher_service.grade_submission"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md",
+          "旧页面下线与路由收敛报告_2026-10-12.md:123",
+          "智慧平台_菜单配置与路由映射表.md",
+          "智慧平台_菜单配置与路由映射表.md:145",
+          "路由审计报告_2026-10-12.md",
+          "路由审计报告_2026-10-12.md:104",
+          "路由审计报告_2026-10-12.md:146",
+          "路由审计报告_2026-10-12.md:201"
+        ],
+        "menu": [
+          "static/js/menu.config.js",
+          "static/js/menu.config.js:294"
+        ]
+      },
+      "live": false
+    },
+    {
+      "path": "/api/profile",
+      "methods": [
+        "GET"
+      ],
+      "func": "_profile_get",
+      "file": "app/main.py",
+      "line": 147,
+      "doc": [],
+      "sig": [
+        "svc.get_profile"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:1367",
+          "EduAgent_从零到一自学复现指南.md:1377",
+          "文件树.md:14",
+          "路由审计报告_2026-10-12.md:279",
+          "路由审计报告_2026-10-12.md:88"
+        ],
+        "frontend": [
+          "static/js/console/app.js:162"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/profile",
+      "methods": [
+        "PUT"
+      ],
+      "func": "_profile_put",
+      "file": "app/main.py",
+      "line": 157,
+      "doc": [],
+      "sig": [
+        "svc.update_profile"
+      ],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:1367",
+          "EduAgent_从零到一自学复现指南.md:1377",
+          "文件树.md:14",
+          "路由审计报告_2026-10-12.md:279",
+          "路由审计报告_2026-10-12.md:88"
+        ],
+        "frontend": [
+          "static/js/console/app.js:162"
+        ]
+      },
+      "live": true
+    },
+    {
+      "path": "/api/health",
+      "methods": [
+        "GET"
+      ],
+      "func": "health_check",
+      "file": "app/main.py",
+      "line": 337,
+      "doc": [],
+      "sig": [],
+      "calls": {
+        "docs": [
+          "EduAgent_从零到一自学复现指南.md:1485",
+          "EduAgent_从零到一自学复现指南.md:26716",
+          "交接文档_2026-10-09_视觉链路与RAG外置.md:416",
+          "交接文档_2026-10-09_视觉链路与RAG外置.md:75",
+          "启动指南.md:46",
+          "启动指南.md:54",
+          "告警规则引擎_2026-10-10.md:100",
+          "文件树.md:20",
+          "旧页面下线与路由收敛报告_2026-10-12.md:67",
+          "旧页面下线与路由收敛报告_2026-10-12.md:96",
+          "桌面端接口接入说明.md:21",
+          "环境重建与工作区清理报告_2026-10-10.md:112",
+          "环境重建与工作区清理报告_2026-10-10.md:46",
+          "视觉感知链路说明_上传即感知与事件派生.md:125",
+          "路由审计报告_2026-10-12.md:241",
+          "路由审计报告_2026-10-12.md:268",
+          "身份连接键修复_2026-10-10.md:72"
+        ],
+        "script": [
+          "scripts/run_demo.py:84",
+          "scripts/smoke_app.py:43",
+          "scripts/start_all.ps1:183"
+        ],
+        "frontend": [
+          "static/js/app-shell.js:122",
+          "static/js/console/api.js:163",
+          "static/js/console/app.js:102",
+          "static/js/console/pages/governance.js:253",
+          "static/js/console/pages/governance.js:423",
+          "static/js/console/pages/governance.js:443",
+          "static/js/console/pages/governance.js:61",
+          "static/js/console/pages/governance.js:72",
+          "static/js/console/pages/situation.js:66",
+          "static/login.html:455"
+        ]
+      },
+      "live": true
+    }
+  ]
+}

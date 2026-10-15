@@ -1,0 +1,32 @@
+/* ==========================================================================
+   employee-page.css —— 原型宿主滚动方案（仅供 employee-workspace.html 使用）
+   --------------------------------------------------------------------------
+   hifi 原型默认把 .stage 固定在视口、靠「height:100% 链条内部滚动」工作。
+   在「iframe 高度被撑到内容全高」的宿主（IDE 内置预览面板）里该方案会失效：
+   内部没有可滚容器、外层也没得滚。
+
+   本文件解开高度锁定，让 document 成为唯一滚动容器 —— 普通浏览器与 iframe
+   宿主都天然支持。
+
+   【为什么单独成文件】
+     这是「外壳/宿主」层面的适配，不是组件能力。把它从 employee-ui.css 拆出来，
+     同一套 emp- 组件才能被 desktop.css 那种「视口锁高 + 内容区自滚」的桌面外壳
+     直接复用，而不必用 !important 互相压制。
+   ========================================================================== */
+html, body { height: auto !important; overflow: visible !important; }
+.stage { position: static !important; min-height: 100vh; }
+.stage-body { display: block; padding: var(--sp-5); }
+.stage-frame { height: auto !important; min-height: 0; }
+.app { height: auto !important; min-height: 0; }
+.page { position: static !important; inset: auto !important; overflow: visible !important; }
+.shell { height: auto !important; min-height: 0; }
+.main { height: auto !important; }
+/* 侧栏常驻：sticky 顶部对齐，视口高内自滚 */
+.sidebar {
+  position: sticky; top: 0; height: auto !important; max-height: 100vh;
+  overflow-y: auto; align-self: flex-start;
+}
+.content { flex: 1 1 auto; overflow: visible; }
+
+/* 原型横向内容较宽，窄窗口下允许横向滚动而不是压坏栅格 */
+body { min-width: 1080px; }

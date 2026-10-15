@@ -1,0 +1,140 @@
+/* =============================================================================
+   登录页 —— "感知视口"英雄区
+   -----------------------------------------------------------------------------
+   英雄元素 = 平台最有代表性的东西：一台正在看的机器。
+   左侧是实时感知视口（带边界框 / 跟踪号 / HUD / 事件条），右侧是克制的登录表单。
+   不用大数字 + 渐变，不用营销文案排版。
+   ========================================================================== */
+
+.auth { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.32fr) minmax(400px, 0.68fr); }
+
+/* ---------- 左：感知视口 ---------- */
+.percept {
+  position: relative; display: flex; flex-direction: column;
+  background: #0b141e; color: #cfe0ef; overflow: hidden;
+  border-right: 1px solid #000;
+}
+.percept::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 78% 12%, rgba(224, 160, 33, .10), transparent 52%);
+}
+.pc-top {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-5) var(--s-6); border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.pc-logo { display: flex; align-items: center; gap: var(--s-3); }
+.pc-logo .mk {
+  width: 34px; height: 34px; border-radius: var(--r-sm); display: grid; place-items: center;
+  background: var(--signal); color: #1a1206;
+}
+.pc-logo .mk svg { width: 20px; height: 20px; }
+.pc-logo b { font-family: var(--font-display); font-size: var(--t-md); font-weight: 640; color: #f0f6fc; letter-spacing: .01em; }
+.pc-logo span { display: block; font-size: var(--t-xs); color: #7f93aa; margin-top: 1px; }
+.pc-top .pc-state {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
+  padding: 0 10px; height: 24px; border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .06); font-size: var(--t-xs); color: #a9bbcd;
+}
+.pc-top .pc-state svg { width: 12px; height: 12px; }
+
+.pc-viewport { position: relative; flex: 1; min-height: 0; }
+.pc-scene { position: absolute; inset: var(--s-6) var(--s-6) 0; }
+.pc-scene .scene-frame { height: 100%; aspect-ratio: auto; }
+
+.pc-side {
+  position: relative; z-index: 2; flex: none;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px; margin: 0 var(--s-6); background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .08); border-top: 0; border-radius: 0 0 var(--r-md) var(--r-md);
+  overflow: hidden;
+}
+.pc-cell { background: #0e1824; padding: var(--s-3) var(--s-4); }
+.pc-cell .k { font-size: var(--t-2xs); color: #71869c; }
+.pc-cell .v { font-size: var(--t-md); font-weight: 620; color: #eaf2fa; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.pc-cell .v small { font-size: var(--t-2xs); font-weight: 500; color: #71869c; margin-left: 4px; }
+
+.pc-ticker {
+  position: relative; z-index: 2; flex: none;
+  margin: var(--s-5) var(--s-6) var(--s-6);
+  border: 1px solid rgba(255, 255, 255, .08); border-radius: var(--r-md);
+  background: rgba(255, 255, 255, .03); overflow: hidden;
+}
+.pc-ticker-hd { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3) var(--s-4); border-bottom: 1px solid rgba(255, 255, 255, .07); font-size: var(--t-xs); color: #889cb2; }
+.pc-ticker-hd .spacer { flex: 1; }
+/* 图标兜底尺寸。行内 SVG 没有 width/height 属性时按浏览器默认的 300×150 渲染，
+   凡是没有上下文规则覆盖的位置都会冒出一个巨型图形。下面各处的专用规则
+   选择器更具体，会正常覆盖这一条。 */
+[data-icon] svg,
+svg.ic { width: 13px; height: 13px; flex: none; }
+.pc-ticker-bd { max-height: 132px; overflow: hidden; }
+.pc-ev { display: flex; align-items: center; gap: var(--s-3); padding: 9px var(--s-4); border-bottom: 1px solid rgba(255, 255, 255, .05); font-size: var(--t-sm); color: #b9cadb; }
+.pc-ev:last-child { border-bottom: 0; }
+.pc-ev .t { font-family: var(--font-mono); font-size: var(--t-xs); color: #6f849b; flex: none; }
+.pc-ev .lab { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-ev .cf { font-family: var(--font-mono); font-size: var(--t-xs); color: #8ea4ba; }
+.pc-ev .pill { flex: none; font-size: var(--t-2xs); font-weight: 600; padding: 2px 7px; border-radius: var(--r-pill); }
+.pc-ev .pill.ok { background: rgba(23, 147, 106, .18); color: #5fd6ab; }
+.pc-ev .pill.at { background: rgba(224, 160, 33, .18); color: #f0bb5c; }
+.pc-ev .pill.al { background: rgba(208, 68, 63, .18); color: #f39a95; }
+
+/* ---------- 右：登录表单 ---------- */
+.gate { display: flex; flex-direction: column; background: var(--paper); overflow-y: auto; }
+.gate-inner { margin: auto; width: 100%; max-width: 396px; padding: var(--s-8) var(--s-6); }
+.gate-hd { margin-bottom: var(--s-6); }
+.gate-hd h1 { font-family: var(--font-display); font-size: var(--t-2xl); font-weight: 650; letter-spacing: -.02em; }
+.gate-hd p { font-size: var(--t-sm); color: var(--muted); margin-top: 6px; }
+.gate-form { display: flex; flex-direction: column; gap: var(--s-4); }
+.gate-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+.gate-alt { display: flex; align-items: center; justify-content: space-between; margin-top: var(--s-2); }
+.gate-sep { display: flex; align-items: center; gap: var(--s-3); color: var(--muted-2); font-size: var(--t-xs); margin: var(--s-5) 0 var(--s-3); }
+.gate-sep::before, .gate-sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+.demo-card {
+  display: flex; flex-direction: column; gap: 3px; padding: var(--s-3);
+  border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface);
+  text-align: left; transition: border-color var(--d-1) var(--ease), background var(--d-1) var(--ease);
+}
+.demo-card:hover { border-color: var(--signal); background: var(--signal-soft); }
+.demo-card .dc-r { font-size: var(--t-2xs); color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.demo-card .dc-r svg { width: 12px; height: 12px; }
+.demo-card .dc-u { font-size: var(--t-sm); font-weight: 580; font-family: var(--font-mono); }
+.gate-foot { margin-top: var(--s-6); font-size: var(--t-xs); color: var(--muted-2); line-height: var(--lh-snug); }
+
+/* ---------- 感知视口内部：SVG 场景 ---------- */
+.scene-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scene-svg .ln { stroke: #2f465e; stroke-width: 1.4; fill: none; }
+.scene-svg .ln-dim { stroke: #22344a; stroke-width: 1.2; fill: none; }
+.scene-svg .seat { fill: #14212f; stroke: #2b4257; stroke-width: 1.3; }
+.scene-svg .desk { fill: #182635; stroke: #2f4860; stroke-width: 1.3; }
+.scene-svg .leg { fill: #16222f; stroke: #263b4f; stroke-width: 1; }
+.scene-svg .win { fill: #16324a; stroke: #2b4257; stroke-width: 1.4; opacity: 0.55; }
+.scene-svg .win-bar { stroke: #0f2436; stroke-width: 2; }
+.scene-svg .t-body { fill: #2a4761; stroke: #477a9e; stroke-width: 1.4; }
+.scene-svg .t-head { fill: #33566f; stroke: #5490b6; stroke-width: 1.4; }
+.scene-svg .body { fill: #1d3145; stroke: #37536e; stroke-width: 1.3; }
+.scene-svg .head { fill: #24405a; stroke: #3d6285; stroke-width: 1.3; }
+.scene-svg .board { fill: #101c28; stroke: #2b4257; stroke-width: 1.4; }
+.scene-svg .board-txt { fill: #3d5f80; font: 600 11px/1 var(--font-mono); }
+.scene-svg .sbx { fill: none; stroke: #14b6c6; stroke-width: 1.6; }
+.scene-svg .sbx.at { stroke: #e0a021; }
+.scene-svg .sbx.al { stroke: #d0443f; }
+.scene-svg .sbx-tag { fill: #14b6c6; }
+.scene-svg .sbx-tag.at { fill: #e0a021; }
+.scene-svg .sbx-tag.al { fill: #d0443f; }
+.scene-svg .sbx-txt { fill: #04121a; font: 700 9.5px/1 var(--font-mono); }
+.scene-svg .id-txt { fill: #6f96b8; font: 600 9px/1 var(--font-mono); }
+.scene-svg .cross { stroke: #34506b; stroke-width: 1; stroke-dasharray: 3 3; }
+
+@media (max-width: 1080px) {
+  .auth { grid-template-columns: minmax(0, 1fr); }
+  .percept { min-height: 340px; }
+  .pc-scene { position: relative; inset: auto; margin: var(--s-4) var(--s-5) 0; }
+  .pc-scene .scene-frame { height: 240px; }
+  .pc-viewport { position: relative; }
+  .pc-side { margin: 0 var(--s-5); }
+}
+@media (max-width: 620px) {
+  .pc-side { grid-template-columns: minmax(0, 1fr); }
+  .demo-grid { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,0 +1,169 @@
+/* platform-hifi.css
+ *
+ * 本文件只做「在 hifi 组件库之上」的少量补充，不重复定义颜色/间距/圆角，
+ * 全部使用 hifi.css 的令牌。设计基底：企业中后台（data-theme="saas"）。
+ */
+
+/* ---------- 侧栏品牌区 ---------- */
+.sb-brand {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-2) var(--sp-4);
+  border-bottom: 1px solid var(--border); margin-bottom: var(--sp-2);
+}
+.sb-logo {
+  display: grid; place-items: center; flex: none;
+  width: 34px; height: 34px; border-radius: var(--radius-md);
+  background: var(--grad-brand); color: var(--on-brand);
+}
+.sb-brand-txt { display: flex; flex-direction: column; min-width: 0; }
+.sb-brand-txt b { font-size: var(--fs-sm); font-weight: var(--fw-semibold); letter-spacing: .2px; }
+.sb-brand-txt .sub { font-size: var(--fs-xs); color: var(--text-4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.sb-foot { padding-top: var(--sp-3); border-top: 1px solid var(--border); }
+.sb-foot .who { display: flex; align-items: center; gap: var(--sp-3); }
+.sb-foot .who b { font-size: var(--fs-sm); display: block; }
+.sb-foot .who span { font-size: var(--fs-xs); color: var(--text-4); }
+
+/* 侧栏通道项：图标 + 名称 + 能力数 */
+.nav-item .ni-badge { margin-left: auto; }
+.nav-item .ni-sub { display: block; font-size: var(--fs-xs); color: var(--text-4); font-weight: var(--fw-normal); }
+
+/* ---------- 顶栏 ---------- */
+.tb-search { width: 240px; }
+.tb-search .input { height: 34px; }
+.tb-clock { font-size: var(--fs-sm); letter-spacing: .5px; }
+
+/* ---------- 滚动方案（最终版：标准文档流） ----------
+ * 第一版曾用「固定视口 + .content 内部滚动」（overflow-y:auto + min-height:0），
+ * 在普通浏览器里实测可滚，但在「iframe 高度被撑到内容全高」的宿主
+ *（如 IDE 内置预览面板）里整体失效：内部不再有可滚容器，外层又没得滚。
+ * 最终改为标准文档流滚动 —— document 是唯一的滚动容器，任何宿主都天然支持：
+ *   - 解开 hifi 原型对 html/body 的 height:100% + overflow:hidden 锁定
+ *   - .content 恢复普通块（overflow:visible），内容自然撑高文档
+ *   - topbar 用 sticky 吸顶；侧栏 sticky + 固定视口高，内部可滚
+ */
+html,
+body {
+  height: auto !important;
+  overflow: visible !important;
+}
+.app {
+  height: auto;
+  min-height: 100vh;
+}
+.shell {
+  height: auto;
+  min-height: 100vh;
+}
+.main {
+  height: auto;
+  min-height: 100vh;
+  min-width: 0;
+}
+.content {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: visible;
+}
+/* 侧栏：fixed 常驻视口（经典后台布局）。
+ * 不用 sticky 的原因：文档很长时 sticky 的吸附空间 = 文档高 - 侧栏高，
+ * 滚到底之前就会耗尽，侧栏会跟着滚走 100+px，用户信息被裁掉。
+ * fixed 则永远可见；窄屏时 hifi 的抽屉样式本身就是 fixed，无缝衔接。
+ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  flex-basis: auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.main {
+  margin-left: var(--sidebar-w);
+}
+/* 窄屏抽屉态：侧栏收起，主区占满 */
+@container app (max-width: 720px) {
+  .main { margin-left: 0; }
+}
+
+/* ---------- 回到顶部 ----------
+ * 滚动容器是 document（window），必要时兼容内部滚动容器。
+ */
+.back-top {
+  position: fixed; z-index: 60; right: var(--sp-5); bottom: var(--sp-5);
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: var(--radius-full, 999px);
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--shadow-3);
+  color: var(--text-2);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity var(--dur-2), transform var(--dur-2), visibility var(--dur-2);
+}
+.back-top svg { width: 18px; height: 18px; }
+.back-top.is-on { opacity: 1; visibility: visible; transform: none; }
+.back-top:hover { color: var(--brand-600); border-color: var(--brand-500); }
+
+/* ---------- 内容排版 ---------- */
+.content-inner { max-width: 1180px; }
+
+.pg-head { display: flex; align-items: flex-start; gap: var(--sp-4); flex-wrap: wrap; margin-bottom: var(--sp-5); }
+.pg-head .pg-main { flex: 1; min-width: 260px; }
+.pg-head h2 { margin: 0 0 4px; font-size: var(--fs-xl); font-weight: var(--fw-semibold); letter-spacing: -.01em; }
+.pg-head .pg-desc { font-size: var(--fs-sm); color: var(--text-3); max-width: 720px; }
+.pg-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+
+/* 指标行 */
+.stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-4); }
+.stat-grid .stat { display: flex; align-items: flex-start; gap: var(--sp-3); }
+.stat-grid .stat-body { min-width: 0; }
+.stat-hint { font-size: var(--fs-xs); color: var(--text-4); margin-top: 4px; }
+
+/* 图表行 */
+.chart-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--sp-4); }
+.chart-legend { display: flex; flex-wrap: wrap; gap: var(--sp-3); font-size: var(--fs-xs); color: var(--text-3); }
+
+/* 面板组 */
+.panel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+
+/* 能力表的状态列 */
+.tbl-endpoint { font-family: var(--font-num); font-size: var(--fs-xs); color: var(--text-4); }
+.tbl-name { font-weight: var(--fw-medium); }
+
+/* 搜索命中高亮 */
+mark.hit { background: var(--brand-50); color: var(--brand-600); border-radius: 2px; padding: 0 2px; }
+
+/* 扫描结果：题块列表 */
+.blk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-3); }
+.blk {
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: var(--sp-3); background: var(--surface-2);
+}
+.blk .bk-no { font-family: var(--font-num); font-size: var(--fs-xs); color: var(--text-4); }
+.blk .bk-cls { font-size: var(--fs-sm); font-weight: var(--fw-medium); margin: 2px 0 6px; }
+
+/* 事件严重度 */
+.sev-critical { color: var(--danger); }
+.sev-warning { color: var(--warning); }
+.sev-info { color: var(--info, var(--brand-600)); }
+
+/* 空态内嵌插图 */
+.empty-illus { color: var(--text-4); }
+
+/* ---------- 响应式：沿用 hifi 的容器查询断点 ---------- */
+@container app (max-width: 1024px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chart-grid, .panel-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@container app (max-width: 720px) {
+  .stat-grid { grid-template-columns: minmax(0, 1fr); }
+  .tb-search, .tb-clock { display: none; }
+  .pg-head { flex-direction: column; }
+}
+
+/* 尊重系统降低动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+}

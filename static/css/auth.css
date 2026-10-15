@@ -1,0 +1,63 @@
+/* auth.css —— 入口页在 hifi 组件库之上的少量补充，颜色/间距全部使用 hifi 令牌 */
+
+/* 与 platform-hifi.css 同理：解开 hifi 原型的视口锁定，改用标准文档流滚动，
+ * 在浏览器 / iframe / 内置预览面板等所有宿主环境里都能滚。 */
+html,
+body {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.login-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+  min-height: 100vh;
+}
+
+/* 左栏：系统读数 */
+.login-side {
+  display: flex; flex-direction: column; gap: var(--sp-4);
+  padding: var(--sp-8) var(--sp-7);
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+}
+.ls-brand { display: flex; align-items: center; gap: var(--sp-3); }
+.ls-brand b { display: block; font-size: var(--fs-md); font-weight: var(--fw-semibold); }
+.ls-brand .sub { font-size: var(--fs-xs); color: var(--text-4); }
+
+.sb-logo {
+  display: grid; place-items: center; flex: none;
+  width: 34px; height: 34px; border-radius: var(--radius-md);
+  background: var(--grad-brand); color: var(--on-brand);
+}
+
+.ls-clock { display: flex; flex-direction: column; }
+.ls-clock .num { font-size: var(--fs-2xl); font-weight: var(--fw-bold); letter-spacing: .5px; }
+
+.ls-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.ls-stats .stat { display: flex; align-items: flex-start; gap: var(--sp-3); }
+.ls-kv { margin: 0; }
+
+.ls-foot { margin-top: auto; font-size: var(--fs-xs); }
+
+/* 右栏：登录卡 */
+.login-main {
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--sp-7) var(--sp-5);
+}
+.login-card { width: 100%; max-width: 380px; }
+
+/* 表单错误 / 成功提示（沿用 hifi 的 field-msg 位置） */
+.field-msg.is-err { color: var(--danger); }
+.field-msg.is-ok { color: var(--success); }
+
+/* 响应式 */
+@media (max-width: 960px) {
+  .login-wrap { grid-template-columns: minmax(0, 1fr); }
+  .login-side { display: none; }
+  .login-main { padding: var(--sp-5) var(--sp-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

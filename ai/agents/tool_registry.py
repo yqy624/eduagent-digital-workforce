@@ -34,12 +34,12 @@ class ToolDefinition:
         unknown = set(values) - self.required_args - self.optional_args
         if unknown:
             raise AgentToolError(
-                f"Tool {self.name} received unsupported arguments: {sorted(unknown)}"
+                f"工具 {self.name} 收到了不支持的参数：{sorted(unknown)}"
             )
         missing = self.required_args - set(values)
         if missing:
             raise AgentToolError(
-                f"Tool {self.name} is missing required arguments: {sorted(missing)}"
+                f"工具 {self.name} 缺少必需参数：{sorted(missing)}"
             )
         return values
 
@@ -82,9 +82,9 @@ class AgentToolRegistry:
     def get(self, name: str) -> ToolDefinition:
         tool = self._tools.get(name)
         if tool is None:
-            raise AgentToolError(f"Unknown tool: {name}")
+            raise AgentToolError(f"未知工具：{name}")
         if self.user.role not in tool.allowed_roles:
-            raise AgentToolError(f"Role {self.user.role} cannot use tool {name}")
+            raise AgentToolError(f"当前角色 {self.user.role} 无权使用工具 {name}")
         return tool
 
     def prepare(self, name: str, args: Optional[Dict[str, Any]]) -> Dict[str, Any]:
@@ -98,7 +98,7 @@ class AgentToolRegistry:
         result = await self.db.execute(select(Course).where(Course.id == course_id))
         course = result.scalar_one_or_none()
         if course is None:
-            raise AgentToolError("Course not found")
+            raise AgentToolError("课程不存在")
         if self.user.role == "ADMIN":
             return course
         if self.user.role == "TEACHER" and course.teacher_id == self.user.id:
@@ -112,7 +112,7 @@ class AgentToolRegistry:
             )
             if enrolled.scalar_one_or_none() is not None:
                 return course
-        raise AgentToolError("You do not have access to this course")
+        raise AgentToolError("你没有访问这门课程的权限")
 
     async def _get_course_overview(self, args: Dict[str, Any]) -> Dict[str, Any]:
         course_id = args.get("course_id")
@@ -215,7 +215,7 @@ class AgentToolRegistry:
 
     async def _get_my_grades(self, args: Dict[str, Any]) -> Dict[str, Any]:
         if self.user.role != "STUDENT":
-            raise AgentToolError("get_my_grades is currently available to students")
+            raise AgentToolError("工具 get_my_grades 目前仅对学生开放")
         course_id = args.get("course_id")
         query = (
             select(Submission, Assignment)
@@ -243,7 +243,7 @@ class AgentToolRegistry:
 
     async def _get_my_submissions(self, args: Dict[str, Any]) -> Dict[str, Any]:
         if self.user.role != "STUDENT":
-            raise AgentToolError("get_my_submissions is currently available to students")
+            raise AgentToolError("工具 get_my_submissions 目前仅对学生开放")
         course_id = args.get("course_id")
         query = (
             select(Assignment, Course, Submission)
@@ -329,7 +329,7 @@ class AgentToolRegistry:
 
     async def _retrieve_materials(self, args: Dict[str, Any]) -> Dict[str, Any]:
         if self.retrieve_materials is None:
-            raise AgentToolError("Course material retrieval is not configured")
+            raise AgentToolError("课程资料检索尚未配置")
         course_id = int(args["course_id"])
         await self._ensure_course_access(course_id)
         citations = await self.retrieve_materials(course_id, str(args["question"]))
@@ -344,7 +344,7 @@ class AgentToolRegistry:
 
     async def _analyze_learning_gaps(self, args: Dict[str, Any]) -> Dict[str, Any]:
         if self.user.role != "STUDENT":
-            raise AgentToolError("Learning gap analysis is currently student-scoped")
+            raise AgentToolError("学情缺口分析目前仅对学生开放")
         course_id = args.get("course_id")
         grades = (await self._get_my_grades({"course_id": course_id})).get("grades", [])
         scored = [
@@ -514,7 +514,7 @@ class AgentToolRegistry:
     async def _publish_assignment(self, args: Dict[str, Any]) -> Dict[str, Any]:
         title = str(args["title"]).strip()
         if not title:
-            raise AgentToolError("Assignment title cannot be empty")
+            raise AgentToolError("作业标题不能为空")
 
         payload: Dict[str, Any] = {
             "course_id": int(args["course_id"]),
@@ -560,7 +560,7 @@ class AgentToolRegistry:
     async def _submit_assignment(self, args: Dict[str, Any]) -> Dict[str, Any]:
         content = str(args["content"]).strip()
         if not content:
-            raise AgentToolError("Submission content cannot be empty")
+            raise AgentToolError("提交内容不能为空")
         response = await self.student_service.submit_assignment(
             assignment_id=int(args["assignment_id"]),
             student=self.user,
@@ -587,7 +587,7 @@ class AgentToolRegistry:
         return {
             "get_course_overview": ToolDefinition(
                 "get_course_overview",
-                "Read course metadata or the courses visible to the current user.",
+                "读取课程元信息，或读取当前用户可见的课程清单。",
                 set(),
                 {"course_id"},
                 everyone,
@@ -597,7 +597,7 @@ class AgentToolRegistry:
             ),
             "get_course_assignments": ToolDefinition(
                 "get_course_assignments",
-                "Read assignments and due dates for an accessible course.",
+                "读取某门有权限课程下的作业清单与截止时间。",
                 {"course_id"},
                 set(),
                 everyone,
@@ -607,7 +607,7 @@ class AgentToolRegistry:
             ),
             "retrieve_course_material": ToolDefinition(
                 "retrieve_course_material",
-                "Retrieve indexed course material with citations.",
+                "检索已索引的课程资料，返回带引用来源的片段。",
                 {"course_id", "question"},
                 {"exclude_source_types"},
                 everyone,
@@ -617,7 +617,7 @@ class AgentToolRegistry:
             ),
             "get_my_grades": ToolDefinition(
                 "get_my_grades",
-                "Read the current student's graded submissions.",
+                "读取当前学生本人已批改的提交记录与成绩。",
                 set(),
                 {"course_id"},
                 students,
@@ -627,7 +627,7 @@ class AgentToolRegistry:
             ),
             "get_my_submissions": ToolDefinition(
                 "get_my_submissions",
-                "Read the current student's submission status.",
+                "读取当前学生本人的作业提交状态。",
                 set(),
                 {"course_id"},
                 students,
@@ -637,7 +637,7 @@ class AgentToolRegistry:
             ),
             "analyze_learning_gaps": ToolDefinition(
                 "analyze_learning_gaps",
-                "Compute low-score areas and a bounded learning diagnosis.",
+                "计算低分区域，给出有边界的学情诊断结论。",
                 set(),
                 {"course_id"},
                 students,
@@ -647,7 +647,7 @@ class AgentToolRegistry:
             ),
             "generate_learning_plan": ToolDefinition(
                 "generate_learning_plan",
-                "Create a study plan after reading course overview/materials, then grades, weaknesses, and assignments.",
+                "在读完课程概览与资料、成绩、薄弱点和作业之后，生成一份学习计划。",
                 {"course_id"},
                 {"focus"},
                 students,
@@ -657,7 +657,7 @@ class AgentToolRegistry:
             ),
             "get_course_statistics": ToolDefinition(
                 "get_course_statistics",
-                "Read teaching statistics for a course visible to the teacher.",
+                "读取教师可见课程的教学统计数据。",
                 {"course_id"},
                 set(),
                 staff,
@@ -667,7 +667,7 @@ class AgentToolRegistry:
             ),
             "send_notification": ToolDefinition(
                 "send_notification",
-                "Send a notification to a user after explicit confirmation.",
+                "在用户明确确认之后，向指定用户发送一条通知。",
                 {"recipient_username", "title", "content"},
                 {"category", "link"},
                 staff,
@@ -677,7 +677,7 @@ class AgentToolRegistry:
             ),
             "publish_assignment": ToolDefinition(
                 "publish_assignment",
-                "Publish a text assignment to a course after explicit confirmation.",
+                "在用户明确确认之后，向课程发布一份文本作业。",
                 {"course_id", "title"},
                 {
                     "description",
@@ -699,7 +699,7 @@ class AgentToolRegistry:
             ),
             "submit_assignment": ToolDefinition(
                 "submit_assignment",
-                "Submit text content for the current student's assignment after explicit confirmation.",
+                "在用户明确确认之后，以文本内容提交当前学生的作业。",
                 {"assignment_id", "content"},
                 {"file_ids", "file_name", "file_path"},
                 students,

@@ -173,9 +173,9 @@ async def main():
     print("\n" + "─" * 60)
     print("📌 [Step 7/7] API 文档")
     print("─" * 60)
-    print("  📘 Swagger:  http://localhost:8001/docs")
-    print("  📗 Redoc:    http://localhost:8001/redoc")
-    print("  📊 OpenAPI:  http://localhost:8001/openapi.json")
+    print("  📘 Swagger:  http://localhost:18010/docs")
+    print("  📗 Redoc:    http://localhost:18010/redoc")
+    print("  📊 OpenAPI:  http://localhost:18010/openapi.json")
 
     # 统计 API 数量
     conn = http.client.HTTPConnection("localhost", 8001, timeout=5)

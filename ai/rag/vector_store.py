@@ -34,7 +34,7 @@ class VectorStoreManager:
         """添加文档到向量库"""
         emb = self.embeddings
         if emb is None:
-            raise RuntimeError("Embedding model is not configured; vector indexing is unavailable")
+            raise RuntimeError("未配置向量模型，无法建立向量索引")
 
         from langchain_community.vectorstores import FAISS
 
@@ -55,7 +55,7 @@ class VectorStoreManager:
         """获取 FAISS 向量存储实例"""
         emb = self.embeddings
         if emb is None:
-            raise RuntimeError("Embedding model is not configured; vector search is unavailable")
+            raise RuntimeError("未配置向量模型，无法进行向量检索")
 
         from langchain_community.vectorstores import FAISS
 
@@ -65,7 +65,7 @@ class VectorStoreManager:
                 index_path, emb,
                 allow_dangerous_deserialization=True,
             )
-        raise RuntimeError(f"Vector collection '{collection_name}' does not exist")
+        raise RuntimeError(f"向量集合「{collection_name}」不存在")
 
     def similarity_search(
         self,

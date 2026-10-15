@@ -10,7 +10,7 @@ if (-not (Test-Path $Python)) {
 $env:AI_ENABLED = "false"
 $env:SERVER_HOST = "127.0.0.1"
 if (-not $env:SERVER_PORT) {
-    $env:SERVER_PORT = "8001"
+    $env:SERVER_PORT = "18010"
 }
 
 Set-Location $ProjectRoot

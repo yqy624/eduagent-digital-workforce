@@ -34,24 +34,6 @@ async def list_users(
     return ApiResponse.ok(data=data)
 
 
-@router.get("/users/page", include_in_schema=False)
-async def list_users_page(
-    page: int = Query(0, ge=0),
-    size: int = Query(20, ge=1, le=100),
-    keyword: str = Query(""),
-    role: str = Query(""),
-    db: AsyncSession = Depends(get_db),
-):
-    """兼容 Java 前端的分页用户列表"""
-    service = AdminService(db)
-    data = await service.list_users(
-        role=role if role else None,
-        page=page + 1,
-        page_size=size,
-    )
-    return ApiResponse.ok(data=data)
-
-
 @router.get("/users/export", include_in_schema=False)
 async def export_users(db: AsyncSession = Depends(get_db)):
     service = AdminService(db)
@@ -76,60 +58,6 @@ async def create_user(
         return ApiResponse.error(message=str(e), code=400)
 
 
-@router.post("/users/{user_id}/toggle-status")
-async def toggle_user_status(
-    user_id: int, db: AsyncSession = Depends(get_db)
-):
-    """启用/禁用用户"""
-    service = AdminService(db)
-    try:
-        enabled = await service.toggle_user_enabled(user_id)
-        return ApiResponse.ok(
-            data={"user_id": user_id, "enabled": enabled},
-            message="已启用" if enabled else "已禁用",
-        )
-    except ValueError as e:
-        return ApiResponse.error(message=str(e), code=400)
-
-
-@router.get("/logs")
-async def get_logs(
-    page: int = Query(1, ge=1),
-    page_size: int = Query(20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db),
-):
-    """审计日志"""
-    service = AdminService(db)
-    data = await service.get_audit_logs(page, page_size)
-    return ApiResponse.ok(data=data)
-
-
-@router.get("/courses/page", include_in_schema=False)
-async def list_courses_page(
-    page: int = Query(0, ge=0),
-    size: int = Query(20, ge=1, le=100),
-    keyword: str = Query(""),
-    db: AsyncSession = Depends(get_db),
-):
-    """兼容 Java 前端的分页课程列表"""
-    service = AdminService(db)
-    data = await service.list_courses(page=page + 1, page_size=size)
-    return ApiResponse.ok(data=data)
-
-
-@router.get("/course-options/teachers", include_in_schema=False)
-async def course_teachers(db: AsyncSession = Depends(get_db)):
-    """教师选项列表"""
-    from app.models.models import User
-    from sqlalchemy import select
-    result = await db.execute(select(User).where(User.role == "TEACHER"))
-    teachers = result.scalars().all()
-    return ApiResponse.ok(data=[
-        {"id": t.id, "username": t.username, "displayName": t.display_name or t.username}
-        for t in teachers
-    ])
-
-
 @router.put("/courses/{course_id}/visibility", include_in_schema=False)
 async def toggle_visibility(course_id: int, db: AsyncSession = Depends(get_db)):
     """切换课程可见性"""
@@ -149,21 +77,9 @@ async def toggle_visibility(course_id: int, db: AsyncSession = Depends(get_db)):
             f"课程《{course.name}》已重新开放。",
             category="COURSE",
             type_="INFO",
-            link=f"/static/student/dashboard.html#course-{course.id}",
+            link=f"/platform#/review/review-courses",
         )
     return ApiResponse.ok(data={"visible": course.visible}, message="更新成功")
-
-
-@router.get("/logs/page", include_in_schema=False)
-async def logs_page(
-    page: int = Query(0, ge=0),
-    size: int = Query(20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db),
-):
-    """审计日志分页"""
-    service = AdminService(db)
-    data = await service.get_audit_logs(page=page + 1, page_size=size)
-    return ApiResponse.ok(data=data)
 
 
 @router.get("/activities", include_in_schema=False)
@@ -240,18 +156,6 @@ async def monitor(
     """系统监控"""
     service = AdminService(db)
     return ApiResponse.ok(data=await service.get_monitor(health_check=health_check))
-
-
-@router.get("/courses")
-async def list_courses(
-    page: int = Query(1, ge=1),
-    page_size: int = Query(20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db),
-):
-    """课程列表"""
-    service = AdminService(db)
-    data = await service.list_courses(page, page_size)
-    return ApiResponse.ok(data=data)
 
 
 @router.put("/courses/batch-hide", include_in_schema=False)

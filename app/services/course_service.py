@@ -40,7 +40,7 @@ class CourseService:
             f"课程《{course.name}》已开放选课。",
             category="COURSE",
             type_="INFO",
-            link=f"/static/student/dashboard.html#course-{course.id}",
+            link=f"/platform#/review/review-courses",
         )
         return course
 
@@ -67,7 +67,7 @@ class CourseService:
                 f"课程《{course.name}》已重新开放。",
                 category="COURSE",
                 type_="INFO",
-                link=f"/static/student/dashboard.html#course-{course.id}",
+                link=f"/platform#/review/review-courses",
             )
         return course
 

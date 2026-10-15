@@ -39,14 +39,14 @@ def get_llm(temperature: float = 0.3, model_name: Optional[str] = None):
             temperature=temperature,
             api_key=settings.anthropic_api_key,
         )
-    raise ValueError("No LLM provider is configured; set OLLAMA_MODEL or an API key")
+    raise ValueError("未配置任何大模型服务商；请设置 OLLAMA_MODEL 或 API Key（如 DASHSCOPE_API_KEY）")
 
 
 def get_embeddings():
     """Return the configured embedding model or raise when vector indexing is unavailable."""
     model = (settings.embedding_model or "").strip()
     if not model:
-        raise RuntimeError("EMBEDDING_MODEL is empty; vector indexing is unavailable")
+        raise RuntimeError("EMBEDDING_MODEL 未配置，无法进行向量索引")
 
     if model.startswith("ollama:"):
         from langchain_community.embeddings import OllamaEmbeddings

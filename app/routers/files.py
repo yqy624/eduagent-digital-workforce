@@ -29,6 +29,8 @@ from app.models.models import (
     User,
 )
 from app.schemas.common import ApiResponse
+from app.services.rag_ingest_service import schedule_ingest
+from app.services.vision_service import is_image_upload, schedule_upload_analysis
 
 router = APIRouter(prefix="/api/files", tags=["文件"])
 
@@ -303,6 +305,13 @@ async def upload_file(
     course_id: Optional[int] = Query(None),
     assignment_id: Optional[int] = Query(None),
     submission_id: Optional[int] = Query(None),
+    # 给了场景，上传的图片就进入该场景的视觉分析——这是"上传即感知"的入口。
+    # 不传则行为与从前完全一致（只落盘 + 投递知识库），保持向后兼容。
+    vision_scene: Optional[str] = Query(
+        None,
+        pattern="^(classroom|lab_safety|exam_proctor|paper_grading)$",
+        description="视觉场景；给定时图片会进入对应场景的视觉分析",
+    ),
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -345,6 +354,25 @@ async def upload_file(
     await db.flush()
     await _audit(db, request, user, "FILE_UPLOAD", {"file_id": stored.id, "category": category, "size": stored.size})
 
+    # 先提交再投递：投递跑在独立会话里，必须能读到这条 StoredFile。
+    # 投递本身是异步的（不阻塞本次响应），解析进度写在 rag_documents 上。
+    await db.commit()
+    schedule_ingest(stored.id)
+
+    # 视觉分析同理：登记同步返回 task_code，推理在后台跑。
+    # 不是图片（或未指定场景）时返回 None，行为与从前一致。
+    vision_task_code = None
+    if vision_scene and is_image_upload(ext, content_type):
+        vision_task_code = await schedule_upload_analysis(
+            file_id=stored.id,
+            scene=vision_scene,
+            source_ref=stored.storage_path,
+            course_id=course_id,
+            assignment_id=assignment_id,
+            submission_id=submission_id,
+            operator=f"upload:{user.id}",
+        )
+
     return ApiResponse.ok(
         data={
             "id": stored.id,
@@ -352,6 +380,7 @@ async def upload_file(
             "storage_path": stored.storage_path,
             "size": stored.size,
             "content_type": stored.content_type,
+            "vision_task_code": vision_task_code,
         },
         message="上传成功",
     )

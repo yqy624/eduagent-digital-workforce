@@ -9,16 +9,6 @@ EduAgent 当前定位为 **AI 教育平台 Preview / MVP**：它已经具备可�
 
 本项目适合用于开源展示、课程设计、毕业设计原型和 AI 教育产品 MVP 验证。当前版本不建议直接包装为完整生产级教育平台，生产环境仍需要补齐权限审计、密钥管理、文件安全、测试覆盖、监控告警和部署方案。
 
-## 页面预览
-
-| 登录入口 | 管理员工作台 |
-| --- | --- |
-| ![登录入口](docs/screenshots/login.png) | ![管理员工作台](docs/screenshots/admin-dashboard.png) |
-
-| 教师工作台 | 学生工作台 |
-| --- | --- |
-| ![教师工作台](docs/screenshots/teacher-dashboard.png) | ![学生工作台](docs/screenshots/student-dashboard.png) |
-
 ## 架构图
 
 ![EduAgent 架构图](static/architecture.svg)

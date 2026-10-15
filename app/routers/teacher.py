@@ -257,23 +257,3 @@ async def update_peer_review_config(
     db: AsyncSession = Depends(get_db),
 ):
     return await _update_peer_review(assignment_id, req, user, db)
-
-
-@router.get("/comment-memories", include_in_schema=False)
-async def comment_memories(db: AsyncSession = Depends(get_db), user: User = Depends(require_teacher)):
-    """评语记忆列表"""
-    from app.models.models import TeacherCommentMemory as _T
-    from sqlalchemy import select
-    r = await db.execute(
-        select(_T).where(_T.teacher_id == user.id)
-        .order_by(_T.usage_count.desc())
-        .limit(50)
-    )
-    items = []
-    for m in r.scalars().all():
-        items.append({
-            "id": m.id, "category": m.category, "commentText": m.comment_text,
-            "usageCount": m.usage_count, "lastUsedAt": m.last_used_at.isoformat() if m.last_used_at else None,
-            "createdAt": m.created_at.isoformat() if m.created_at else None,
-        })
-    return ApiResponse.ok(data=items)

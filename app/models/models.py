@@ -16,6 +16,7 @@ from app.database import Base
 # ============================================================
 class User(Base):
     __tablename__ = "users"
+    __table_args__ = (Index("uq_users_student_no", "student_no", unique=True),)
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(6))
@@ -26,6 +27,12 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(255))
     role: Mapped[str] = mapped_column(Enum("ADMIN", "TEACHER", "STUDENT"))
     username: Mapped[str] = mapped_column(String(50), unique=True)
+
+    # 学号：业务侧的真实学生标识，也是身份映射（vision_identities.student_no）
+    # 与用户表的唯一连接键。username 是登录名、student_no 是业务学号，
+    # 二者分属不同命名空间，不能互相冒充——这正是此前"事件对不到人"的根因。
+    # 教师/管理员无学号，故可空；同一学号不允许重复绑定到两个账号。
+    student_no: Mapped[Optional[str]] = mapped_column(String(64))
 
     # 关系
     courses_taught: Mapped[List["Course"]] = relationship(back_populates="teacher")

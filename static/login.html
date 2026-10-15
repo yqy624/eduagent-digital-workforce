@@ -1,358 +1,516 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduAgent 智慧教育平台 - 登录</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" rel="stylesheet">
-  <link href="/static/css/app.css?v=20260730" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>登录 · 智慧教育平台</title>
+<script>
+  /* 入口感知标题：从数字员工协作台被弹来时，标题也按数字员工呈现，避免误以为进错了系统。 */
+  (function () {
+    var n = new URLSearchParams(location.search).get("next");
+    if (!n || n.indexOf("/platform") !== 0) document.title = "登录 · 数字员工协作台 · EduAgent";
+  })();
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1826'/%3E%3Cpath d='M9 13V9h4M19 9h4v4M23 19v4h-4M13 23H9v-4' stroke='%23e0a021' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23e0a021'/%3E%3C/svg%3E">
+<link rel="preconnect" href="/">
+<link rel="stylesheet" href="/static/css/console.css">
+<link rel="stylesheet" href="/static/css/login.css">
 </head>
-<body class="auth-shell">
-  <div class="auth-card row g-0">
-    <div class="col-lg-7 auth-hero">
-      <div class="auth-hero-content">
-        <div class="brand-mark mb-4"><i class="fa-solid fa-graduation-cap fs-2"></i></div>
-        <div class="auth-eyebrow"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Preview / MVP · AI 教育平台</div>
-        <h1 class="auth-title">EduAgent 智慧教育平台</h1>
-        <p class="auth-lead">把课程、作业、成绩、资料和 AI Agent 放在同一个工作流里，让管理员看全局、教师提效率、学生拿到个性化学习支持。</p>
+<body>
 
-        <div class="advantage-grid">
-          <div class="advantage-item">
-            <div class="advantage-icon"><i class="fa-solid fa-comments"></i></div>
-            <div>
-              <div class="advantage-title">课程 RAG 助教</div>
-              <div class="advantage-desc">基于课程资料、作业附件和讲义答疑，回答带来源，更适合教学场景。</div>
-            </div>
-          </div>
-          <div class="advantage-item">
-            <div class="advantage-icon"><i class="fa-solid fa-route"></i></div>
-            <div>
-              <div class="advantage-title">学情诊断与路径规划</div>
-              <div class="advantage-desc">读取成绩、提交和互评记录，识别薄弱点并生成一周学习计划。</div>
-            </div>
-          </div>
-          <div class="advantage-item">
-            <div class="advantage-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-            <div>
-              <div class="advantage-title">教师 AI 批改建议</div>
-              <div class="advantage-desc">AI 给出建议分数和评语，教师确认后写回，保留人工把关。</div>
-            </div>
-          </div>
-          <div class="advantage-item">
-            <div class="advantage-icon"><i class="fa-solid fa-users-gear"></i></div>
-            <div>
-              <div class="advantage-title">三角色协同工作台</div>
-              <div class="advantage-desc">管理员、教师、学生统一入口登录，按角色进入对应的数据与任务界面。</div>
-            </div>
-          </div>
-        </div>
+<div class="auth">
 
-        <div class="hero-mini">
-          <div class="mini"><div class="fw-semibold"><i class="fa-solid fa-bolt me-1"></i>FastAPI 异步架构</div><div class="small text-white-50 mt-1">接口清晰，易扩展</div></div>
-          <div class="mini"><div class="fw-semibold"><i class="fa-solid fa-link me-1"></i>LangChain 编排</div><div class="small text-white-50 mt-1">多 Agent 流程可追踪</div></div>
-          <div class="mini"><div class="fw-semibold"><i class="fa-solid fa-bell me-1"></i>实时通知</div><div class="small text-white-50 mt-1">任务动态及时触达</div></div>
+  <!-- ============ 左：感知视口 ============ -->
+  <aside class="percept">
+    <div class="pc-top">
+      <div class="pc-logo">
+        <span class="mk" data-icon="scan"></span>
+        <span>
+          <b>智慧教育平台</b>
+          <span>看课堂 · 批作业 · 查学情</span>
+        </span>
+      </div>
+      <span class="pc-state" id="pcState"><span data-icon="wifi"></span>连接中</span>
+    </div>
+
+    <div class="pc-viewport">
+      <div class="pc-scene">
+        <div class="scene-frame">
+          <svg class="scene-svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <!-- 墙面 / 地面：墙脚线 + 透视收敛线，给出景深 -->
+            <line class="ln-dim" x1="0" y1="300" x2="800" y2="300"/>
+            <path class="ln-dim" d="M0 500 L286 300 M800 500 L514 300"/>
+            <line class="ln-dim" x1="0" y1="452" x2="800" y2="452"/>
+
+            <!-- 白板 -->
+            <rect class="board" x="52" y="60" width="216" height="126" rx="4"/>
+            <line class="board-txt" x1="70" y1="88" x2="196" y2="88" stroke="#3d5f80" stroke-width="3"/>
+            <line class="board-txt" x1="70" y1="108" x2="240" y2="108" stroke="#31536f" stroke-width="3"/>
+            <line class="board-txt" x1="70" y1="128" x2="172" y2="128" stroke="#31536f" stroke-width="3"/>
+
+            <!-- 右侧窗（唯一光源） -->
+            <g>
+              <rect class="win" x="548" y="62" width="220" height="114" rx="3"/>
+              <line class="win-bar" x1="621" y1="62" x2="621" y2="176"/>
+              <line class="win-bar" x1="694" y1="62" x2="694" y2="176"/>
+            </g>
+
+            <!-- 讲台旁站立的教师 -->
+            <g>
+              <rect class="leg" x="308" y="238" width="6" height="14"/>
+              <rect class="leg" x="326" y="238" width="6" height="14"/>
+              <rect class="t-body" x="303" y="206" width="34" height="36" rx="9"/>
+              <circle class="t-head" cx="320" cy="193" r="12"/>
+            </g>
+
+            <!-- 后排（远）4 人，带课桌 -->
+            <g>
+              <rect class="seat" x="222" y="252" width="76" height="12" rx="3"/>
+              <rect class="desk" x="218" y="268" width="84" height="8" rx="2"/>
+              <rect class="leg" x="226" y="276" width="4" height="10"/>
+              <rect class="leg" x="290" y="276" width="4" height="10"/>
+              <rect class="body" x="240" y="226" width="40" height="28" rx="11"/>
+              <circle class="head" cx="260" cy="214" r="11"/>
+            </g>
+            <g>
+              <rect class="seat" x="362" y="252" width="76" height="12" rx="3"/>
+              <rect class="desk" x="358" y="268" width="84" height="8" rx="2"/>
+              <rect class="leg" x="366" y="276" width="4" height="10"/>
+              <rect class="leg" x="430" y="276" width="4" height="10"/>
+              <rect class="body" x="380" y="226" width="40" height="28" rx="11"/>
+              <circle class="head" cx="400" cy="214" r="11"/>
+            </g>
+            <g>
+              <rect class="seat" x="502" y="252" width="76" height="12" rx="3"/>
+              <rect class="desk" x="498" y="268" width="84" height="8" rx="2"/>
+              <rect class="leg" x="506" y="276" width="4" height="10"/>
+              <rect class="leg" x="570" y="276" width="4" height="10"/>
+              <rect class="body" x="520" y="226" width="40" height="28" rx="11"/>
+              <circle class="head" cx="540" cy="214" r="11"/>
+            </g>
+            <g>
+              <rect class="seat" x="642" y="252" width="76" height="12" rx="3"/>
+              <rect class="desk" x="638" y="268" width="84" height="8" rx="2"/>
+              <rect class="leg" x="646" y="276" width="4" height="10"/>
+              <rect class="leg" x="710" y="276" width="4" height="10"/>
+              <rect class="body" x="660" y="226" width="40" height="28" rx="11"/>
+              <circle class="head" cx="680" cy="214" r="11"/>
+            </g>
+
+            <!-- 前排（近）4 人，带课桌 -->
+            <g>
+              <rect class="seat" x="206" y="382" width="88" height="14" rx="3"/>
+              <rect class="desk" x="200" y="400" width="100" height="10" rx="2"/>
+              <rect class="leg" x="212" y="410" width="5" height="12"/>
+              <rect class="leg" x="282" y="410" width="5" height="12"/>
+              <rect class="body" x="230" y="348" width="46" height="34" rx="13"/>
+              <circle class="head" cx="253" cy="334" r="13"/>
+            </g>
+            <g>
+              <rect class="seat" x="352" y="382" width="88" height="14" rx="3"/>
+              <rect class="desk" x="346" y="400" width="100" height="10" rx="2"/>
+              <rect class="leg" x="358" y="410" width="5" height="12"/>
+              <rect class="leg" x="428" y="410" width="5" height="12"/>
+              <rect class="body" x="376" y="348" width="46" height="34" rx="13"/>
+              <circle class="head" cx="399" cy="334" r="13"/>
+            </g>
+            <g>
+              <rect class="seat" x="498" y="382" width="88" height="14" rx="3"/>
+              <rect class="desk" x="492" y="400" width="100" height="10" rx="2"/>
+              <rect class="leg" x="504" y="410" width="5" height="12"/>
+              <rect class="leg" x="574" y="410" width="5" height="12"/>
+              <rect class="body" x="522" y="348" width="46" height="34" rx="13"/>
+              <circle class="head" cx="545" cy="334" r="13"/>
+            </g>
+            <g>
+              <rect class="seat" x="644" y="382" width="88" height="14" rx="3"/>
+              <rect class="desk" x="638" y="400" width="100" height="10" rx="2"/>
+              <rect class="leg" x="650" y="410" width="5" height="12"/>
+              <rect class="leg" x="720" y="410" width="5" height="12"/>
+              <rect class="body" x="668" y="348" width="46" height="34" rx="13"/>
+              <circle class="head" cx="691" cy="334" r="13"/>
+            </g>
+
+            <!-- 检测框：机器看到的东西 -->
+            <g>
+              <rect class="sbx" x="294" y="182" width="50" height="72"/>
+              <rect class="sbx-tag" x="292" y="166" width="82" height="14" rx="2"/>
+              <text class="sbx-txt" x="297" y="176">学生 97%</text>
+            </g>
+            <g>
+              <rect class="sbx" x="374" y="200" width="52" height="46"/>
+              <rect class="sbx-tag" x="372" y="184" width="82" height="14" rx="2"/>
+              <text class="sbx-txt" x="377" y="194">学生 94%</text>
+            </g>
+            <g>
+              <rect class="sbx al" x="654" y="198" width="52" height="48"/>
+              <rect class="sbx-tag al" x="652" y="182" width="76" height="14" rx="2"/>
+              <text class="sbx-txt" x="657" y="192">手机 67%</text>
+            </g>
+            <g>
+              <rect class="sbx at" x="224" y="318" width="58" height="52"/>
+              <rect class="sbx-tag at" x="222" y="302" width="96" height="14" rx="2"/>
+              <text class="sbx-txt" x="227" y="312">举手 81%</text>
+            </g>
+            <g>
+              <rect class="sbx" x="514" y="316" width="58" height="54"/>
+              <rect class="sbx-tag" x="512" y="300" width="82" height="14" rx="2"/>
+              <text class="sbx-txt" x="517" y="310">学生 91%</text>
+            </g>
+
+            <!-- 十字标定 -->
+            <path class="cross" d="M20 20h26M20 20v26M780 20h-26M780 20v26M20 480h26M20 480v-26M780 480h-26M780 480v-26"/>
+          </svg>
+
+          <div class="scanline"></div>
+
+          <div class="scene-hud">
+            <div class="top">
+              <span class="tag"><span style="width:6px;height:6px;border-radius:50%;background:#e5484d;display:inline-block"></span>REC</span>
+              <span class="tag">教室</span>
+              <span class="tag">行为识别</span>
+            </div>
+            <div class="bot">
+              <span class="tag" id="hudClock">—</span>
+              <span class="tag">把握 30% 以上</span>
+              <span class="tag" id="hudCount">目标 —</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-5 auth-body">
-      <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-          <h2 class="h4 fw-bold mb-1">登录工作台</h2>
-          <div class="text-muted">选择身份后进入对应教学场景</div>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">角色</label>
-        <select id="role" class="form-select">
-          <option value="ADMIN">管理员</option>
-          <option value="TEACHER">教师</option>
-          <option value="STUDENT">学生</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">用户名</label>
-        <input id="username" class="form-control" autocomplete="username">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">密码</label>
-        <input id="password" type="password" class="form-control" autocomplete="current-password">
-      </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="form-check">
-          <input id="remember" class="form-check-input" type="checkbox">
-          <label class="form-check-label" for="remember">记住账号</label>
-        </div>
-        <div class="d-flex gap-3">
-          <a class="small text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#registerModal">注册账号</a>
-          <a class="small text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#forgotModal">忘记密码</a>
-        </div>
-      </div>
-      <button id="loginBtn" class="btn btn-primary w-100 py-2" onclick="login()">登录</button>
-    </div>
-  </div>
 
-  <!-- 注册账号 Modal -->
-  <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="border-radius:18px;background:var(--bg-card);backdrop-filter:blur(18px);">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i>注册账号</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- 平台实时概览 -->
+    <div class="pc-side">
+      <div class="pc-cell">
+        <div class="k">可用功能</div>
+        <div class="v" id="mCount">—<small>项</small></div>
+      </div>
+      <div class="pc-cell">
+        <div class="k">识别能力</div>
+        <div class="v" id="mVision" style="font-size:13px">读取中</div>
+      </div>
+      <div class="pc-cell">
+        <div class="k">今日发现</div>
+        <div class="v" id="mEvents">—<small>条</small></div>
+      </div>
+    </div>
+
+    <div class="pc-ticker">
+      <div class="pc-ticker-hd">
+        <span data-icon="activity"></span><span>实时动态</span>
+        <span class="spacer"></span>
+        <span id="tickerSrc">刚刚更新</span>
+      </div>
+      <div class="pc-ticker-bd" id="tickerBody"></div>
+    </div>
+  </aside>
+
+  <!-- ============ 右：登录 ============ -->
+  <main class="gate">
+    <div class="gate-inner">
+      <div class="gate-hd">
+        <h1>欢迎回来</h1>
+        <p>登录后即可查看课堂动态、批改作业、跟踪学习情况。</p>
+      </div>
+
+      <div class="gate-form">
+        <div class="field">
+          <label class="label">身份</label>
+          <div class="seg" id="roleSeg">
+            <button class="seg-btn is-on" type="button" data-role="ADMIN">管理员</button>
+            <button class="seg-btn" type="button" data-role="TEACHER">教师</button>
+            <button class="seg-btn" type="button" data-role="STUDENT">学生</button>
+          </div>
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">账号角色</label>
-            <select id="regRole" class="form-select">
-              <option value="STUDENT">学生</option>
-              <option value="TEACHER">教师</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">用户名</label>
-            <input id="regUsername" class="form-control" placeholder="请输入用户名，至少3位">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">姓名</label>
-            <input id="regDisplayName" class="form-control" placeholder="请输入姓名或昵称">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">邮箱</label>
-            <input id="regEmail" class="form-control" placeholder="example@school.edu">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">密码</label>
-            <input id="regPassword" type="password" class="form-control" placeholder="输入密码，至少6位">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">确认密码</label>
-            <input id="regConfirm" type="password" class="form-control" placeholder="再次输入密码">
+
+        <div class="field">
+          <label class="label">用户名<span class="req">*</span></label>
+          <div class="input-icon">
+            <span class="lead" data-icon="user"></span>
+            <input class="input" id="username" type="text" autocomplete="username" placeholder="请输入用户名">
           </div>
         </div>
-        <div class="modal-footer border-0 pt-0">
-          <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-          <button id="regBtn" class="btn btn-primary" onclick="registerAccount()">
-            <i class="fa-solid fa-user-plus me-1"></i>注册
+
+        <div class="field">
+          <label class="label">密码<span class="req">*</span></label>
+          <div class="input-icon">
+            <span class="lead" data-icon="lock"></span>
+            <input class="input" id="password" type="password" autocomplete="current-password" placeholder="请输入密码">
+          </div>
+          <span class="field-msg" id="msg" hidden></span>
+        </div>
+
+        <div class="gate-row">
+          <label class="check"><input type="checkbox" id="remember"><span>记住账号</span></label>
+        </div>
+
+        <button class="btn btn--primary btn--lg btn--block" type="button" id="loginBtn">
+          <span data-icon="log-in"></span>登录
+        </button>
+
+        <div class="gate-alt">
+          <button class="btn btn--link btn--sm" type="button" id="goRegister">注册账号</button>
+          <button class="btn btn--link btn--sm" type="button" id="goForgot">忘记密码</button>
+        </div>
+
+        <div class="gate-sep">演示账号</div>
+        <div class="demo-grid">
+          <button class="demo-card" type="button" data-u="admin" data-r="ADMIN">
+            <span class="dc-r" data-icon="shield"></span><span class="dc-u">admin</span><span class="dc-r">管理员</span>
+          </button>
+          <button class="demo-card" type="button" data-u="teacher01" data-r="TEACHER">
+            <span class="dc-r" data-icon="users"></span><span class="dc-u">teacher01</span><span class="dc-r">教师</span>
+          </button>
+          <button class="demo-card" type="button" data-u="student01" data-r="STUDENT">
+            <span class="dc-r" data-icon="user"></span><span class="dc-u">student01</span><span class="dc-r">学生</span>
           </button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- 忘记密码 Modal -->
-  <div class="modal fade" id="forgotModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="border-radius:18px;background:var(--bg-card);backdrop-filter:blur(18px);">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold"><i class="fa-solid fa-key me-2"></i>重置密码</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">用户名</label>
-            <input id="fpUsername" class="form-control" placeholder="请输入您的用户名">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">账号角色</label>
-            <select id="fpRole" class="form-select">
-              <option value="ADMIN">管理员</option>
-              <option value="TEACHER">教师</option>
-              <option value="STUDENT">学生</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">注册邮箱 <span class="text-muted small">（选填，验证身份用）</span></label>
-            <input id="fpEmail" class="form-control" placeholder="example@school.edu">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">新密码</label>
-            <input id="fpPassword" type="password" class="form-control" placeholder="输入新密码">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">确认新密码</label>
-            <input id="fpConfirm" type="password" class="form-control" placeholder="再次输入新密码">
-          </div>
-        </div>
-        <div class="modal-footer border-0 pt-0">
-          <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-          <button id="fpBtn" class="btn btn-primary" onclick="forgotPassword()">
-            <i class="fa-solid fa-rotate me-1"></i>重置密码
-          </button>
-        </div>
+      <div class="gate-foot">
+        演示账号密码统一 <span class="mono">Demo@12345</span>。<br>
+        识别结果会自动更新，仅供参考，请以课堂实际情况为准。
       </div>
     </div>
-  </div>
+  </main>
+</div>
 
-  <!-- Toast 提示 -->
-  <div class="toast align-items-center text-bg-danger border-0 position-fixed top-0 end-0 m-3" id="toastBox" role="alert">
-    <div class="d-flex">
-      <div class="toast-body" id="toastText">提示</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
-  <div class="toast align-items-center text-bg-success border-0 position-fixed top-0 end-0 m-3" id="toastBoxSuccess" role="alert" style="z-index:9999;">
-    <div class="d-flex">
-      <div class="toast-body" id="toastTextSuccess">成功</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
+<!-- 功能清单配置（用于左侧实时概览） -->
+<script src="/static/js/menu.config.js"></script>
+<script type="module">
+import { icon } from "/static/js/console/icons.js";
+import { login, register, forgotPassword, session } from "/static/js/console/api.js";
+import { modal, toast, plate, noteBox, kv } from "/static/js/console/ui.js";
+import { h, raw, esc, fmtTime, num } from "/static/js/console/dom.js";
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const rememberKey = "eduagent-remember-login-v2";
-    const saved = localStorage.getItem(rememberKey);
-    if (saved) {
-      const data = JSON.parse(saved);
-      username.value = data.username || "";
-      role.value = data.role || "ADMIN";
-      remember.checked = true;
-    }
+/* ---- 图标水合：把 data-icon 占位替换成内联 SVG ---- */
+function hydrate(root) {
+  (root || document).querySelectorAll("[data-icon]").forEach((el) => {
+    el.innerHTML = icon(el.getAttribute("data-icon"));
+    el.removeAttribute("data-icon");
+  });
+}
+hydrate();
 
-    function showToast(msg, type) {
-      if (type === undefined) type = "danger";
-      if (type === "success") {
-        document.getElementById("toastTextSuccess").textContent = msg;
-        bootstrap.Toast.getOrCreateInstance(document.getElementById("toastBoxSuccess")).show();
-      } else {
-        document.getElementById("toastText").textContent = msg;
-        bootstrap.Toast.getOrCreateInstance(document.getElementById("toastBox")).show();
-      }
-    }
+const $ = (s) => document.querySelector(s);
+const REMEMBER = "ea.remember";
 
-    async function login() {
-      const payload = {
-        username: username.value.trim(),
-        password: password.value.trim(),
-        role: role.value
-      };
-      if (!payload.username || !payload.password) {
-        showToast("请输入用户名和密码");
-        return;
-      }
-      loginBtn.disabled = true;
-      loginBtn.textContent = "登录中...";
-      try {
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (data.code !== 200) throw new Error(data.message || "登录失败");
-        const user = data.data;
-        localStorage.setItem("token", user.token);
-        localStorage.setItem("role", user.role);
-        localStorage.setItem("displayName", user.displayName || user.username);
-        localStorage.setItem("username", user.username);
-        if (remember.checked) {
-          localStorage.setItem(rememberKey, JSON.stringify({ username: payload.username, role: payload.role }));
-        } else {
-          localStorage.removeItem(rememberKey);
-        }
-        location.href = user.redirectUrl + "?token=" + encodeURIComponent(user.token);
-      } catch (e) {
-        showToast(e.message);
-      } finally {
-        loginBtn.disabled = false;
-        loginBtn.textContent = "登录";
-      }
-    }
+/* ---- 入口感知：按来源页决定登录后的去向与品牌 ----
+   从数字员工协作台（/、/workspace）被弹过来时，整页按数字员工的品牌呈现；
+   只有明确要去 /platform 时才显示智慧教育平台。 */
+const NEXT = new URLSearchParams(location.search).get("next");
+const GO_PLATFORM = !!NEXT && NEXT.indexOf("/platform") === 0;
+if (!GO_PLATFORM) {
+  const brandName = document.querySelector(".pc-logo b");
+  if (brandName) brandName.textContent = "数字员工协作台";
+}
 
-    async function registerAccount() {
-      const username = regUsername.value.trim();
-      const displayName = regDisplayName.value.trim();
-      const email = regEmail.value.trim();
-      const password = regPassword.value.trim();
-      const confirm = regConfirm.value.trim();
-      const roleValue = regRole.value;
+/* ---- 已登录直接进入 ---- */
+if (session.token) {
+  location.replace(NEXT && NEXT[0] === "/" ? NEXT : "/");
+}
 
-      if (!username) { showToast("请输入用户名"); return; }
-      if (username.length < 3) { showToast("用户名长度至少3位"); return; }
-      if (!password) { showToast("请输入密码"); return; }
-      if (password.length < 6) { showToast("密码长度至少6位"); return; }
-      if (password !== confirm) { showToast("两次密码输入不一致"); return; }
+/* ---- 角色分段 ---- */
+let role = "ADMIN";
+$("#roleSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-role]");
+  if (!b) return;
+  role = b.getAttribute("data-role");
+  document.querySelectorAll("#roleSeg .seg-btn").forEach((x) => x.classList.toggle("is-on", x === b));
+});
 
-      regBtn.disabled = true;
-      regBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>注册中...';
-      try {
-        const res = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password, display_name: displayName || username, email: email || null, role: roleValue })
-        });
-        const data = await res.json();
-        if (data.code !== 200) throw new Error(data.message || "注册失败");
-        showToast("注册成功，请使用新账号登录", "success");
-        bootstrap.Modal.getInstance(document.getElementById("registerModal")).hide();
-        role.value = roleValue;
-        window.username.value = username;
-        window.password.value = "";
-        regUsername.value = "";
-        regDisplayName.value = "";
-        regEmail.value = "";
-        regPassword.value = "";
-        regConfirm.value = "";
-      } catch (e) {
-        showToast(e.message);
-      } finally {
-        regBtn.disabled = false;
-        regBtn.innerHTML = '<i class="fa-solid fa-user-plus me-1"></i>注册';
-      }
-    }
+function setRole(r) {
+  role = r;
+  document.querySelectorAll("#roleSeg .seg-btn").forEach((x) => x.classList.toggle("is-on", x.getAttribute("data-role") === r));
+}
 
-    async function forgotPassword() {
-      const username = fpUsername.value.trim();
-      const role = fpRole.value;
-      const email = fpEmail.value.trim();
-      const password = fpPassword.value.trim();
-      const confirm = fpConfirm.value.trim();
+function msg(text, kind) {
+  const box = $("#msg");
+  if (!text) { box.hidden = true; box.textContent = ""; return; }
+  box.hidden = false;
+  box.className = "field-msg " + (kind === "ok" ? "is-ok" : "is-err");
+  box.textContent = text;
+}
 
-      if (!username) { showToast("请输入用户名"); return; }
-      if (!password) { showToast("请输入新密码"); return; }
-      if (password.length < 6) { showToast("密码长度至少6位"); return; }
-      if (password !== confirm) { showToast("两次密码输入不一致"); return; }
+/* ---- 演示账号 ---- */
+document.querySelectorAll("[data-u]").forEach((b) => b.addEventListener("click", () => {
+  setRole(b.getAttribute("data-r"));
+  $("#username").value = b.getAttribute("data-u");
+  $("#password").value = "Demo@12345";
+  $("#password").focus();
+}));
 
-      fpBtn.disabled = true;
-      fpBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>重置中...';
-      try {
-        const res = await fetch("/api/auth/forgot-password", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, role, email: email || null, new_password: password })
-        });
-        const data = await res.json();
-        if (data.code !== 200) throw new Error(data.message || "重置失败");
-        showToast("密码重置成功，请使用新密码登录", "success");
-        bootstrap.Modal.getInstance(document.getElementById("forgotModal")).hide();
-        fpUsername.value = "";
-        fpEmail.value = "";
-        fpPassword.value = "";
-        fpConfirm.value = "";
-      } catch (e) {
-        showToast(e.message);
-      } finally {
-        fpBtn.disabled = false;
-        fpBtn.innerHTML = '<i class="fa-solid fa-rotate me-1"></i>重置密码';
-      }
-    }
+/* ---- 记住账号 ---- */
+try {
+  const saved = JSON.parse(localStorage.getItem(REMEMBER) || "null");
+  if (saved) { $("#username").value = saved.username || ""; if (saved.role) setRole(saved.role); $("#remember").checked = true; }
+} catch (_) {}
 
-    document.getElementById("registerModal").addEventListener("show.bs.modal", function() {
-      regRole.value = role.value === "ADMIN" ? "STUDENT" : role.value;
-    });
+/* ---- 登录 ---- */
+$("#loginBtn").addEventListener("click", async () => {
+  const username = $("#username").value.trim();
+  const password = $("#password").value.trim();
+  if (!username || !password) { msg("请输入用户名和密码"); return; }
+  const btn = $("#loginBtn");
+  const old = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> 验证中';
+  msg("");
+  try {
+    await login(username, password, role);
+    if ($("#remember").checked) localStorage.setItem(REMEMBER, JSON.stringify({ username, role }));
+    else localStorage.removeItem(REMEMBER);
+    // 回跳优先：有合法 next 就回到来源页；直接打开登录页则默认回「数字员工协作台」
+    location.href = NEXT && NEXT[0] === "/" ? NEXT : "/";
+  } catch (err) {
+    msg(err.message || "登录失败");
+    btn.disabled = false; btn.innerHTML = old;
+  }
+});
 
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "Enter") {
-        var register = document.getElementById("registerModal");
-        var forgot = document.getElementById("forgotModal");
-        if (register && register.classList.contains("show")) {
-          registerAccount();
-        } else if (forgot && forgot.classList.contains("show")) {
-          forgotPassword();
-        } else {
-          login();
-        }
-      }
-    });
-  </script>
+/* ---- 注册 ---- */
+$("#goRegister").addEventListener("click", () => {
+  modal({
+    title: "注册账号",
+    body: h`<div class="stack">
+      <div class="grid grid-2">
+        <div class="field"><label class="label">用户名<span class="req">*</span></label><input class="input" id="rU" placeholder="至少 3 位"></div>
+        <div class="field"><label class="label">姓名</label><input class="input" id="rN" placeholder="可留空"></div>
+        <div class="field"><label class="label">邮箱</label><input class="input" id="rE" placeholder="可留空"></div>
+        <div class="field"><label class="label">角色</label>
+          <div class="select-wrap"><select class="select" id="rR"><option value="STUDENT">学生</option><option value="TEACHER">教师</option></select></div></div>
+        <div class="field"><label class="label">密码<span class="req">*</span></label><input class="input" id="rP" type="password" placeholder="至少 6 位"></div>
+        <div class="field"><label class="label">确认密码<span class="req">*</span></label><input class="input" id="rP2" type="password"></div>
+      </div>
+    </div>`,
+    footer: h`<button class="btn btn--outline" type="button" data-close>取消</button>
+             <button class="btn btn--primary" type="button" id="rOk">注册</button>`,
+    mount: (body, close) => {
+      body.querySelector("#rOk").addEventListener("click", () => {
+        const u = body.querySelector("#rU").value.trim();
+        const p = body.querySelector("#rP").value.trim();
+        if (u.length < 3) return toast("用户名至少 3 位", "err");
+        if (p.length < 6) return toast("密码至少 6 位", "err");
+        if (p !== body.querySelector("#rP2").value.trim()) return toast("两次密码不一致", "err");
+        const btn = body.querySelector("#rOk"); btn.disabled = true;
+        register({ username: u, password: p, displayName: body.querySelector("#rN").value.trim(), email: body.querySelector("#rE").value.trim(), role: body.querySelector("#rR").value })
+          .then(() => { close(); setRole(body.querySelector("#rR").value); $("#username").value = u; msg("注册成功，请登录", "ok"); })
+          .catch((e) => { toast(e.message, "err"); btn.disabled = false; });
+      });
+    },
+  });
+});
+
+/* ---- 找回密码 ---- */
+$("#goForgot").addEventListener("click", () => {
+  modal({
+    title: "重置密码",
+    body: h`<div class="stack">
+      <div class="field"><label class="label">用户名<span class="req">*</span></label><input class="input" id="fU"></div>
+      <div class="field"><label class="label">角色</label>
+        <div class="select-wrap"><select class="select" id="fR"><option value="STUDENT">学生</option><option value="TEACHER">教师</option></select></div></div>
+      <div class="field"><label class="label">预留邮箱</label><input class="input" id="fE" placeholder="注册时填过则必填"></div>
+      <div class="field"><label class="label">新密码<span class="req">*</span></label><input class="input" id="fP" type="password" placeholder="至少 6 位"></div>
+      <div class="field"><label class="label">确认新密码<span class="req">*</span></label><input class="input" id="fP2" type="password"></div>
+    </div>`,
+    footer: h`<button class="btn btn--outline" type="button" data-close>取消</button>
+             <button class="btn btn--primary" type="button" id="fOk">重置</button>`,
+    mount: (body, close) => {
+      body.querySelector("#fOk").addEventListener("click", () => {
+        const u = body.querySelector("#fU").value.trim();
+        const p = body.querySelector("#fP").value.trim();
+        if (!u) return toast("请输入用户名", "err");
+        if (p.length < 6) return toast("新密码至少 6 位", "err");
+        if (p !== body.querySelector("#fP2").value.trim()) return toast("两次密码不一致", "err");
+        const btn = body.querySelector("#fOk"); btn.disabled = true;
+        forgotPassword({ username: u, role: body.querySelector("#fR").value, email: body.querySelector("#fE").value.trim(), newPassword: p })
+          .then(() => { close(); msg("密码已重置，请用新密码登录", "ok"); })
+          .catch((e) => { toast(e.message, "err"); btn.disabled = false; });
+      });
+    },
+  });
+});
+
+/* ---- 回车提交 ---- */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !document.querySelector(".modal")) $("#loginBtn").click();
+});
+
+/* ================= 左侧真实读数 ================= */
+
+// 可用功能规模（本地配置，无需网络）
+const MENU = window.PLATFORM_MENU;
+if (MENU && MENU.modules) {
+  const n = MENU.modules.reduce((a, m) => a + (m.children ? m.children.length : 0), 0);
+  $("#mCount").innerHTML = n + "<small>项</small>";
+}
+
+// 视口右上角走一个真实时钟 —— 给画面一个"正在运行"的时间锚点，不伪造识别结果
+const tickClock = () => {
+  const el = $("#hudClock");
+  if (el) el.textContent = new Date().toLocaleTimeString("zh-CN", { hour12: false });
+};
+tickClock();
+setInterval(tickClock, 1000);
+// 画面里共 9 人（1 位教师 + 8 名学生），只标出 5 个把握足够的框。
+// 两个数字都写出来，不做"全部识别成功"的暗示。
+$("#hudCount").textContent = "全班 9 人 · 已标记 5 人";
+
+// 后端状态
+fetch("/api/health").then((r) => r.json()).then((d) => {
+  const ok = d && (d.status === "ok" || d.status === "degraded");
+  const st = $("#pcState");
+  st.className = "pc-state";
+  st.innerHTML = icon("wifi") + (ok ? "服务正常" : "暂时连不上");
+  const checks = (d && d.checks) || {};
+  const vision = ((checks.modelRegistry || {}).capabilities || {}).vision || {};
+  const impl = (vision.implementations || {})[vision.default] || {};
+  const ph = impl.placeholder !== false;
+  $("#mVision").textContent = ph ? "准备中" : "已开启";
+  $("#mVision").style.color = ph ? "#f0bb5c" : "#5fd6ab";
+}).catch(() => {
+  $("#pcState").innerHTML = icon("alert") + "暂时连不上";
+  $("#pcState").style.color = "#f39a95";
+  $("#mVision").textContent = "准备中";
+});
+
+// 今日事件数与事件流。该接口需要身份 —— 未登录时如实说明，而不是显示"0 条"让人误以为平台没数据。
+fetch("/api/vision/events?limit=40")
+  .then((r) => r.json().then((res) => ({ status: r.status, res })))
+  .then(({ status, res }) => {
+  const body = $("#tickerBody");
+  if (status === 401 || (res && res.code === 401)) {
+    $("#mEvents").innerHTML = "—<small>登录后可见</small>";
+    body.innerHTML = '<div class="pc-ev"><span class="lab dim">登录后这里显示今天的课堂与考场动态</span></div>';
+    return;
+  }
+  const list = (res && res.data) || [];
+  const today = new Date().toDateString();
+  const t = list.filter((e) => {
+    const d = new Date(String(e.createdAt || "").replace(" ", "T"));
+    return !isNaN(d.getTime()) && d.toDateString() === today;
+  }).length;
+  $("#mEvents").innerHTML = (t || list.length) + "<small>条</small>";
+  if (!list.length) {
+    body.innerHTML = '<div class="pc-ev"><span class="lab dim">今天还没有新动态</span></div>';
+    return;
+  }
+  body.innerHTML = list.slice(0, 6).map((e) => {
+    const sev = e.severity || "info";
+    const cls = sev === "critical" ? "al" : sev === "warning" ? "at" : "ok";
+    const label = e.eventLabel || e.event_label || e.eventType || e.event_type || "事件";
+    const conf = e.confidence == null ? "—" : Math.round(Number(e.confidence) * 100) + "%";
+    return h`<div class="pc-ev">
+      <span class="t">${fmtTime(e.createdAt || e.created_at)}</span>
+      <span class="lab">${esc(label)} · ${esc(e.scene || "")}</span>
+      <span class="cf">${conf}</span>
+      <span class="pill ${cls}">${sev === "critical" ? "严重" : sev === "warning" ? "关注" : "记录"}</span>
+    </div>`;
+  }).join("");
+}).catch(() => {
+  $("#tickerBody").innerHTML = '<div class="pc-ev"><span class="lab dim">暂时连不上</span></div>';
+  $("#mEvents").innerHTML = "—<small>条</small>";
+});
+</script>
 </body>
 </html>

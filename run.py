@@ -19,7 +19,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--port",
         type=int,
-        default=int(os.getenv("SERVER_PORT", "8001")),
+        default=int(os.getenv("SERVER_PORT", "18010")),
     )
     parser.add_argument("--reload", action="store_true", help="开发模式热重载")
     return parser.parse_args()

@@ -1,0 +1,2920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字员工协作台 · EduAgent</title>
+<meta name="description" content="面向智慧教育场景的数字员工协作平台 —— 答疑、批改、视觉、学情、督导五类员工智能体协同作业">
+<link rel="stylesheet" href="/static/css/hifi.css">
+<link rel="stylesheet" href="/static/css/employee-ui.css">
+<link rel="stylesheet" href="/static/css/employee-page.css">
+</head>
+<body>
+<div class="stage" data-device="desktop">
+
+  <!-- ===================== 舞台条：项目名 / 设备 / 主题 / 当前页 ===================== -->
+  <div class="stage-bar">
+    <div class="stage-brand"><span class="dot"></span></div>
+    <span class="stage-name">EduAgent 数字员工协作台</span>
+    <span class="stage-sub">高保真原型</span>
+    <span class="stage-spacer"></span>
+    <span class="stage-sub stage-page">P0 · 协作全景</span>
+    <div class="stage-seg">
+      <button type="button" data-device-btn="desktop" class="is-on">桌面</button>
+      <button type="button" data-device-btn="tablet">平板</button>
+      <button type="button" data-device-btn="mobile">手机</button>
+    </div>
+    <div class="theme-dots">
+      <button type="button" class="theme-dot is-on" data-theme-dot="edu"><span class="tip">教育平台（本平台）</span></button>
+      <button type="button" class="theme-dot" data-theme-dot="saas"><span class="tip">企业中后台</span></button>
+      <button type="button" class="theme-dot" data-theme-dot="mobile"><span class="tip">移动 App</span></button>
+      <button type="button" class="theme-dot" data-theme-dot="commerce"><span class="tip">电商消费</span></button>
+      <button type="button" class="theme-dot" data-theme-dot="brand"><span class="tip">品牌官网</span></button>
+    </div>
+  </div>
+
+  <div class="stage-body">
+    <div class="stage-frame">
+      <div class="app" data-theme="edu">
+
+<!-- ======================================================================
+     P0 · 协作全景
+     ====================================================================== -->
+<section class="page is-active" id="p0" data-pid="P0" data-title="协作全景">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item is-active" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">协作全景</span>
+        <span class="spacer"></span>
+        <span class="emp-live"><span class="pulse-dot" style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block"></span>5 名员工在岗 · 2 条流水线运行中</span>
+        <button class="btn btn-primary btn-sm" data-modal-open="modal-dispatch" data-icon="plus">派发任务</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>数字员工协作台</h2>
+              <div class="emp-desc">把「感知 → 决策 → 反馈」拆成五类可独立考核的数字员工，各自持有明确的技能包与数据边界，通过工单、流水线与事件总线互相协作。一句话：<strong>你不是在用一个聊天机器人，而是在管理一支有岗位职责的员工小队。</strong></div>
+            </div>
+            <div class="emp-head-actions">
+              <button class="btn btn-secondary" data-goto="p3" data-icon="users">查看员工名册</button>
+              <button class="btn btn-primary" data-goto="p2" data-icon="message">进入协作台</button>
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <span class="a-ic" data-icon="info"></span>
+            <div>
+              <div class="a-title">本平台与「单个大模型助手」的区别</div>
+              <div class="a-body">每个员工只被授予自己岗位需要的最小工具集与最小数据域；跨域的动作必须通过协作完成，且一切写操作（发布作业、写回成绩、派发通知）都要经过人工确认。</div>
+            </div>
+          </div>
+
+          <!-- 五名员工 -->
+          <div class="emp-section">
+            <div class="emp-section-hd">
+              <h3>在岗员工</h3>
+              <span class="emp-hint">点击任一员工可进入其岗位详情</span>
+            </div>
+            <div class="emp-cols-3">
+              <article class="emp-card card-click" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar"><span data-icon="headphones" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">知问</div>
+                    <div class="emp-card-code">know · 答疑员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">就绪</span>
+                </div>
+                <div class="emp-card-role">基于校内知识库回答学校制度、课程内容与作业要求，每一条回答都必须附引用来源。</div>
+                <div class="emp-chip-row">
+                  <span class="emp-chip">rag.retrieve</span>
+                  <span class="emp-chip">course.overview</span>
+                  <span class="emp-chip is-ok">citation.guard</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>输入</dt><dd>师生自然语言提问</dd>
+                  <dt>交给谁</dt><dd>未命中问题 → 守则（沉淀规则）</dd>
+                </dl>
+              </article>
+
+              <article class="emp-card card-click" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a2"><span data-icon="scan" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">笔正</div>
+                    <div class="emp-card-code">grade · 批改员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">就绪</span>
+                </div>
+                <div class="emp-card-role">作业与试卷批改，输出分项得分、错因定位与评语；置信度低于阈值自动转人工。</div>
+                <div class="emp-chip-row">
+                  <span class="emp-chip">grading.chain</span>
+                  <span class="emp-chip">rubric.match</span>
+                  <span class="emp-chip">comment.memory</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>输入</dt><dd>学生提交 / 明察的题块识别结果</dd>
+                  <dt>交给谁</dt><dd>成绩 → 知微；待确认 → 人工 Gate</dd>
+                </dl>
+              </article>
+
+              <article class="emp-card card-click" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a3"><span data-icon="eye" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">明察</div>
+                    <div class="emp-card-code">vision · 视觉员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">就绪</span>
+                </div>
+                <div class="emp-card-role">接入 YOLO 做视觉感知：课堂行为、考场异常、实验室安全、作业题块，逐帧产出带置信度的事件。</div>
+                <div class="emp-chip-row">
+                  <span class="emp-chip is-scan">vision.infer</span>
+                  <span class="emp-chip is-scan">identity.bind</span>
+                  <span class="emp-chip">event.emit</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>输入</dt><dd>摄像头帧 / 上传图片</dd>
+                  <dt>交给谁</dt><dd>事件 → 守则；题块 → 笔正</dd>
+                </dl>
+              </article>
+
+              <article class="emp-card card-click" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a4"><span data-icon="target" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">知微</div>
+                    <div class="emp-card-code">insight · 学情员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">就绪</span>
+                </div>
+                <div class="emp-card-role">汇总成绩、提交记录与课堂事件，产出学情诊断、低分知识点定位与学习路径规划。</div>
+                <div class="emp-chip-row">
+                  <span class="emp-chip">gaps.analyze</span>
+                  <span class="emp-chip">plan.generate</span>
+                  <span class="emp-chip">profile.build</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>输入</dt><dd>笔正成绩 + 明察事件</dd>
+                  <dt>交给谁</dt><dd>风险学生 → 守则（预警）</dd>
+                </dl>
+              </article>
+
+              <article class="emp-card card-click" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a5"><span data-icon="shield" class="ico-lg"></span><span class="emp-dot busy"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">守则</div>
+                    <div class="emp-card-code">guard · 督导员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-warning tag-outline">执行中</span>
+                </div>
+                <div class="emp-card-role">订阅全员产出，按规则库判定风险等级，生成干预建议并派发通知，形成闭环。</div>
+                <div class="emp-chip-row">
+                  <span class="emp-chip is-accent">alert.rule</span>
+                  <span class="emp-chip is-accent">notify.dispatch</span>
+                  <span class="emp-chip">intervene.suggest</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>输入</dt><dd>视觉事件流 / 学情风险</dd>
+                  <dt>交给谁</dt><dd>教师与学生（通知）、平台规则库</dd>
+                </dl>
+              </article>
+
+              <article class="emp-card" style="border-style:dashed;background:var(--surface-2)">
+                <div class="card-bd" style="padding:0;display:flex;flex-direction:column;gap:var(--sp-2);align-items:flex-start">
+                  <span class="emp-chip">governance</span>
+                  <div class="h4">平台运维（非员工）</div>
+                  <div class="emp-card-role">用户与权限、组织班级、模型与算力、审计日志。属于平台底座能力，不参与业务协作，因此不列入员工名册。</div>
+                  <button class="btn btn-secondary btn-sm" data-goto="p10" data-icon="sliders">查看平台边界</button>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- 三条主协作链路 -->
+          <div class="emp-section">
+            <div class="emp-section-hd">
+              <h3>三条主协作链路</h3>
+              <span class="emp-hint">员工之间不直接互相调用，只通过「产出物」交接</span>
+            </div>
+
+            <div class="stack">
+              <div class="card">
+                <div class="card-hd"><span class="card-title">链路 A · 拍照批改</span><span class="spacer"></span><span class="tag tag-info tag-outline">教学场景</span></div>
+                <div class="card-bd">
+                  <div class="emp-flow">
+                    <div class="emp-flow-node is-vision"><b>① 明察 · 题块识别</b><span>识别题干、作答区与题号，输出裁剪区块与坐标</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>② 笔正 · 分项评分</b><span>匹配评分标准，给出各题得分、错因与评语</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node is-gate"><b>③ 人工 Gate</b><span>教师确认后才写回成绩（不可跳过）</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>④ 知微 · 更新画像</b><span>成绩入库，重算知识点掌握度与学生画像</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">链路 B · 课堂督导</span><span class="spacer"></span><span class="tag tag-warning tag-outline">安全 / 纪律</span></div>
+                <div class="card-bd">
+                  <div class="emp-flow">
+                    <div class="emp-flow-node is-vision"><b>① 明察 · 行为事件</b><span>逐帧识别并落库为事件（含置信度与截图）</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>② 守则 · 规则匹配</b><span>严重度 ≥ 规则阈值才触发，同标题窗口内去重</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>③ 派发通知</b><span>按学号定位学生，或按角色通知教师</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>④ 知微 · 参与度回写</b><span>事件折算为课堂参与度，进入学情报告</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">链路 C · 答疑沉淀</span><span class="spacer"></span><span class="tag tag-success tag-outline">知识与规则</span></div>
+                <div class="card-bd">
+                  <div class="emp-flow">
+                    <div class="emp-flow-node"><b>① 知问 · 检索作答</b><span>向量检索课程资料，回答并附引用</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node is-gate"><b>② 未命中识别</b><span>相似度低于阈值的问题被标记为知识缺口</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>③ 守则 · 沉淀规则</b><span>高频缺口转为待补充的规则或 FAQ 条目</span></div>
+                    <div class="emp-flow-arrow" data-icon="arrow-right"></div>
+                    <div class="emp-flow-node"><b>④ 回灌知识库</b><span>人工补充资料后重新索引，闭环</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 五种协作机制 -->
+          <div class="emp-section">
+            <div class="emp-section-hd">
+              <h3>五种协作机制</h3>
+              <span class="emp-hint">这套机制决定了「为什么需要多个员工」而不是一个更大的模型</span>
+            </div>
+            <div class="emp-cols-3">
+              <div class="card card-flat">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="list"></span><b>工单派发</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 0">人来指派，或系统按规则自动指派。每个工单有明确负责人、状态与验收标准。</p>
+                </div>
+              </div>
+              <div class="card card-flat">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="share"></span><b>流水线接力</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 0">上游员工的产出物按契约成为下游输入，交接点即数据校验点，出错可单点回溯。</p>
+                </div>
+              </div>
+              <div class="card card-flat">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="zap"></span><b>事件总线</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 0">明察只负责「发事件」，谁订阅、怎么处置由规则决定，因此新增场景不改视觉代码。</p>
+                </div>
+              </div>
+              <div class="card card-flat">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="users"></span><b>会签复核</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 0">关键产出由第二个员工独立复核（如笔正出分、知微校验分布异常），互相制衡。</p>
+                </div>
+              </div>
+              <div class="card card-flat">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="shield"></span><b>人工 Gate</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 0">一切写操作与低置信度结果必须人工确认，员工不能自行「落库」或「通知学生」。</p>
+                </div>
+              </div>
+              <div class="card card-flat" style="background:var(--surface-2);border-style:dashed">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="info"></span><b>设计取舍</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 0">拆分而非合并的收益：权限最小化、故障可隔离、每个员工可单独评测。代价是交接契约需要维护。</p>
+                </div>
+              </div>
+              <div class="card card-flat" style="background:var(--surface-2);border-style:dashed">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="lock"></span><b>暂不可用的协作模式</b></div>
+                  <p class="sub" style="margin:var(--sp-2) 0 var(--sp-3)">并行协作需要至少两名员工负载低于 60%。当前明察 78%、笔正 64%，并行条件不满足。</p>
+                  <div class="row-wrap">
+                    <button class="btn btn-secondary btn-sm" disabled data-icon="users">开启并行协作</button>
+                    <span class="xs">负载回落后自动可用</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P1 · 指挥台
+     ====================================================================== -->
+<section class="page" id="p1" data-pid="P1" data-title="指挥台">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item is-active" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">指挥台</span>
+        <span class="spacer"></span>
+        <span class="emp-live"><span class="pulse-dot" style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block"></span>数据截至 10-13 10:20</span>
+        <button class="btn btn-secondary btn-sm" data-skeleton="#live-events" data-skeleton-ms="1200" data-icon="refresh">刷新</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-band">
+            <span class="emp-avatar emp-avatar-lg"><span data-icon="sparkles" class="ico-lg"></span></span>
+            <div class="bb">
+              <b>计算机学院 · 智慧教学空间</b>
+              <span>4 个教学场景在线 · 2 条流水线运行中 · 规则库 18 条</span>
+            </div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">5 / 5</b><span>员工在岗</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">6</b><span>待人工确认</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">0</b><span>失败交接</span></div>
+            <span class="spacer"></span>
+            <button class="btn btn-primary btn-sm" data-modal-open="modal-dispatch" data-icon="plus">派发任务</button>
+          </div>
+
+          <div class="emp-section emp-stats">
+            <div class="card">
+              <div class="card-bd">
+                <div class="stat-label">今日视觉事件</div>
+                <div class="stat-value num" data-count-to="1284">0</div>
+                <div class="stat-delta up"><span data-icon="trending-up" class="ico-sm"></span>较昨日 +18%</div>
+                <div class="xs" style="margin-top:6px">课堂 926 · 实验室 218 · 考场 140</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-bd">
+                <div class="stat-label">待批改提交</div>
+                <div class="stat-value num" data-count-to="37">0</div>
+                <div class="stat-delta"><span data-icon="clock" class="ico-sm"></span>笔正已接手 31 份</div>
+                <div class="xs" style="margin-top:6px">《数据结构与算法》第三章随堂测</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-bd">
+                <div class="stat-label">待人工确认</div>
+                <div class="stat-value num" data-count-to="6">0</div>
+                <div class="stat-delta"><span data-icon="shield" class="ico-sm"></span>写操作均需确认</div>
+                <div class="xs" style="margin-top:6px">成绩写回 4 · 通知派发 2</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-bd">
+                <div class="stat-label">平均单次协作耗时</div>
+                <div class="stat-value num" data-count-to="4.6" data-decimals="1" data-suffix=" 分">0</div>
+                <div class="stat-delta down"><span data-icon="trending-down" class="ico-sm"></span>较上周 -32%</div>
+                <div class="xs" style="margin-top:6px">含人工确认等待时间不计入</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="emp-section emp-cols-chat">
+            <div class="card">
+              <div class="card-hd">
+                <span class="card-title">实时事件流</span>
+                <span class="tag tag-outline" style="margin-left:8px">订阅：明察</span>
+                <span class="spacer"></span>
+                <span class="xs">由守则按规则判定处置</span>
+              </div>
+              <div class="card-bd" id="live-events">
+                <div class="stack-sm stagger">
+                  <div class="emp-event sev-critical">
+                    <span class="ev-bar"></span>
+                    <div class="ev-main">
+                      <div class="ev-title">实验室安全 · 未佩戴护目镜</div>
+                      <div class="ev-desc">2024 级 · 物理实验中心 A302 · 林嘉禾（2023010142）持续 12 秒</div>
+                      <div class="row-wrap" style="margin-top:6px">
+                        <span class="emp-conf lo">置信度 0.93</span>
+                        <span class="tag tag-danger tag-outline">已派发通知</span>
+                        <span class="tag tag-outline">规则 R-07</span>
+                      </div>
+                    </div>
+                    <span class="ev-meta">10:18:42</span>
+                  </div>
+                  <div class="emp-event sev-warning">
+                    <span class="ev-bar"></span>
+                    <div class="ev-main">
+                      <div class="ev-title">考场行为 · 视线离开试卷</div>
+                      <div class="ev-desc">《操作系统原理》期中 · 第三考场 · 周雨桐（2023010187）</div>
+                      <div class="row-wrap" style="margin-top:6px">
+                        <span class="emp-conf mid">置信度 0.71</span>
+                        <span class="tag tag-warning tag-outline">待教师复核</span>
+                        <span class="tag tag-outline">规则 R-12</span>
+                      </div>
+                    </div>
+                    <span class="ev-meta">10:11:05</span>
+                  </div>
+                  <div class="emp-event sev-info">
+                    <span class="ev-bar"></span>
+                    <div class="ev-main">
+                      <div class="ev-title">课堂行为 · 抬头听讲</div>
+                      <div class="ev-desc">《数据结构与算法》第三次课 · 计科 2201 班 · 参与度计入</div>
+                      <div class="row-wrap" style="margin-top:6px">
+                        <span class="emp-conf hi">置信度 0.96</span>
+                        <span class="tag tag-outline">仅入库不告警</span>
+                        <span class="tag tag-outline">规则不适用</span>
+                      </div>
+                    </div>
+                    <span class="ev-meta">10:04:19</span>
+                  </div>
+                  <div class="emp-event sev-critical">
+                    <span class="ev-bar"></span>
+                    <div class="ev-main">
+                      <div class="ev-title">实验室安全 · 明火未管离</div>
+                      <div class="ev-desc">化学实验中心 B105 · 操作台 3 号 · 持续 6 秒</div>
+                      <div class="row-wrap" style="margin-top:6px">
+                        <span class="emp-conf lo">置信度 0.88</span>
+                        <span class="tag tag-danger tag-outline">已派发通知</span>
+                        <span class="tag tag-outline">规则 R-03</span>
+                      </div>
+                    </div>
+                    <span class="ev-meta">09:57:33</span>
+                  </div>
+                  <div class="emp-event sev-warning">
+                    <span class="ev-bar"></span>
+                    <div class="ev-main">
+                      <div class="ev-title">课堂行为 · 连续低头超阈值</div>
+                      <div class="ev-desc">计科 2202 班 · 赵一鸣（2023010203）· 跨帧时序判定</div>
+                      <div class="row-wrap" style="margin-top:6px">
+                        <span class="emp-conf mid">置信度 0.79</span>
+                        <span class="tag tag-warning tag-outline">计入参与度</span>
+                        <span class="tag tag-outline">规则 R-15</span>
+                      </div>
+                    </div>
+                    <span class="ev-meta">09:48:10</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-ft"><button class="btn btn-secondary btn-sm btn-block" data-goto="p8" data-icon="sliders">查看告警规则库</button></div>
+            </div>
+
+            <div class="stack">
+              <div class="card">
+                <div class="card-hd"><span class="card-title">员工负载</span></div>
+                <div class="card-bd">
+                  <div class="stack-sm">
+                    <div>
+                      <div class="row-between"><span class="title">明察 · 视觉员工</span><span class="xs num">78%</span></div>
+                      <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="78"></span></div>
+                    </div>
+                    <div>
+                      <div class="row-between"><span class="title">笔正 · 批改员工</span><span class="xs num">64%</span></div>
+                      <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="64"></span></div>
+                    </div>
+                    <div>
+                      <div class="row-between"><span class="title">守则 · 督导员工</span><span class="xs num">41%</span></div>
+                      <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="41"></span></div>
+                    </div>
+                    <div>
+                      <div class="row-between"><span class="title">知问 · 答疑员工</span><span class="xs num">23%</span></div>
+                      <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="23"></span></div>
+                    </div>
+                    <div>
+                      <div class="row-between"><span class="title">知微 · 学情员工</span><span class="xs num">12%</span></div>
+                      <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="12"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">待你处理</span><span class="spacer"></span><span class="badge badge-num">6</span></div>
+                <div class="card-bd">
+                  <div class="stack-sm">
+                    <button class="list-item clickable" data-goto="p6">
+                      <span class="li-main">
+                        <span class="li-title">批改结果写回成绩</span>
+                        <span class="li-desc">《数据结构与算法》第三章 · 37 份</span>
+                      </span>
+                      <span class="emp-conf mid">需确认</span>
+                    </button>
+                    <button class="list-item clickable" data-goto="p6">
+                      <span class="li-main">
+                        <span class="li-title">考场异常通知派发</span>
+                        <span class="li-desc">周雨桐 · 视线离开试卷 0.71</span>
+                      </span>
+                      <span class="emp-conf mid">需确认</span>
+                    </button>
+                    <button class="list-item clickable" data-goto="p6">
+                      <span class="li-main">
+                        <span class="li-title">知识缺口补充</span>
+                        <span class="li-desc">知问未命中 12 条，建议补资料</span>
+                      </span>
+                      <span class="tag tag-outline">待办</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-ft"><button class="btn btn-secondary btn-sm btn-block" data-goto="p5">进入任务与审核</button></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P2 · 协作台
+     ====================================================================== -->
+<section class="page" id="p2" data-pid="P2" data-title="协作台">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item is-active" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">协作台</span>
+        <span class="crumb" style="margin-left:8px"><span class="sep">/</span><span class="cur">T-2481 第三章随堂测批改</span></span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" data-drawer-open="#drawer-context" data-icon="layers">会话上下文</button>
+        <button class="btn btn-ghost btn-icon btn-sm" data-icon="more-h"></button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+          <div class="emp-cols-chat">
+
+            <!-- 会话主流 -->
+            <div class="card">
+              <div class="card-bd emp-chat">
+                <div class="emp-chat-head">
+                  <span class="emp-avatar emp-a2"><span data-icon="scan" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">笔正 <span class="emp-card-code">· 批改员工</span></div>
+                    <div class="xxl">负责《数据结构与算法》· 技能包 grading.chain v1.4.2</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <button class="btn btn-ghost btn-sm" data-menu-open="#menu-switch" data-icon="users">切换员工</button>
+                  <span class="tag tag-success tag-outline">就绪</span>
+                </div>
+
+                <div class="emp-chat-stream">
+                  <!-- 用户 -->
+                  <div class="emp-turn emp-turn-user">
+                    <div class="emp-bubble-user">帮我批改《数据结构与算法》第三章的随堂测，学生拍照上传了 37 份。评分标准用课程组那版，错因要写清楚，先别直接写回成绩。</div>
+                  </div>
+
+                  <!-- 员工回复 -->
+                  <div class="emp-turn emp-turn-bot">
+                    <span class="emp-avatar emp-a2"><span data-icon="scan" class="ico-lg"></span></span>
+                    <div class="emp-bot-body">
+                      <div class="emp-bot-meta">
+                        <b style="color:var(--text-2)">笔正</b>
+                        <span>·</span><span>10:22:07</span>
+                        <span>·</span><span>运行 #run-9f31c2</span>
+                        <span class="tag tag-outline">planner: llm</span>
+                      </div>
+
+                      <div class="emp-bot-text">
+                        <p>37 份已全部批改完成。识别到 <strong>3 份</strong>手写模糊（置信度低于 0.6），已标记为「需人工判读」不计入自动分。</p>
+                        <p>全班平均 <strong class="num">78.4</strong> 分，最低 41 分（孙楚，2023010231），错因集中在<b>「平衡二叉树旋转的四种情形判别」</b>与<b>「红黑树插入后的调整」</b>。</p>
+                        <p>按你的要求，成绩<b>尚未写回</b>，等你确认后再提交。另：我请知微复核了分数分布，见下方会签。</p>
+                      </div>
+
+                      <!-- 执行轨迹 -->
+                      <div class="emp-trace">
+                        <div class="emp-trace-hd">
+                          <span data-icon="list" class="ico-sm"></span>
+                          <b>执行计划 · 5 步</b>
+                          <span class="spacer"></span>
+                          <span class="tag tag-success tag-outline">4 完成 · 1 待确认</span>
+                          <span data-icon="chevron-down" class="ico-sm"></span>
+                        </div>
+                        <div class="emp-trace-bd">
+                          <div class="emp-step">
+                            <span class="si ico-sm" data-icon="check-circle"></span>
+                            <div><div class="sn">grade.batch.list</div><div class="sr">拉取该作业下 37 份待批改提交</div></div>
+                            <span class="sl">82 ms</span>
+                          </div>
+                          <div class="emp-step">
+                            <span class="si ico-sm" data-icon="check-circle"></span>
+                            <div><div class="sn">vision.blocks.extract <span class="emp-chip is-scan" style="margin-left:4px">委托 · 明察</span></div><div class="sr">识别题号与作答区，返回 214 个题块；3 份标记模糊</div></div>
+                            <span class="sl">2.41 s</span>
+                          </div>
+                          <div class="emp-step">
+                            <span class="si ico-sm" data-icon="check-circle"></span>
+                            <div><div class="sn">rubric.match</div><div class="sr">匹配课程组评分标准 v3，命中 8 个知识点</div></div>
+                            <span class="sl">310 ms</span>
+                          </div>
+                          <div class="emp-step">
+                            <span class="si ico-sm" data-icon="check-circle"></span>
+                            <div><div class="sn">grade.score</div><div class="sr">逐题给分 + 生成错因与评语（引用教师评语库）</div></div>
+                            <span class="sl">1.83 s</span>
+                          </div>
+                          <div class="emp-step is-wait">
+                            <span class="si ico-sm" data-icon="alert-triangle"></span>
+                            <div><div class="sn">grade.writeback <span class="emp-chip is-accent" style="margin-left:4px">写操作</span></div><div class="sr">写回 37 条成绩 —— 等待人工确认，未执行</div></div>
+                            <span class="sl">—</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 引用 -->
+                      <div>
+                        <div class="xxl" style="margin-bottom:6px">引用来源</div>
+                        <div class="emp-cites">
+                          <span class="emp-cite" data-toast="打开：课程组评分标准 v3" data-toast-type="info"><span class="cn">[1]</span>课程组评分标准 v3.pdf · p.4</span>
+                          <span class="emp-cite" data-toast="打开：第三章随堂测参考答案" data-toast-type="info"><span class="cn">[2]</span>第三章随堂测参考答案.docx · p.1</span>
+                          <span class="emp-cite" data-toast="打开：教师评语库" data-toast-type="info"><span class="cn">[3]</span>教师评语库 · 树结构类错误 · 14 条</span>
+                        </div>
+                      </div>
+
+                      <!-- 产出物 -->
+                      <div class="row-wrap">
+                        <button class="emp-artifact" data-modal-open="modal-artifact">
+                          <span class="ai" data-icon="file"></span>
+                          <span class="li-main">
+                            <span class="li-title">批改明细表.xlsx</span>
+                            <span class="li-desc">37 行 · 8 列 · 含每题得分与错因</span>
+                          </span>
+                          <span data-icon="download" class="ico-sm" style="color:var(--text-4)"></span>
+                        </button>
+                        <button class="emp-artifact" data-drawer-open="#drawer-artifact">
+                          <span class="ai" data-icon="image"></span>
+                          <span class="li-main">
+                            <span class="li-title">题块识别结果</span>
+                            <span class="li-desc">214 个区块 · 3 个待人工判读</span>
+                          </span>
+                          <span data-icon="chevron-right" class="ico-sm" style="color:var(--text-4)"></span>
+                        </button>
+                      </div>
+
+                      <!-- 会签 -->
+                      <div class="alert alert-info">
+                        <span class="a-ic" data-icon="users"></span>
+                        <div>
+                          <div class="a-title">知微 · 会签意见（自动触发）</div>
+                          <div class="a-body">分数分布偏态正常（偏度 0.21），但计科 2202 班的平均分（68.2）显著低于 2201 班（85.7），差值 17.5 分超出 2σ。建议不直接写回，先核查是否漏交或题目难度差异。</div>
+                        </div>
+                      </div>
+
+                      <!-- 人工 Gate -->
+                      <div class="emp-gate">
+                        <span class="gi ico-lg" data-icon="shield"></span>
+                        <div style="flex:1;min-width:0">
+                          <b>人工确认 Gate · 成绩写回</b>
+                          <p>笔正不具备直接写回成绩的权限。确认后由系统写入 37 条成绩，并同步触发知微重算学生画像。</p>
+                          <div class="row-wrap" style="margin-top:10px">
+                            <button class="btn btn-primary btn-sm" data-loading="1200" data-loading-done="已写回 37 条成绩" data-icon="check">确认写回</button>
+                            <button class="btn btn-secondary btn-sm" data-toast="已退回笔正重新批改" data-toast-type="warn">退回修改</button>
+                            <button class="btn btn-ghost btn-sm" data-modal-open="modal-artifact">先看明细</button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <button class="btn btn-ghost btn-icon btn-sm" data-toast="已复制本条回复" data-toast-type="success" data-icon="file"></button>
+                        <button class="btn btn-ghost btn-icon btn-sm" data-toast="已标记为有帮助" data-toast-type="success" data-icon="thumbs-up"></button>
+                        <span class="spacer"></span>
+                        <span class="xxl">本次消耗 12.4k tokens · 用时 4.6s</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="emp-composer">
+                  <div class="emp-quick">
+                    <button class="btn btn-secondary btn-sm" data-toast="已插入：只批改 2201 班" data-toast-type="info">只批改 2201 班</button>
+                    <button class="btn btn-secondary btn-sm" data-toast="已插入：先给低分学生单独标注" data-toast-type="info">先标注低分学生</button>
+                    <button class="btn btn-secondary btn-sm" data-toast="已委托知微生成班级对比" data-toast-type="info" data-icon="users">@知微 生成班级对比</button>
+                  </div>
+                  <div class="emp-composer-row">
+                    <textarea class="textarea" placeholder="指派任务、追问，或用 @ 唤起另一位员工…（Enter 发送，Shift+Enter 换行）"></textarea>
+                    <button class="btn btn-primary btn-icon btn-lg" data-loading="900" data-loading-done="已发送" data-icon="send" title="发送"></button>
+                  </div>
+                  <div class="xxl">提示：批改类任务的产出物必须经人工 Gate 才能落库；员工之间不能互相直接调用写操作。</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 上下文侧栏 -->
+            <div class="stack">
+              <div class="card">
+                <div class="card-hd"><span class="card-title">本次任务</span></div>
+                <div class="card-bd">
+                  <dl class="emp-kv">
+                    <dt>工单号</dt><dd class="num">T-2481</dd>
+                    <dt>负责员工</dt><dd>笔正（批改）</dd>
+                    <dt>协作者</dt><dd>明察 · 知微</dd>
+                    <dt>课程</dt><dd>数据结构与算法</dd>
+                    <dt>班级</dt><dd>计科 2201 / 2202</dd>
+                    <dt>状态</dt><dd><span class="tag tag-warning tag-outline">待人工确认</span></dd>
+                  </dl>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">本次调用的经验</span><span class="spacer"></span><span class="badge badge-num">3</span></div>
+                <div class="card-bd">
+                  <div class="stack-sm">
+                    <div class="emp-mem">
+                      <div class="emp-mem-top"><span data-icon="bookmark" class="ico-sm" style="color:var(--brand-500)"></span><b>树结构类错误必须授引教材页码</b></div>
+                      <div class="emp-mem-body">评语中指出错因时，附带教材对应页码，学生订正时可自行查阅。</div>
+                      <div class="emp-mem-src">来源 · 人工审核改动 × 6 次</div>
+                    </div>
+                    <div class="emp-mem">
+                      <div class="emp-mem-top"><span data-icon="bookmark" class="ico-sm" style="color:var(--brand-500)"></span><b>手写模糊不得猜测作答内容</b></div>
+                      <div class="emp-mem-body">置信度低于 0.6 的题块一律标记待判读，不补全、不猜测、不给分。</div>
+                      <div class="emp-mem-src">来源 · 人工驳回原因 × 3 次</div>
+                    </div>
+                    <div class="emp-mem">
+                      <div class="emp-mem-top"><span data-icon="bookmark" class="ico-sm" style="color:var(--brand-500)"></span><b>分数分布异常先会签再写回</b></div>
+                      <div class="emp-mem-body">班级间均值差超过 2σ 时，自动请知微会签，不直接写回成绩。</div>
+                      <div class="emp-mem-src">来源 · 验证失败 × 2 次</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">可协作对象</span></div>
+                <div class="card-bd">
+                  <div class="stack-sm">
+                    <div class="row"><span class="emp-avatar emp-a3" style="width:30px;height:30px"><span data-icon="eye" class="ico-sm"></span></span><div style="min-width:0"><div class="title">明察</div><div class="xxl">提供题块与视觉事件</div></div><span class="spacer"></span><span class="tag tag-success tag-outline">可委托</span></div>
+                    <div class="row"><span class="emp-avatar emp-a4" style="width:30px;height:30px"><span data-icon="target" class="ico-sm"></span></span><div style="min-width:0"><div class="title">知微</div><div class="xxl">会签分数分布、更新画像</div></div><span class="spacer"></span><span class="tag tag-success tag-outline">可委托</span></div>
+                    <div class="row"><span class="emp-avatar emp-a5" style="width:30px;height:30px"><span data-icon="shield" class="ico-sm"></span></span><div style="min-width:0"><div class="title">守则</div><div class="xxl">异常成绩触发预警</div></div><span class="spacer"></span><span class="tag tag-outline">单向订阅</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="alert alert-warning">
+                <span class="a-ic" data-icon="alert-triangle"></span>
+                <div>
+                  <div class="a-title">权限边界</div>
+                  <div class="a-body">笔正不可访问其他课程的提交记录，也不可向学生发送通知。越权请求会被工具注册表直接拒绝并记入审计日志。</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P3 · 数字员工
+     ====================================================================== -->
+<section class="page" id="p3" data-pid="P3" data-title="数字员工">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item is-active" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">数字员工</span>
+        <span class="spacer"></span>
+        <div class="input-icon" style="width:220px"><span class="lead" data-icon="search"></span><input class="input" style="height:32px" placeholder="搜索员工或技能…"></div>
+        <button class="btn btn-primary btn-sm" data-modal-open="modal-employee" data-icon="plus">创建员工</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>员工名册</h2>
+              <div class="emp-desc">每名员工 = 一个岗位职责 + 一套技能包 + 一个数据域边界 + 一份可追溯的工作记录。技能包有版本号，改版需要走审核。</div>
+            </div>
+            <div class="emp-head-actions">
+              <button class="btn btn-secondary" data-goto="p7" data-icon="share">查看协作链路</button>
+            </div>
+          </div>
+
+          <div class="emp-section">
+            <div class="row-wrap" style="margin-bottom:var(--sp-4)">
+              <span class="tag tag-lg">全部 5</span>
+              <span class="tag tag-lg tag-outline">在岗 5</span>
+              <span class="tag tag-lg tag-outline">维护中 0</span>
+              <span class="spacer"></span>
+              <span class="xs">按负载排序</span>
+            </div>
+
+            <div class="emp-cols-3 stagger">
+
+              <article class="emp-card" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-avatar-lg"><span data-icon="headphones" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">知问</div>
+                    <div class="emp-card-code">know · 答疑员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">在岗</span>
+                </div>
+                <div class="emp-card-role">基于校内知识库与课程资料回答问题，每条回答附引用；检索不到时明确告知「资料中没有」，不编造。</div>
+                <div class="emp-load">
+                  <span>负载</span>
+                  <div class="progress progress-thin"><span class="progress-bar" data-progress="23"></span></div>
+                  <span class="num">23%</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>技能包</dt><dd>knowledge.rag <span class="emp-card-code">v2.1.0</span></dd>
+                  <dt>本周产出</dt><dd class="num">412 次问答 · 命中率 87%</dd>
+                  <dt>数据域</dt><dd>课程资料 / 校内制度 / FAQ</dd>
+                  <dt>写权限</dt><dd><span class="tag tag-outline">无</span></dd>
+                </dl>
+                <div class="row-wrap">
+                  <span class="emp-chip">rag.retrieve</span>
+                  <span class="emp-chip">citation.guard</span>
+                  <span class="emp-chip">gap.detect</span>
+                </div>
+              </article>
+
+              <article class="emp-card is-active" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a2 emp-avatar-lg"><span data-icon="scan" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">笔正</div>
+                    <div class="emp-card-code">grade · 批改员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">在岗</span>
+                </div>
+                <div class="emp-card-role">作业与试卷批改。输出分项得分、错因定位与评语；置信度低于 0.6 的题块自动转人工判读。</div>
+                <div class="emp-load">
+                  <span>负载</span>
+                  <div class="progress progress-thin"><span class="progress-bar" data-progress="64"></span></div>
+                  <span class="num">64%</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>技能包</dt><dd>grading.chain <span class="emp-card-code">v1.4.2</span></dd>
+                  <dt>本周产出</dt><dd class="num">386 份 · 待确认 4 批</dd>
+                  <dt>数据域</dt><dd>提交记录 / 评分标准 / 评语库</dd>
+                  <dt>写权限</dt><dd><span class="emp-chip is-accent">需人工 Gate</span></dd>
+                </dl>
+                <div class="row-wrap">
+                  <span class="emp-chip">grading.chain</span>
+                  <span class="emp-chip">rubric.match</span>
+                  <span class="emp-chip">comment.memory</span>
+                </div>
+              </article>
+
+              <article class="emp-card" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a3 emp-avatar-lg"><span data-icon="eye" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">明察</div>
+                    <div class="emp-card-code">vision · 视觉员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">在岗</span>
+                </div>
+                <div class="emp-card-role">接入 YOLO 做视觉感知，覆盖课堂行为、考场异常、实验室安全、作业题块四类场景，逐帧产出带置信度的事件。</div>
+                <div class="emp-load">
+                  <span>负载</span>
+                  <div class="progress progress-thin"><span class="progress-bar" data-progress="78"></span></div>
+                  <span class="num">78%</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>技能包</dt><dd>vision.yolo <span class="emp-card-code">v0.9.3</span></dd>
+                  <dt>本周产出</dt><dd class="num">6,842 事件 · 4 场景</dd>
+                  <dt>数据域</dt><dd>视频帧 / 上传图片 / 身份映射</dd>
+                  <dt>写权限</dt><dd><span class="emp-chip is-ok">仅写事件表</span></dd>
+                </dl>
+                <div class="row-wrap">
+                  <span class="emp-chip is-scan">vision.infer</span>
+                  <span class="emp-chip is-scan">identity.bind</span>
+                  <span class="emp-chip">event.emit</span>
+                </div>
+              </article>
+
+              <article class="emp-card" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a4 emp-avatar-lg"><span data-icon="target" class="ico-lg"></span><span class="emp-dot on"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">知微</div>
+                    <div class="emp-card-code">insight · 学情员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-success tag-outline">在岗</span>
+                </div>
+                <div class="emp-card-role">汇总成绩、提交记录与课堂事件，产出学情诊断、低分知识点定位、学习路径与学生画像。</div>
+                <div class="emp-load">
+                  <span>负载</span>
+                  <div class="progress progress-thin"><span class="progress-bar" data-progress="12"></span></div>
+                  <span class="num">12%</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>技能包</dt><dd>insight.profile <span class="emp-card-code">v1.2.0</span></dd>
+                  <dt>本周产出</dt><dd class="num">64 份学情报告</dd>
+                  <dt>数据域</dt><dd>成绩 / 提交 / 视觉事件</dd>
+                  <dt>写权限</dt><dd><span class="tag tag-outline">无</span></dd>
+                </dl>
+                <div class="row-wrap">
+                  <span class="emp-chip">gaps.analyze</span>
+                  <span class="emp-chip">plan.generate</span>
+                  <span class="emp-chip">profile.build</span>
+                </div>
+              </article>
+
+              <article class="emp-card" data-goto="p4">
+                <div class="emp-card-top">
+                  <span class="emp-avatar emp-a5 emp-avatar-lg"><span data-icon="shield" class="ico-lg"></span><span class="emp-dot busy"></span></span>
+                  <div style="min-width:0">
+                    <div class="emp-card-name">守则</div>
+                    <div class="emp-card-code">guard · 督导员工</div>
+                  </div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-warning tag-outline">执行中</span>
+                </div>
+                <div class="emp-card-role">订阅全员产出，按规则库判定风险等级，生成干预建议并派发通知。派发失败不得影响事件落库。</div>
+                <div class="emp-load">
+                  <span>负载</span>
+                  <div class="progress progress-thin"><span class="progress-bar" data-progress="41"></span></div>
+                  <span class="num">41%</span>
+                </div>
+                <dl class="emp-kv">
+                  <dt>技能包</dt><dd>alert.rules <span class="emp-card-code">v1.0.6</span></dd>
+                  <dt>本周产出</dt><dd class="num">128 条告警 · 18 条规则</dd>
+                  <dt>数据域</dt><dd>事件流 / 规则库 / 通知记录</dd>
+                  <dt>写权限</dt><dd><span class="emp-chip is-accent">需人工 Gate</span></dd>
+                </dl>
+                <div class="row-wrap">
+                  <span class="emp-chip is-accent">alert.rule</span>
+                  <span class="emp-chip is-accent">notify.dispatch</span>
+                  <span class="emp-chip">intervene.suggest</span>
+                </div>
+              </article>
+
+              <article class="emp-card card-flat" style="border-style:dashed;background:var(--surface-2);justify-content:center;align-items:flex-start">
+                <span class="emp-chip">空缺岗位</span>
+                <div class="h4">教务员工 / 资料员工</div>
+                <p class="sub">作业发布、名单维护、知识库索引目前由教师角色与平台底座直接承担，尚未独立成员工。若协作量继续上升，可拆为第 6 名员工。</p>
+                <button class="btn btn-secondary btn-sm" disabled data-icon="plus">提议新增岗位</button>
+                <span class="xxl">仅管理员可新增岗位</span>
+              </article>
+
+            </div>
+          </div>
+
+          <div class="emp-section">
+            <div class="emp-section-hd">
+              <h3>能力与权限对照</h3>
+              <span class="emp-hint">「写权限」一列决定了哪些动作必须经过人工 Gate</span>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <div class="table-wrap">
+                <table class="table table-stripe">
+                  <thead>
+                    <tr>
+                      <th data-sort>员工</th>
+                      <th data-sort>岗位</th>
+                      <th data-sort>技能包</th>
+                      <th data-sort>可读数据域</th>
+                      <th data-sort>写操作</th>
+                      <th data-sort>负载</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="td-strong">知问</td><td>答疑</td>
+                      <td><span class="emp-card-code">knowledge.rag v2.1.0</span></td>
+                      <td class="sub">课程资料 / 制度 / FAQ</td>
+                      <td><span class="tag tag-outline">无</span></td>
+                      <td class="num-cell">23%</td>
+                      <td><button class="btn btn-ghost btn-sm" data-goto="p4">详情</button></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">笔正</td><td>批改</td>
+                      <td><span class="emp-card-code">grading.chain v1.4.2</span></td>
+                      <td class="sub">提交记录 / 评分标准 / 评语库</td>
+                      <td><span class="emp-chip is-accent">成绩写回</span></td>
+                      <td class="num-cell">64%</td>
+                      <td><button class="btn btn-ghost btn-sm" data-goto="p4">详情</button></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">明察</td><td>视觉</td>
+                      <td><span class="emp-card-code">vision.yolo v0.9.3</span></td>
+                      <td class="sub">视频帧 / 上传图片 / 身份映射</td>
+                      <td><span class="emp-chip is-ok">事件表</span></td>
+                      <td class="num-cell">78%</td>
+                      <td><button class="btn btn-ghost btn-sm" data-goto="p4">详情</button></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">知微</td><td>学情</td>
+                      <td><span class="emp-card-code">insight.profile v1.2.0</span></td>
+                      <td class="sub">成绩 / 提交 / 视觉事件</td>
+                      <td><span class="tag tag-outline">无</span></td>
+                      <td class="num-cell">12%</td>
+                      <td><button class="btn btn-ghost btn-sm" data-goto="p4">详情</button></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">守则</td><td>督导</td>
+                      <td><span class="emp-card-code">alert.rules v1.0.6</span></td>
+                      <td class="sub">事件流 / 规则库 / 通知记录</td>
+                      <td><span class="emp-chip is-accent">派发通知</span></td>
+                      <td class="num-cell">41%</td>
+                      <td><button class="btn btn-ghost btn-sm" data-goto="p4">详情</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P4 · 员工详情
+     ====================================================================== -->
+<section class="page" id="p4" data-pid="P4" data-title="员工详情">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item is-active" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <button class="btn btn-ghost btn-icon btn-sm" data-back data-icon="arrow-left"></button>
+        <span class="topbar-title">笔正 · 批改员工</span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" data-toast="已暂停接单，队列中的任务会继续完成" data-toast-type="warn" data-icon="clock">暂停接单</button>
+        <button class="btn btn-primary btn-sm" data-goto="p2" data-icon="message">发起协作</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-band">
+            <span class="emp-avatar emp-a2 emp-avatar-lg"><span data-icon="scan" class="ico-lg"></span><span class="emp-dot on"></span></span>
+            <div class="bb">
+              <b>笔正</b>
+              <span>grade · 批改员工 · 技能包 grading.chain v1.4.2</span>
+            </div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">386</b><span>本周批改份数</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">94.1%</b><span>人工采纳率</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">4</b><span>待确认批次</span></div>
+            <span class="spacer"></span>
+            <span class="tag tag-success tag-outline">在岗</span>
+          </div>
+
+          <div class="emp-section" data-tabs>
+            <div class="tabs">
+              <button class="tab is-on" data-tab="duty">岗位职责</button>
+              <button class="tab" data-tab="skills">技能包</button>
+              <button class="tab" data-tab="logs">工作记录</button>
+              <button class="tab" data-tab="scope">数据域与权限</button>
+            </div>
+            <div class="tab-panels">
+
+              <!-- 岗位职责 -->
+              <div class="tab-panel is-on" data-panel="duty">
+                <div class="emp-cols-chat">
+                  <div class="stack">
+                    <div class="card">
+                      <div class="card-hd"><span class="card-title">职责边界</span></div>
+                      <div class="card-bd">
+                        <p class="body" style="margin:0 0 var(--sp-3)">对作业与试卷作答进行评分，输出三样东西：<b>分项得分</b>、<b>错因定位</b>、<b>可读评语</b>。它不负责出题、不负责发布作业、不负责直接通知学生。</p>
+                        <div class="emp-cols-2">
+                          <div class="alert alert-success"><span class="a-ic" data-icon="check-circle"></span><div><div class="a-title">应该做</div><div class="a-body">评分、错因、评语、标记模糊作答、请知微会签分布</div></div></div>
+                          <div class="alert alert-danger"><span class="a-ic" data-icon="x-circle"></span><div><div class="a-title">不该做</div><div class="a-body">自行写回成绩、补全看不清的作答、凭印象给分、直接通知学生</div></div></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-hd"><span class="card-title">协作关系</span></div>
+                      <div class="card-bd">
+                        <div class="emp-pipe">
+                          <div class="emp-pipe-item">
+                            <div class="emp-pipe-rail"><span class="emp-pipe-mark ico-sm" data-icon="eye"></span><div class="emp-pipe-line"></div></div>
+                            <div class="emp-pipe-body"><div class="pt">上游 · 明察（视觉员工）</div><div class="pd">提供题块识别结果：题号、作答区坐标、清晰度评分</div></div>
+                          </div>
+                          <div class="emp-pipe-item">
+                            <div class="emp-pipe-rail"><span class="emp-pipe-mark ico-sm" data-icon="target"></span><div class="emp-pipe-line"></div></div>
+                            <div class="emp-pipe-body"><div class="pt">会签 · 知微（学情员工）</div><div class="pd">校验分数分布，异常时提出复核意见（不阻断，但会标注）</div></div>
+                          </div>
+                          <div class="emp-pipe-item">
+                            <div class="emp-pipe-rail"><span class="emp-pipe-mark gate ico-sm" data-icon="shield"></span><div class="emp-pipe-line"></div></div>
+                            <div class="emp-pipe-body"><div class="pt">下游 · 人工 Gate（教师）</div><div class="pd">确认后才能写回成绩；退回则重新批改</div></div>
+                          </div>
+                          <div class="emp-pipe-item">
+                            <div class="emp-pipe-rail"><span class="emp-pipe-mark ico-sm" data-icon="shield"></span></div>
+                            <div class="emp-pipe-body"><div class="pt">旁路订阅 · 守则（督导员工）</div><div class="pd">异常分数与大面积低分触发预警，无需笔正主动通知</div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="stack">
+                    <div class="card">
+                      <div class="card-hd"><span class="card-title">本周表现</span></div>
+                      <div class="card-bd">
+                        <div class="stack">
+                          <div><div class="row-between"><span class="sub">自动批改占比</span><span class="num">91.2%</span></div><div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="91"></span></div></div>
+                          <div><div class="row-between"><span class="sub">转人工判读</span><span class="num">8.8%</span></div><div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="9"></span></div></div>
+                          <div><div class="row-between"><span class="sub">教师直接采纳</span><span class="num">94.1%</span></div><div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="94"></span></div></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="alert alert-warning">
+                      <span class="a-ic" data-icon="alert-triangle"></span>
+                      <div>
+                        <div class="a-title">已知能力边界</div>
+                        <div class="a-body">对手写连笔、公式推导的判读准确率明显低于印刷体。建议这类题目在评分标准中标注「人工优先」。</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 技能包 -->
+              <div class="tab-panel" data-panel="skills">
+                <div class="card">
+                  <div class="card-hd">
+                    <span class="card-title">grading.chain</span>
+                    <span class="tag tag-outline" style="margin-left:8px">v1.4.2</span>
+                    <span class="spacer"></span>
+                    <span class="xs">最近更新 2026-10-08 · 审核人 陈立群</span>
+                  </div>
+                  <div class="card-bd">
+                    <div class="list" style="border:0">
+                      <div class="list-item">
+                        <span class="stat-icon" data-icon="layers"></span>
+                        <span class="li-main"><span class="li-title">grade.batch.list</span><span class="li-desc">拉取指定作业下的待批改提交，校验可见性</span></span>
+                        <span class="tag tag-outline">只读</span>
+                      </div>
+                      <div class="list-item">
+                        <span class="stat-icon is-scan" data-icon="eye"></span>
+                        <span class="li-main"><span class="li-title">vision.blocks.extract <span class="emp-chip is-scan">跨员工委托</span></span><span class="li-desc">请求明察识别题块；不可用时降级为整图批改并标注风险</span></span>
+                        <span class="tag tag-outline">只读</span>
+                      </div>
+                      <div class="list-item">
+                        <span class="stat-icon" data-icon="target"></span>
+                        <span class="li-main"><span class="li-title">rubric.match</span><span class="li-desc">匹配课程组评分标准，输出知识点与分值映射</span></span>
+                        <span class="tag tag-outline">只读</span>
+                      </div>
+                      <div class="list-item">
+                        <span class="stat-icon" data-icon="edit"></span>
+                        <span class="li-main"><span class="li-title">grade.score</span><span class="li-desc">逐题评分并生成错因与评语（引用教师评语库）</span></span>
+                        <span class="tag tag-outline">只读</span>
+                      </div>
+                      <div class="list-item">
+                        <span class="stat-icon" data-icon="users"></span>
+                        <span class="li-main"><span class="li-title">insight.countersign</span><span class="li-desc">请求知微会签分数分布，异常时返回复核建议</span></span>
+                        <span class="tag tag-outline">只读</span>
+                      </div>
+                      <div class="list-item">
+                        <span class="stat-icon" data-icon="shield"></span>
+                        <span class="li-main"><span class="li-title">grade.writeback <span class="emp-chip is-accent">写操作</span></span><span class="li-desc">写回成绩 —— 必须人工确认，且仅写教师有权管辖的课程</span></span>
+                        <span class="tag tag-warning tag-outline">需 Gate</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 工作记录 -->
+              <div class="tab-panel" data-panel="logs">
+                <div class="card">
+                  <div class="card-hd"><span class="card-title">最近工作记录</span><span class="spacer"></span><span class="xs">保留 90 天，可导出审计</span></div>
+                  <div class="card-bd">
+                    <div class="timeline">
+                      <div class="tl-item">
+                        <div class="tl-time">今天 10:22</div>
+                        <div class="tl-title">《数据结构与算法》第三章随堂测 · 37 份</div>
+                        <div class="tl-desc">委托明察识别 214 个题块 → 完成评分 → 等待人工确认写回</div>
+                      </div>
+                      <div class="tl-item done">
+                        <div class="tl-time">今天 09:05</div>
+                        <div class="tl-title">《操作系统原理》第二次作业 · 52 份</div>
+                        <div class="tl-desc">已写回成绩（教师确认于 09:41），知微已重算画像</div>
+                      </div>
+                      <div class="tl-item done">
+                        <div class="tl-time">昨天 16:30</div>
+                        <div class="tl-title">《计算机网络》实验报告 · 46 份</div>
+                        <div class="tl-desc">教师退回了 3 份评语措辞，已按反馈重写并记录为经验</div>
+                      </div>
+                      <div class="tl-item done">
+                        <div class="tl-time">10-11 14:12</div>
+                        <div class="tl-title">《大学物理》随堂测 · 88 份</div>
+                        <div class="tl-desc">印刷体为主，自动批改占比 97%，无人工介入</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据域与权限 -->
+              <div class="tab-panel" data-panel="scope">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>数据域</th><th>内容</th><th>读</th><th>写</th><th>约束</th></tr></thead>
+                      <tbody>
+                        <tr><td class="td-strong">submission</td><td class="sub">学生提交内容与附件</td><td><span class="tag tag-success tag-outline">允许</span></td><td><span class="tag tag-outline">禁止</span></td><td class="sub">仅限自己管辖课程</td></tr>
+                        <tr><td class="td-strong">rubric</td><td class="sub">评分标准与知识点映射</td><td><span class="tag tag-success tag-outline">允许</span></td><td><span class="tag tag-outline">禁止</span></td><td class="sub">只读快照，版本留存</td></tr>
+                        <tr><td class="td-strong">comment_memory</td><td class="sub">教师评语库</td><td><span class="tag tag-success tag-outline">允许</span></td><td><span class="tag tag-outline">禁止</span></td><td class="sub">引用需标注来源</td></tr>
+                        <tr><td class="td-strong">grade</td><td class="sub">成绩记录</td><td><span class="tag tag-success tag-outline">允许</span></td><td><span class="emp-chip is-accent">需 Gate</span></td><td class="sub">一次确认仅写一批</td></tr>
+                        <tr><td class="td-strong">user / 权限</td><td class="sub">账号与角色</td><td><span class="tag tag-danger tag-outline">拒绝</span></td><td><span class="tag tag-outline">禁止</span></td><td class="sub">越权即审计告警</td></tr>
+                        <tr><td class="td-strong">其他教师课程</td><td class="sub">非本人管辖范围</td><td><span class="tag tag-danger tag-outline">拒绝</span></td><td><span class="tag tag-outline">禁止</span></td><td class="sub">工具注册表直接拦截</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P5 · 任务与审核
+     ====================================================================== -->
+<section class="page" id="p5" data-pid="P5" data-title="任务与审核">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item is-active" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">任务与审核</span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" data-skeleton="#task-table" data-skeleton-ms="1100" data-icon="refresh">刷新</button>
+        <button class="btn btn-primary btn-sm" data-modal-open="modal-dispatch" data-icon="plus">派发任务</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>任务与审核</h2>
+              <div class="emp-desc">所有跨员工的协作都以工单形式存在。工单的状态机固定为：<b>待确认 → 执行中 → 待复核 → 已完成</b>，任一环节失败会停在原状态并保留失败原因，不会静默跳过。</div>
+            </div>
+          </div>
+
+          <div class="emp-section emp-stats">
+            <div class="card"><div class="card-bd"><div class="stat-label">待我确认</div><div class="stat-value num" data-count-to="4">0</div><div class="xs" style="margin-top:6px">写操作被 Gate 拦住</div></div></div>
+            <div class="card"><div class="card-bd"><div class="stat-label">执行中</div><div class="stat-value num" data-count-to="3">0</div><div class="xs" style="margin-top:6px">明察 2 · 守则 1</div></div></div>
+            <div class="card"><div class="card-bd"><div class="stat-label">待复核（会签）</div><div class="stat-value num" data-count-to="2">0</div><div class="xs" style="margin-top:6px">知微已给出会签意见</div></div></div>
+            <div class="card"><div class="card-bd"><div class="stat-label">今日已完成</div><div class="stat-value num" data-count-to="126">0</div><div class="xs" style="margin-top:6px">平均耗时 4.6 分钟</div></div></div>
+          </div>
+
+          <div class="emp-section" data-tabs id="task-table">
+            <div class="tabs">
+              <button class="tab is-on" data-tab="mine">待我确认 <span class="tab-badge">4</span></button>
+              <button class="tab" data-tab="running">执行中 <span class="tab-badge">3</span></button>
+              <button class="tab" data-tab="countersign">待复核 <span class="tab-badge">2</span></button>
+              <button class="tab" data-tab="done">已完成 <span class="tab-badge">126</span></button>
+              <button class="tab" data-tab="failed">异常 <span class="tab-badge">1</span></button>
+            </div>
+            <div class="tab-panels">
+
+              <div class="tab-panel is-on" data-panel="mine">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-toolbar row-wrap">
+                    <div class="input-icon" style="width:230px"><span class="lead" data-icon="search"></span><input class="input" style="height:32px" placeholder="搜索任务…"></div>
+                    <button class="btn btn-secondary btn-sm" data-icon="filter">筛选</button>
+                    <span class="spacer"></span>
+                    <span class="xs">按更新时间倒序</span>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th data-sort>任务</th><th data-sort>负责员工</th><th data-sort>类型</th><th data-sort>状态</th><th data-sort>进度</th><th data-sort>更新时间</th><th></th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td class="td-strong">第三章随堂测批改写回</td>
+                          <td><span class="row"><span class="emp-avatar emp-a2" style="width:24px;height:24px"><span data-icon="scan" class="ico-sm"></span></span>笔正</span></td>
+                          <td class="sub">写操作确认</td>
+                          <td><span class="tag tag-warning tag-outline">待确认</span></td>
+                          <td class="sub">37 / 37 份</td>
+                          <td class="sub">今天 10:22</td>
+                          <td><button class="btn btn-primary btn-sm" data-goto="p6">审核</button></td>
+                        </tr>
+                        <tr>
+                          <td class="td-strong">考场异常通知派发</td>
+                          <td><span class="row"><span class="emp-avatar emp-a5" style="width:24px;height:24px"><span data-icon="shield" class="ico-sm"></span></span>守则</span></td>
+                          <td class="sub">通知确认</td>
+                          <td><span class="tag tag-warning tag-outline">待确认</span></td>
+                          <td class="sub">1 条通知</td>
+                          <td class="sub">今天 10:11</td>
+                          <td><button class="btn btn-primary btn-sm" data-goto="p6">审核</button></td>
+                        </tr>
+                        <tr>
+                          <td class="td-strong">实验室安全告警通知</td>
+                          <td><span class="row"><span class="emp-avatar emp-a5" style="width:24px;height:24px"><span data-icon="shield" class="ico-sm"></span></span>守则</span></td>
+                          <td class="sub">通知确认</td>
+                          <td><span class="tag tag-warning tag-outline">待确认</span></td>
+                          <td class="sub">2 条通知</td>
+                          <td class="sub">今天 10:18</td>
+                          <td><button class="btn btn-primary btn-sm" data-goto="p6">审核</button></td>
+                        </tr>
+                        <tr>
+                          <td class="td-strong">第二章作业成绩写回</td>
+                          <td><span class="row"><span class="emp-avatar emp-a2" style="width:24px;height:24px"><span data-icon="scan" class="ico-sm"></span></span>笔正</span></td>
+                          <td class="sub">写操作确认</td>
+                          <td><span class="tag tag-warning tag-outline">待确认</span></td>
+                          <td class="sub">52 / 52 份</td>
+                          <td class="sub">昨天 09:41</td>
+                          <td><button class="btn btn-primary btn-sm" data-goto="p6">审核</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-foot"><span class="xs">共 4 条</span><div class="pagination"><button class="page-btn is-on">1</button></div></div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="running">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>任务</th><th>负责员工</th><th>类型</th><th>状态</th><th>进度</th><th>更新时间</th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td class="td-strong">实验室安全巡检 · A302</td>
+                          <td><span class="row"><span class="emp-avatar emp-a3" style="width:24px;height:24px"><span data-icon="eye" class="ico-sm"></span></span>明察</span></td>
+                          <td class="sub">持续推理</td>
+                          <td><span class="tag tag-info tag-outline">执行中</span></td>
+                          <td><div class="progress progress-thin" style="width:120px"><span class="progress-bar" data-progress="78"></span></div></td>
+                          <td class="sub">实时</td>
+                        </tr>
+                        <tr>
+                          <td class="td-strong">课堂行为识别 · 计科 2201</td>
+                          <td><span class="row"><span class="emp-avatar emp-a3" style="width:24px;height:24px"><span data-icon="eye" class="ico-sm"></span></span>明察</span></td>
+                          <td class="sub">持续推理</td>
+                          <td><span class="tag tag-info tag-outline">执行中</span></td>
+                          <td><div class="progress progress-thin" style="width:120px"><span class="progress-bar" data-progress="46"></span></div></td>
+                          <td class="sub">实时</td>
+                        </tr>
+                        <tr>
+                          <td class="td-strong">本周告警规则复核</td>
+                          <td><span class="row"><span class="emp-avatar emp-a5" style="width:24px;height:24px"><span data-icon="shield" class="ico-sm"></span></span>守则</span></td>
+                          <td class="sub">批量分析</td>
+                          <td><span class="tag tag-info tag-outline">执行中</span></td>
+                          <td><div class="progress progress-thin" style="width:120px"><span class="progress-bar" data-progress="61"></span></div></td>
+                          <td class="sub">今天 10:05</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="countersign">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>任务</th><th>发起员工</th><th>会签员工</th><th>会签结论</th><th>更新时间</th><th></th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td class="td-strong">第三章随堂测批改</td>
+                          <td>笔正</td>
+                          <td><span class="row"><span class="emp-avatar emp-a4" style="width:24px;height:24px"><span data-icon="target" class="ico-sm"></span></span>知微</span></td>
+                          <td><span class="tag tag-warning tag-outline">建议核查</span><br><span class="xxl">班级均值差 17.5 分，超 2σ</span></td>
+                          <td class="sub">今天 10:23</td>
+                          <td><button class="btn btn-secondary btn-sm" data-goto="p6">查看</button></td>
+                        </tr>
+                        <tr>
+                          <td class="td-strong">第二章作业批改</td>
+                          <td>笔正</td>
+                          <td><span class="row"><span class="emp-avatar emp-a4" style="width:24px;height:24px"><span data-icon="target" class="ico-sm"></span></span>知微</span></td>
+                          <td><span class="tag tag-success tag-outline">分布正常</span><br><span class="xxl">偏度 0.14，无异常</span></td>
+                          <td class="sub">昨天 09:40</td>
+                          <td><button class="btn btn-secondary btn-sm" data-goto="p6">查看</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="done">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>任务</th><th>负责员工</th><th>协作方</th><th>状态</th><th>产出</th><th>完成时间</th></tr></thead>
+                      <tbody>
+                        <tr><td class="td-strong">《计算机网络》实验报告批改</td><td>笔正</td><td class="sub">明察</td><td><span class="tag tag-success tag-outline">已完成</span></td><td class="sub">46 份 · 已写回</td><td class="sub">昨天 16:52</td></tr>
+                        <tr><td class="td-strong">10 月课堂参与度汇总</td><td>知微</td><td class="sub">明察 · 笔正</td><td><span class="tag tag-success tag-outline">已完成</span></td><td class="sub">学情报告 64 份</td><td class="sub">10-11 18:00</td></tr>
+                        <tr><td class="td-strong">《大学物理》随堂测批改</td><td>笔正</td><td class="sub">明察</td><td><span class="tag tag-success tag-outline">已完成</span></td><td class="sub">88 份 · 已写回</td><td class="sub">10-11 14:20</td></tr>
+                        <tr><td class="td-strong">知识库索引重建</td><td class="sub">平台底座</td><td class="sub">知问</td><td><span class="tag tag-success tag-outline">已完成</span></td><td class="sub">412 个片段</td><td class="sub">10-11 09:00</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-foot"><span class="xs">共 126 条，显示前 4 条</span><div class="pagination"><button class="page-btn is-on">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">…</button><button class="page-btn">32</button></div></div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="failed">
+                <div class="empty">
+                  <svg class="empty-illus" viewBox="0 0 120 90" width="140" height="105" aria-hidden="true">
+                    <rect x="18" y="26" width="84" height="48" rx="8" fill="var(--illus-1)" stroke="var(--illus-3)" stroke-width="2"/>
+                    <path d="M30 44h12M30 54h30" stroke="var(--illus-3)" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="86" cy="60" r="12" fill="var(--surface)" stroke="var(--danger)" stroke-width="2.5"/>
+                    <path d="M81 55l10 10M91 55l-10 10" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                  <div class="empty-title">近 7 天有 1 条交接失败</div>
+                  <div class="empty-desc">《操作系统原理》一次批改中，明察服务超时导致题块识别重试 3 次后降级为整图批改。任务未中断，但在交接契约上记了一次降级。</div>
+                  <button class="btn btn-secondary" data-toast="已打开降级记录详情" data-toast-type="info" data-icon="file">查看降级记录</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P6 · 任务详情
+     ====================================================================== -->
+<section class="page" id="p6" data-pid="P6" data-title="任务详情">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item is-active" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <button class="btn btn-ghost btn-icon btn-sm" data-back data-icon="arrow-left"></button>
+        <span class="topbar-title">T-2481 · 第三章随堂测批改</span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" data-toast="已退回笔正重新批改" data-toast-type="warn" data-icon="arrow-left">退回</button>
+        <button class="btn btn-primary btn-sm" data-loading="1200" data-loading-done="已写回 37 条成绩并触发画像重算" data-icon="check">确认写回成绩</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-band">
+            <span class="emp-avatar emp-a2 emp-avatar-lg"><span data-icon="scan" class="ico-lg"></span></span>
+            <div class="bb"><b>第三章随堂测批改写回</b><span>负责人：笔正 · 协作：明察、知微 · 课程：数据结构与算法</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">37</b><span>提交份数</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">78.4</b><span>平均分</span></div>
+            <span class="bdiv"></span>
+            <div class="bb"><b class="num">214</b><span>识别题块</span></div>
+            <span class="spacer"></span>
+            <span class="tag tag-warning tag-outline" style="align-self:center">待人工确认</span>
+          </div>
+
+          <div class="alert alert-warning">
+            <span class="a-ic" data-icon="alert-triangle"></span>
+            <div>
+              <div class="a-title">审核前必读 · 知微会签提出异议</div>
+              <div class="a-body">计科 2202 班平均分 68.2，比 2201 班低 17.5 分，超出 2σ。可能是漏交或题目难度差异，建议核查后再写回，避免直接进入学生画像。</div>
+            </div>
+          </div>
+
+          <div class="emp-section emp-cols-chat">
+            <div class="stack">
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">协作流水线</span><span class="spacer"></span><span class="xs">4 步完成 · 1 步待确认</span></div>
+                <div class="card-bd">
+                  <div class="emp-pipe">
+                    <div class="emp-pipe-item">
+                      <div class="emp-pipe-rail"><span class="emp-pipe-mark done" data-icon="eye"></span><div class="emp-pipe-line"></div></div>
+                      <div class="emp-pipe-body">
+                        <div class="pt">明察 · 题块识别 <span class="emp-chip is-scan">交接 #1</span></div>
+                        <div class="pd">214 个题块 · 坐标与清晰度评分 · 3 个置信度 &lt; 0.6 已标记 · 耗时 2.41s</div>
+                      </div>
+                    </div>
+                    <div class="emp-pipe-item">
+                      <div class="emp-pipe-rail"><span class="emp-pipe-mark done" data-icon="scan"></span><div class="emp-pipe-line"></div></div>
+                      <div class="emp-pipe-body">
+                        <div class="pt">笔正 · 分项评分</div>
+                        <div class="pd">匹配评分标准 v3 · 8 个知识点 · 生成 37 份评语 · 耗时 1.83s</div>
+                      </div>
+                    </div>
+                    <div class="emp-pipe-item">
+                      <div class="emp-pipe-rail"><span class="emp-pipe-mark done" data-icon="target"></span><div class="emp-pipe-line"></div></div>
+                      <div class="emp-pipe-body">
+                        <div class="pt">知微 · 分布会签 <span class="emp-chip">自动触发</span></div>
+                        <div class="pd">发现 2202 班均值异常，返回复核建议 · 耗时 0.62s</div>
+                      </div>
+                    </div>
+                    <div class="emp-pipe-item">
+                      <div class="emp-pipe-rail"><span class="emp-pipe-mark gate" data-icon="shield"></span><div class="emp-pipe-line"></div></div>
+                      <div class="emp-pipe-body">
+                        <div class="pt">人工 Gate · 成绩写回 <span class="emp-chip is-accent">未执行</span></div>
+                        <div class="pd">等待你确认。确认后写入 37 条成绩，并触发知微重算画像</div>
+                      </div>
+                    </div>
+                    <div class="emp-pipe-item">
+                      <div class="emp-pipe-rail"><span class="emp-pipe-mark wait" data-icon="shield"></span></div>
+                      <div class="emp-pipe-body">
+                        <div class="pt">守则 · 异常订阅 <span class="emp-chip">旁路</span></div>
+                        <div class="pd">若写回后仍有大面积低分，将触发学业预警规则 R-21</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">批改结果抽样</span><span class="spacer"></span><span class="xs">完整明细见产出物</span></div>
+                <div class="card-bd">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>学生</th><th>学号</th><th>得分</th><th>错因</th><th>置信度</th></tr></thead>
+                      <tbody>
+                        <tr><td class="td-strong">林嘉禾</td><td class="sub num">2023010142</td><td class="num-cell">92</td><td class="sub">—</td><td><span class="emp-conf hi">0.97</span></td></tr>
+                        <tr><td class="td-strong">周雨桐</td><td class="sub num">2023010187</td><td class="num-cell">85</td><td class="sub">红黑树插入调整遗漏双黑修正</td><td><span class="emp-conf hi">0.94</span></td></tr>
+                        <tr><td class="td-strong">赵一鸣</td><td class="sub num">2023010203</td><td class="num-cell">64</td><td class="sub">四种旋转情形判别错误</td><td><span class="emp-conf hi">0.91</span></td></tr>
+                        <tr><td class="td-strong">孙楚</td><td class="sub num">2023010231</td><td class="num-cell">41</td><td class="sub">平衡因子计算错误（3 题）</td><td><span class="emp-conf hi">0.89</span></td></tr>
+                        <tr><td class="td-strong">钱思远</td><td class="sub num">2023010256</td><td class="num-cell">—</td><td class="sub">手写作答模糊，待人工判读</td><td><span class="emp-conf lo">0.52</span></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">产出物</span></div>
+                <div class="card-bd">
+                  <div class="emp-cols-2">
+                    <button class="emp-artifact" data-modal-open="modal-artifact">
+                      <span class="ai" data-icon="file"></span>
+                      <span class="li-main"><span class="li-title">批改明细表.xlsx</span><span class="li-desc">37 行 · 含每题得分与错因</span></span>
+                      <span data-icon="download" class="ico-sm" style="color:var(--text-4)"></span>
+                    </button>
+                    <button class="emp-artifact" data-drawer-open="#drawer-artifact">
+                      <span class="ai" data-icon="image"></span>
+                      <span class="li-main"><span class="li-title">题块识别结果</span><span class="li-desc">214 区块 · 截图与坐标</span></span>
+                      <span data-icon="chevron-right" class="ico-sm" style="color:var(--text-4)"></span>
+                    </button>
+                    <button class="emp-artifact" data-toast="已打开执行轨迹" data-toast-type="info">
+                      <span class="ai" data-icon="list"></span>
+                      <span class="li-main"><span class="li-title">执行轨迹 JSON</span><span class="li-desc">run-9f31c2 · 可复现</span></span>
+                      <span data-icon="chevron-right" class="ico-sm" style="color:var(--text-4)"></span>
+                    </button>
+                    <button class="emp-artifact" data-toast="已导出审计包" data-toast-type="success">
+                      <span class="ai" data-icon="shield"></span>
+                      <span class="li-main"><span class="li-title">审计包</span><span class="li-desc">决策依据 + 引用 + 人工操作</span></span>
+                      <span data-icon="download" class="ico-sm" style="color:var(--text-4)"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="stack">
+              <div class="card">
+                <div class="card-hd"><span class="card-title">任务快照</span></div>
+                <div class="card-bd">
+                  <dl class="emp-kv">
+                    <dt>工单号</dt><dd class="num">T-2481</dd>
+                    <dt>运行号</dt><dd class="num">run-9f31c2</dd>
+                    <dt>发起人</dt><dd>陈立群（教师）</dd>
+                    <dt>负责员工</dt><dd>笔正 v1.4.2</dd>
+                    <dt>协作员工</dt><dd>明察 v0.9.3 · 知微 v1.2.0</dd>
+                    <dt>课程</dt><dd>数据结构与算法</dd>
+                    <dt>班级</dt><dd>计科 2201 / 2202</dd>
+                    <dt>创建</dt><dd>今天 10:22:07</dd>
+                    <dt>状态</dt><dd><span class="tag tag-warning tag-outline">待人工确认</span></dd>
+                  </dl>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><span class="card-title">本次调用的经验</span><span class="spacer"></span><span class="badge badge-num">3</span></div>
+                <div class="card-bd">
+                  <div class="stack-sm">
+                    <div class="emp-mem">
+                      <div class="emp-mem-top"><b>树结构类错误必须授引教材页码</b></div>
+                      <div class="emp-mem-body" style="margin-top:4px">已应用于 37 份评语中的 31 份。</div>
+                    </div>
+                    <div class="emp-mem">
+                      <div class="emp-mem-top"><b>手写模糊不得猜测作答内容</b></div>
+                      <div class="emp-mem-body" style="margin-top:4px">本任务命中 3 处，均标记为待判读。</div>
+                    </div>
+                    <div class="emp-mem">
+                      <div class="emp-mem-top"><b>分数分布异常先会签再写回</b></div>
+                      <div class="emp-mem-body" style="margin-top:4px">触发知微会签，返回「建议核查」。</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="emp-gate">
+                <span class="gi" data-icon="shield"></span>
+                <div>
+                  <b>为什么必须我来点这一下？</b>
+                  <p style="margin-top:4px">成绩写回会直接影响学生的成绩单与画像。系统把「判断」交给员工，把「负责」留给人。</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P7 · 协作链路
+     ====================================================================== -->
+<section class="page" id="p7" data-pid="P7" data-title="协作链路">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item is-active" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">协作链路</span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" data-toast="已导出链路图为 PNG" data-toast-type="success" data-icon="download">导出链路图</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>协作链路与交接契约</h2>
+              <div class="emp-desc">员工之间<b>不互相调用函数</b>，只通过「产出物 + 契约」交接。契约一旦变化，上下游都要重新验证——这是这套架构里唯一的耦合点，也是唯一需要维护成本的地方。</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><span class="card-title">协作图谱</span><span class="spacer"></span>
+              <span class="emp-chip is-scan">视觉产出</span>
+              <span class="emp-chip is-accent">人工 Gate</span>
+              <span class="emp-chip">数据交接</span>
+            </div>
+            <div class="card-bd">
+              <svg viewBox="0 0 980 300" width="100%" style="min-height:260px" role="img" aria-label="五名数字员工的协作图谱">
+                <defs>
+                  <marker id="emp-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0 0L10 5L0 10z" fill="var(--text-4)"></path>
+                  </marker>
+                </defs>
+
+                <!-- 连接线 -->
+                <line x1="170" y1="72" x2="222" y2="72" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#emp-ar)"></line>
+                <line x1="365" y1="72" x2="417" y2="72" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#emp-ar)"></line>
+                <line x1="560" y1="72" x2="612" y2="72" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#emp-ar)"></line>
+                <line x1="755" y1="72" x2="807" y2="72" stroke="var(--border-strong)" stroke-width="2" marker-end="url(#emp-ar)"></line>
+                <path d="M365 232 H760 Q800 232 800 192 V108" fill="none" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#emp-ar)"></path>
+
+                <!-- 连线标签 -->
+                <text x="196" y="62" font-size="10" fill="var(--text-4)" text-anchor="middle">题块</text>
+                <text x="391" y="62" font-size="10" fill="var(--text-4)" text-anchor="middle">待写回</text>
+                <text x="586" y="62" font-size="10" fill="var(--text-4)" text-anchor="middle">成绩</text>
+                <text x="781" y="62" font-size="10" fill="var(--text-4)" text-anchor="middle">风险</text>
+                <text x="575" y="224" font-size="10" fill="var(--text-4)" text-anchor="middle">知识缺口 / 未命中问题</text>
+
+                <!-- 行 1 -->
+                <g>
+                  <rect x="30" y="40" width="140" height="64" rx="10" fill="#e2f3f5" stroke="#8ccdd4" stroke-width="1.5"></rect>
+                  <text x="100" y="68" font-size="13" font-weight="600" fill="var(--text-1)" text-anchor="middle">明察</text>
+                  <text x="100" y="86" font-size="11" fill="var(--scan)" text-anchor="middle">视觉员工</text>
+                </g>
+                <g>
+                  <rect x="225" y="40" width="140" height="64" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"></rect>
+                  <text x="295" y="68" font-size="13" font-weight="600" fill="var(--text-1)" text-anchor="middle">笔正</text>
+                  <text x="295" y="86" font-size="11" fill="var(--text-3)" text-anchor="middle">批改员工</text>
+                </g>
+                <g>
+                  <rect x="420" y="40" width="140" height="64" rx="10" fill="var(--warning-bg)" stroke="var(--warning-border)" stroke-width="1.5"></rect>
+                  <text x="490" y="68" font-size="13" font-weight="600" fill="var(--warning)" text-anchor="middle">人工 Gate</text>
+                  <text x="490" y="86" font-size="11" fill="var(--warning)" text-anchor="middle">教师确认</text>
+                </g>
+                <g>
+                  <rect x="615" y="40" width="140" height="64" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"></rect>
+                  <text x="685" y="68" font-size="13" font-weight="600" fill="var(--text-1)" text-anchor="middle">知微</text>
+                  <text x="685" y="86" font-size="11" fill="var(--text-3)" text-anchor="middle">学情员工</text>
+                </g>
+                <g>
+                  <rect x="810" y="40" width="140" height="64" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"></rect>
+                  <text x="880" y="68" font-size="13" font-weight="600" fill="var(--text-1)" text-anchor="middle">守则</text>
+                  <text x="880" y="86" font-size="11" fill="var(--text-3)" text-anchor="middle">督导员工</text>
+                </g>
+
+                <!-- 行 2 -->
+                <g>
+                  <rect x="225" y="200" width="140" height="64" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"></rect>
+                  <text x="295" y="228" font-size="13" font-weight="600" fill="var(--text-1)" text-anchor="middle">知问</text>
+                  <text x="295" y="246" font-size="11" fill="var(--text-3)" text-anchor="middle">答疑员工</text>
+                </g>
+
+                <!-- 端点提示 -->
+                <text x="30" y="286" font-size="11" fill="var(--text-4)">数据源：摄像头 / 上传图片 / 学生提交 / 课程资料</text>
+                <text x="950" y="286" font-size="11" fill="var(--text-4)" text-anchor="end">落点：通知 · 成绩 · 学情报告 · 规则库</text>
+              </svg>
+            </div>
+            <div class="card-ft" style="display:block">
+              <div class="alert alert-warning" style="margin:0">
+                <span class="a-ic" data-icon="alert-triangle"></span>
+                <div>
+                  <div class="a-title">当前有 1 条交接处于降级状态</div>
+                  <div class="a-body">《操作系统原理》批改中明察响应超时，笔正按契约降级为整图批改。降级不阻断流程，但会下调置信度并在任务上留痕，便于事后归因。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="emp-section" data-tabs>
+            <div class="tabs">
+              <button class="tab is-on" data-tab="contract">交接契约</button>
+              <button class="tab" data-tab="subscribe">事件订阅</button>
+              <button class="tab" data-tab="degrade">降级策略</button>
+            </div>
+            <div class="tab-panels">
+
+              <div class="tab-panel is-on" data-panel="contract">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>序号</th><th>交接</th><th>产出物</th><th>契约字段</th><th>校验规则</th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td class="num-cell">#1</td>
+                          <td class="td-strong">明察 → 笔正</td>
+                          <td class="sub">题块识别结果</td>
+                          <td><span class="emp-card-code">blocks[] / block_no / bbox / confidence</span></td>
+                          <td class="sub">confidence &lt; 0.6 必须带 needs_review 标记</td>
+                        </tr>
+                        <tr>
+                          <td class="num-cell">#2</td>
+                          <td class="td-strong">笔正 → 知微</td>
+                          <td class="sub">分数分布快照</td>
+                          <td><span class="emp-card-code">scores[] / mean / std / skewness</span></td>
+                          <td class="sub">样本数 &lt; 10 不出会签意见</td>
+                        </tr>
+                        <tr>
+                          <td class="num-cell">#3</td>
+                          <td class="td-strong">笔正 → 人工 Gate</td>
+                          <td class="sub">待写回成绩批次</td>
+                          <td><span class="emp-card-code">batch_id / items[] / countersign</span></td>
+                          <td class="sub">缺少 batch_id 不允许提交审核</td>
+                        </tr>
+                        <tr>
+                          <td class="num-cell">#4</td>
+                          <td class="td-strong">明察 → 守则</td>
+                          <td class="sub">视觉事件</td>
+                          <td><span class="emp-card-code">scene / severity / subject_ref / confidence</span></td>
+                          <td class="sub">subject_ref 必须是业务学号，非登录名</td>
+                        </tr>
+                        <tr>
+                          <td class="num-cell">#5</td>
+                          <td class="td-strong">知微 → 守则</td>
+                          <td class="sub">学生风险等级</td>
+                          <td><span class="emp-card-code">student_no / risk_level / evidence[]</span></td>
+                          <td class="sub">必须附证据，否则视为无效预警</td>
+                        </tr>
+                        <tr>
+                          <td class="num-cell">#6</td>
+                          <td class="td-strong">知问 → 守则</td>
+                          <td class="sub">知识缺口清单</td>
+                          <td><span class="emp-card-code">question / hit_count / top_similarity</span></td>
+                          <td class="sub">相似度低于阈值才计入缺口</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="subscribe">
+                <div class="emp-cols-2">
+                  <div class="card">
+                    <div class="card-hd"><span class="card-title">订阅矩阵</span></div>
+                    <div class="card-bd">
+                      <div class="table-wrap">
+                        <table class="table table-stripe">
+                          <thead><tr><th>事件类型</th><th>订阅方</th><th>是否阻断</th></tr></thead>
+                          <tbody>
+                            <tr><td class="td-strong">vision.event.critical</td><td>守则</td><td><span class="tag tag-danger tag-outline">立即派发</span></td></tr>
+                            <tr><td class="td-strong">vision.event.warning</td><td>守则</td><td><span class="tag tag-warning tag-outline">进待办</span></td></tr>
+                            <tr><td class="td-strong">vision.event.info</td><td>知微</td><td><span class="tag tag-outline">仅入库</span></td></tr>
+                            <tr><td class="td-strong">grade.batch.ready</td><td>知微</td><td><span class="tag tag-outline">仅入库</span></td></tr>
+                            <tr><td class="td-strong">grade.batch.written</td><td>知微 · 守则</td><td><span class="tag tag-outline">仅入库</span></td></tr>
+                            <tr><td class="td-strong">qa.gap.detected</td><td>守则</td><td><span class="tag tag-outline">进待办</span></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-hd"><span class="card-title">为什么用事件而不是直接调用</span></div>
+                    <div class="card-bd">
+                      <p class="body" style="margin:0 0 var(--sp-3)">明察只负责「发现」，<b>不决定谁来处置</b>。新增一个场景（比如宿舍晚归识别）只需要加规则，视觉侧代码一行不动。</p>
+                      <div class="alert alert-info">
+                        <span class="a-ic" data-icon="info"></span>
+                        <div>
+                          <div class="a-title">代价</div>
+                          <div class="a-body">事件是异步的，所以「谁在什么时候处理了这条事件」必须能从运行轨迹里查回来，否则出问题无法定责。</div>
+                        </div>
+                      </div>
+                      <div class="divider"></div>
+                      <div class="row-between"><span class="sub">规则去重窗口</span><span class="num">15 分钟</span></div>
+                      <div class="row-between" style="margin-top:6px"><span class="sub">派发失败是否影响落库</span><span class="tag tag-success tag-outline">不影响</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="degrade">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>失效点</th><th>降级行为</th><th>用户可见影响</th><th>是否记录</th></tr></thead>
+                      <tbody>
+                        <tr><td class="td-strong">明察不可用</td><td class="sub">笔正降级为整图批改，题目判读置信度整体下调并标注风险</td><td class="sub">批改仍完成，但需人工复核比例上升</td><td><span class="tag tag-outline">记降级</span></td></tr>
+                        <tr><td class="td-strong">知微不可用</td><td class="sub">跳过会签，分数分布异常不再拦截，仅保留日志</td><td class="sub">Gate 页缺少会签意见</td><td><span class="tag tag-outline">记降级</span></td></tr>
+                        <tr><td class="td-strong">守则派发失败</td><td class="sub">通知不发出，但视觉事件必须成功落库（try/except 隔离）</td><td class="sub">事件在，通知缺，需人工查待办</td><td><span class="tag tag-warning tag-outline">记失败</span></td></tr>
+                        <tr><td class="td-strong">大模型不可用</td><td class="sub">改用确定性兜底：直接回传已查到的结构化业务数据</td><td class="sub">答复变「清单式」，不再生成自然语言</td><td><span class="tag tag-outline">记降级</span></td></tr>
+                        <tr><td class="td-strong">向量库不可用</td><td class="sub">知问明确回答「资料检索暂不可用」，不凭记忆作答</td><td class="sub">答疑不可用，但不产生错误信息</td><td><span class="tag tag-danger tag-outline">记失败</span></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P8 · 记忆与规则
+     ====================================================================== -->
+<section class="page" id="p8" data-pid="P8" data-title="记忆与规则">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item is-active" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">记忆与规则</span>
+        <span class="spacer"></span>
+        <button class="btn btn-primary btn-sm" data-modal-open="modal-rule" data-icon="plus">新建规则</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>记忆与规则</h2>
+              <div class="emp-desc">这里回答两个问题：<b>员工怎么越做越准</b>（经验记忆）和<b>什么事必须立刻惊动人</b>（告警规则）。经验必须可追溯来源、可撤销；规则必须可停用、可去重。</div>
+            </div>
+          </div>
+
+          <div class="emp-section" data-tabs>
+            <div class="tabs">
+              <button class="tab is-on" data-tab="memory">经验记忆 <span class="tab-badge">14</span></button>
+              <button class="tab" data-tab="rules">告警规则 <span class="tab-badge">18</span></button>
+              <button class="tab" data-tab="gaps">知识缺口 <span class="tab-badge">12</span></button>
+            </div>
+            <div class="tab-panels">
+
+              <div class="tab-panel is-on" data-panel="memory">
+                <div class="alert alert-info" style="margin-bottom:var(--sp-4)">
+                  <span class="a-ic" data-icon="bookmark"></span>
+                  <div>
+                    <div class="a-title">经验从哪里来</div>
+                    <div class="a-body">只从四类可追溯的信号里提炼：人工审核改动、人工驳回原因、验证失败、交付后评价。员工不能自行把「自己的推测」写成长期经验。</div>
+                  </div>
+                </div>
+                <div class="emp-cols-2">
+                  <div class="card">
+                    <div class="card-hd"><span class="card-title">笔正 · 批改员工</span><span class="spacer"></span><span class="tag tag-success tag-outline">已学会 5</span></div>
+                    <div class="card-bd">
+                      <div class="stack-sm">
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>树结构类错误必须授引教材页码</b><span class="tag tag-success tag-outline">已学会</span></div>
+                          <div class="emp-mem-body">评语中指出错因时附教材页码，学生可自行查阅订正。</div>
+                          <div class="emp-mem-src">来源：人工审核改动 × 6 次 · 近 8 次相似任务选用 7 次</div>
+                        </div>
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>手写模糊不得猜测作答内容</b><span class="tag tag-success tag-outline">已学会</span></div>
+                          <div class="emp-mem-body">置信度低于 0.6 的题块标记待判读，不补全、不猜测、不给分。</div>
+                          <div class="emp-mem-src">来源：人工驳回原因 × 3 次</div>
+                        </div>
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>分数分布异常先会签再写回</b><span class="tag tag-warning tag-outline">待确认</span></div>
+                          <div class="emp-mem-body">班级间均值差超过 2σ 时自动请知微会签，不直接写回成绩。</div>
+                          <div class="emp-mem-src">来源：验证失败 × 2 次 · 等你确认后生效</div>
+                        </div>
+                        <div class="emp-mem" style="opacity:.62">
+                          <div class="emp-mem-top"><b>低分学生评语加长 30%</b><span class="tag tag-outline">已撤销</span></div>
+                          <div class="emp-mem-body">曾被采纳，后因评语冗长被教师驳回，已停用但保留来源记录。</div>
+                          <div class="emp-mem-src">来源：人工驳回原因 × 4 次 · 撤销于 2026-09-28</div>
+                        </div>
+                      </div>
+                      <div class="row-wrap" style="margin-top:var(--sp-3)">
+                        <button class="btn btn-secondary btn-sm" data-toast="已确认，后续任务生效" data-toast-type="success" data-icon="check">确认候选经验</button>
+                        <button class="btn btn-ghost btn-sm" data-toast="已撤销该条经验" data-toast-type="warn" data-icon="trash">撤销</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <div class="card-hd"><span class="card-title">守则 · 督导员工</span><span class="spacer"></span><span class="tag tag-success tag-outline">已学会 4</span></div>
+                    <div class="card-bd">
+                      <div class="stack-sm">
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>同一事件 15 分钟内只惊动一次</b><span class="tag tag-success tag-outline">已学会</span></div>
+                          <div class="emp-mem-body">按标题 + 时间窗口去重，避免同类事件刷屏导致教师忽略通知。</div>
+                          <div class="emp-mem-src">来源：交付后评价 × 5 次</div>
+                        </div>
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>info 级视觉事件不告警</b><span class="tag tag-success tag-outline">已学会</span></div>
+                          <div class="emp-mem-body">「抬头听讲」这类正常行为只入库、计入参与度，不进入待办。</div>
+                          <div class="emp-mem-src">来源：人工驳回原因 × 7 次</div>
+                        </div>
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>派发失败不得影响事件落库</b><span class="tag tag-success tag-outline">已学会</span></div>
+                          <div class="emp-mem-body">通知通道抖动时，事件仍必须完整落库，失败的派发进入待办补投。</div>
+                          <div class="emp-mem-src">来源：验证失败 × 1 次 · 影响面大</div>
+                        </div>
+                        <div class="emp-mem">
+                          <div class="emp-mem-top"><b>预警必须附证据链</b><span class="tag tag-success tag-outline">已学会</span></div>
+                          <div class="emp-mem-body">没有截图或事件编号的预警不允许发出，避免"AI 说的"式无据指控。</div>
+                          <div class="emp-mem-src">来源：人工驳回原因 × 9 次</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="rules">
+                <div class="card" style="padding:0;overflow:hidden">
+                  <div class="table-wrap">
+                    <table class="table table-stripe">
+                      <thead><tr><th>规则</th><th>场景</th><th>触发等级</th><th>通知对象</th><th>去重窗口</th><th>启用</th></tr></thead>
+                      <tbody>
+                        <tr><td class="td-strong">R-03 明火未管离</td><td>实验室安全</td><td><span class="tag tag-danger tag-outline">critical</span></td><td class="sub">教师 + 学生</td><td class="num-cell">0 分钟</td><td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td></tr>
+                        <tr><td class="td-strong">R-07 未佩戴护目镜</td><td>实验室安全</td><td><span class="tag tag-danger tag-outline">critical</span></td><td class="sub">教师 + 学生</td><td class="num-cell">10 分钟</td><td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td></tr>
+                        <tr><td class="td-strong">R-12 考场视线离开试卷</td><td>考场监测</td><td><span class="tag tag-warning tag-outline">warning</span></td><td class="sub">仅教师</td><td class="num-cell">5 分钟</td><td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td></tr>
+                        <tr><td class="td-strong">R-15 连续低头超阈值</td><td>课堂行为</td><td><span class="tag tag-warning tag-outline">warning</span></td><td class="sub">仅教师</td><td class="num-cell">20 分钟</td><td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td></tr>
+                        <tr><td class="td-strong">R-21 班级均值异常</td><td>学情</td><td><span class="tag tag-warning tag-outline">warning</span></td><td class="sub">仅教师</td><td class="num-cell">一次/批</td><td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td></tr>
+                        <tr><td class="td-strong">R-30 频繁转头（跨帧）</td><td>课堂行为</td><td><span class="tag tag-info tag-outline">info</span></td><td class="sub">不通知</td><td class="num-cell">—</td><td><label class="switch switch-sm"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-foot"><span class="xs">共 18 条，显示 6 条 · 仅管理员可修改</span><button class="btn btn-secondary btn-sm" data-toast="已打开规则编辑器" data-toast-type="info">编辑规则</button></div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-panel="gaps">
+                <div class="emp-cols-chat">
+                  <div class="card" style="padding:0;overflow:hidden">
+                    <div class="table-wrap">
+                      <table class="table table-stripe">
+                        <thead><tr><th>未命中问题</th><th>提问次数</th><th>最高相似度</th><th>建议动作</th></tr></thead>
+                        <tbody>
+                          <tr><td class="td-strong">红黑树删除的四种情形怎么区分？</td><td class="num-cell">9</td><td class="num-cell">0.41</td><td><span class="tag tag-warning tag-outline">补资料</span></td></tr>
+                          <tr><td class="td-strong">实验报告的数据记录格式要求？</td><td class="num-cell">7</td><td class="num-cell">0.38</td><td><span class="tag tag-warning tag-outline">补资料</span></td></tr>
+                          <tr><td class="td-strong">缓考申请流程和截止时间</td><td class="num-cell">6</td><td class="num-cell">0.33</td><td><span class="tag tag-info tag-outline">补 FAQ</span></td></tr>
+                          <tr><td class="td-strong">平时分是怎么折算进总评的？</td><td class="num-cell">5</td><td class="num-cell">0.29</td><td><span class="tag tag-info tag-outline">补 FAQ</span></td></tr>
+                          <tr><td class="td-strong">第三章作业第 4 题的评分点</td><td class="num-cell">4</td><td class="num-cell">0.26</td><td><span class="tag tag-info tag-outline">问教师</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="stack">
+                    <div class="card">
+                      <div class="card-hd"><span class="card-title">缺口概况</span></div>
+                      <div class="card-bd">
+                        <div class="row-between"><span class="sub">本周答疑总次数</span><span class="num">412</span></div>
+                        <div class="divider"></div>
+                        <div class="row-between"><span class="sub">命中率</span><span class="num">87.1%</span></div>
+                        <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="87"></span></div>
+                        <div class="divider"></div>
+                        <div class="row-between"><span class="sub">缺口问题数</span><span class="num">12</span></div>
+                        <div class="xs" style="margin-top:6px">其中 5 条被反复提问，优先级最高</div>
+                      </div>
+                    </div>
+                    <div class="alert alert-warning">
+                      <span class="a-ic" data-icon="alert-triangle"></span>
+                      <div>
+                        <div class="a-title">知问不会怎么办</div>
+                        <div class="a-body">检索不到时它明确回答「资料中没有相关内容」，并把问题记入缺口清单，<b>不会凭训练记忆编造答案</b>。</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P9 · 工作计划
+     ====================================================================== -->
+<section class="page" id="p9" data-pid="P9" data-title="工作计划">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item is-active" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">工作计划</span>
+        <span class="spacer"></span>
+        <button class="btn btn-primary btn-sm" data-modal-open="modal-plan" data-icon="plus">创建计划</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>工作计划</h2>
+              <div class="emp-desc">把「定期要做的事」交给固定员工自动执行。计划产生的仍是普通工单，一样要过人工 Gate——<b>自动化不等于免审核</b>。</div>
+            </div>
+          </div>
+
+          <div class="emp-section">
+            <div class="emp-cols-3">
+              <div class="card">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="clock"></span><div><div class="stat-label">启用中的计划</div><div class="stat-value num" data-count-to="5">0</div></div></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="calendar"></span><div><div class="stat-label">本周自动执行</div><div class="stat-value num" data-count-to="23">0</div></div></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-bd">
+                  <div class="row"><span class="stat-icon" data-icon="shield"></span><div><div class="stat-label">自动执行中被 Gate 拦下</div><div class="stat-value num" data-count-to="9">0</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="emp-section">
+            <div class="card" style="padding:0;overflow:hidden">
+              <div class="table-wrap">
+                <table class="table table-stripe">
+                  <thead><tr><th>计划</th><th>执行员工</th><th>频率</th><th>下次执行</th><th>上次结果</th><th>启用</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td class="td-strong">每周视觉场景巡检</td>
+                      <td><span class="row"><span class="emp-avatar emp-a3" style="width:24px;height:24px"><span data-icon="eye" class="ico-sm"></span></span>明察</span></td>
+                      <td class="sub">每周一 08:30</td>
+                      <td class="sub">10-19 08:30</td>
+                      <td><span class="tag tag-success tag-outline">4 场景正常</span></td>
+                      <td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">待批改作业自动扫描</td>
+                      <td><span class="row"><span class="emp-avatar emp-a2" style="width:24px;height:24px"><span data-icon="scan" class="ico-sm"></span></span>笔正</span></td>
+                      <td class="sub">每天 09:00</td>
+                      <td class="sub">10-14 09:00</td>
+                      <td><span class="tag tag-warning tag-outline">2 批待确认</span></td>
+                      <td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">课堂参与度周报</td>
+                      <td><span class="row"><span class="emp-avatar emp-a4" style="width:24px;height:24px"><span data-icon="target" class="ico-sm"></span></span>知微</span></td>
+                      <td class="sub">每周五 17:00</td>
+                      <td class="sub">10-16 17:00</td>
+                      <td><span class="tag tag-success tag-outline">64 份报告</span></td>
+                      <td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">告警规则有效性复盘</td>
+                      <td><span class="row"><span class="emp-avatar emp-a5" style="width:24px;height:24px"><span data-icon="shield" class="ico-sm"></span></span>守则</span></td>
+                      <td class="sub">每两周一次</td>
+                      <td class="sub">10-20 10:00</td>
+                      <td><span class="tag tag-success tag-outline">建议停用 1 条</span></td>
+                      <td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">知识库缺口汇总</td>
+                      <td><span class="row"><span class="emp-avatar" style="width:24px;height:24px"><span data-icon="headphones" class="ico-sm"></span></span>知问</span></td>
+                      <td class="sub">每周一 10:00</td>
+                      <td class="sub">10-19 10:00</td>
+                      <td><span class="tag tag-success tag-outline">12 条缺口</span></td>
+                      <td><label class="switch switch-sm"><input type="checkbox" checked><span class="track"></span><span class="thumb"></span></label></td>
+                    </tr>
+                    <tr>
+                      <td class="td-strong">期末成绩汇总导出</td>
+                      <td><span class="row"><span class="emp-avatar emp-a2" style="width:24px;height:24px"><span data-icon="scan" class="ico-sm"></span></span>笔正</span></td>
+                      <td class="sub">一次性 · 01-10 09:00</td>
+                      <td class="sub">2027-01-10</td>
+                      <td><span class="tag tag-outline">尚未执行</span></td>
+                      <td><label class="switch switch-sm"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-foot"><span class="xs">共 6 条 · 停用的计划不会产生工单</span><button class="btn btn-secondary btn-sm" data-toast="已导出计划清单" data-toast-type="success" data-icon="download">导出</button></div>
+            </div>
+            <div class="alert alert-warning" style="margin-top:var(--sp-4)">
+              <span class="a-ic" data-icon="clock"></span>
+              <div>
+                <div class="a-title">有 1 次计划被自动跳过</div>
+                <div class="a-body">10-12 09:00 的「待批改作业自动扫描」因笔正负载超过 90% 被跳过，未产生工单，也未对外发出任何通知，已顺延到下一个执行周期。</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="emp-section emp-cols-2">
+            <div class="card">
+              <div class="card-hd"><span class="card-title">自动化边界</span></div>
+              <div class="card-bd">
+                <div class="stack-sm">
+                  <div class="row"><span data-icon="check-circle" class="ico-sm" style="color:var(--success)"></span><span class="body">只读类计划可全自动（巡检、汇总、复盘）</span></div>
+                  <div class="row"><span data-icon="alert-triangle" class="ico-sm" style="color:var(--warning)"></span><span class="body">写操作类计划仍卡在 Gate（成绩写回、通知派发）</span></div>
+                  <div class="row"><span data-icon="x-circle" class="ico-sm" style="color:var(--danger)"></span><span class="body">不允许创建「绕过人工确认」的计划</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-hd"><span class="card-title">成本估算</span></div>
+              <div class="card-bd">
+                <div class="row-between"><span class="sub">本周计划执行次数</span><span class="num">23 次</span></div>
+                <div class="divider"></div>
+                <div class="row-between"><span class="sub">视觉推理占比</span><span class="num">68%</span></div>
+                <div class="progress progress-thin" style="margin-top:6px"><span class="progress-bar" data-progress="68"></span></div>
+                <div class="divider"></div>
+                <div class="row-between"><span class="sub">估算算力开销</span><span class="num">约 12.4 GPU·时</span></div>
+                <div class="xs" style="margin-top:6px">视觉员工单次加载权重约 8.9 秒，批量计划已做合并以减少冷启动</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     P10 · 异常与边界
+     ====================================================================== -->
+<section class="page" id="p10" data-pid="P10" data-title="异常与边界">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-logo"><span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span><span class="name">EduAgent</span></div>
+      <button class="nav-item" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+      <div class="side-group">运营</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台</button>
+      <button class="nav-item" data-goto="p5"><span data-icon="list"></span>任务与审核<span class="badge badge-num" style="margin-left:auto">4</span></button>
+      <button class="nav-item" data-goto="p9"><span data-icon="clock"></span>工作计划</button>
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+      <button class="nav-item" data-goto="p7"><span data-icon="share"></span>协作链路</button>
+      <div class="side-group">知识</div>
+      <button class="nav-item" data-goto="p8"><span data-icon="bookmark"></span>记忆与规则</button>
+      <button class="nav-item is-active" data-goto="p10"><span data-icon="alert-triangle"></span>异常与边界</button>
+      <div class="side-foot" style="margin-top:auto;padding-top:var(--sp-3);border-top:1px solid var(--border)">
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">陈</span>
+          <div style="min-width:0"><div class="xs strong" style="color:var(--text-1)">陈立群</div><div class="xxl">计算机学院 · 教师</div></div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-icon="log-out" title="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon btn-sm" data-sidebar-toggle data-icon="menu"></button>
+        <span class="topbar-title">异常与边界</span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" data-skeleton="#state-grid" data-skeleton-ms="1200" data-icon="refresh">重载状态</button>
+      </header>
+      <div class="content">
+        <div class="content-inner emp-inner">
+
+          <div class="emp-head">
+            <div class="emp-head-main">
+              <h2>异常与边界状态</h2>
+              <div class="emp-desc">一个多人协作系统的可信度，取决于它<b>出错时怎么说</b>。下面这些状态是刻意设计的：空态说清楚为什么空，失败说清楚停在哪一步，越权说清楚为什么不允许。</div>
+            </div>
+          </div>
+
+          <div class="emp-section emp-cols-3" id="state-grid">
+
+            <div class="card">
+              <div class="card-hd"><span class="card-title">空态 · 还没发生</span></div>
+              <div class="card-bd">
+                <div class="empty">
+                  <svg class="empty-illus" viewBox="0 0 120 90" width="120" height="90" aria-hidden="true">
+                    <rect x="20" y="24" width="80" height="46" rx="8" fill="var(--illus-1)" stroke="var(--illus-3)" stroke-width="2"></rect>
+                    <path d="M34 42h20M34 54h34" stroke="var(--illus-3)" stroke-width="3" stroke-linecap="round"></path>
+                    <circle cx="90" cy="24" r="10" fill="var(--surface)" stroke="var(--illus-3)" stroke-width="2"></circle>
+                  </svg>
+                  <div class="empty-title">今天还没有告警</div>
+                  <div class="empty-desc">视觉员工已在线，4 个场景均在巡检。有新事件时会实时出现在这里。</div>
+                  <button class="btn btn-secondary btn-sm" data-toast="已订阅告警通知" data-toast-type="success" data-icon="bell">订阅提醒</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><span class="card-title">加载态 · 正在算</span></div>
+              <div class="card-bd">
+                <div class="stack-sm">
+                  <div class="row"><span class="spinner"></span><span class="body">明察正在加载权重…（首次约 8.9 秒）</span></div>
+                  <div class="skeleton sk-title" style="width:60%"></div>
+                  <div class="skeleton sk-line"></div>
+                  <div class="skeleton sk-line" style="width:82%"></div>
+                  <div class="skeleton sk-block" style="height:56px"></div>
+                  <div class="row-between"><span class="xs">已用时 6.2s</span><span class="xs">预计 8.9s</span></div>
+                  <button class="btn btn-secondary btn-sm" data-toast="已改为离线排队，完成后通知你" data-toast-type="info">改为后台排队</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><span class="card-title">无权限 · 越界被拦</span></div>
+              <div class="card-bd">
+                <div class="alert alert-danger">
+                  <span class="a-ic" data-icon="lock"></span>
+                  <div>
+                    <div class="a-title">笔正无权访问该课程</div>
+                    <div class="a-body">请求的课程不属于你管辖范围。工具注册表已拒绝本次调用，并记入审计日志（AUD-20261 013-0412）。</div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <dl class="emp-kv">
+                  <dt>被拒工具</dt><dd class="emp-card-code">grade.batch.list</dd>
+                  <dt>原因</dt><dd>越权访问其他教师课程</dd>
+                  <dt>处置</dt><dd>拒绝 + 审计告警，未产生任何数据变更</dd>
+                </dl>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><span class="card-title">员工不可用</span></div>
+              <div class="card-bd">
+                <div class="emp-band" style="padding:var(--sp-3);background:var(--surface-2)">
+                  <span class="emp-avatar emp-a3"><span data-icon="eye"></span><span class="emp-dot off"></span></span>
+                  <div class="bb"><b>明察 · 视觉员工</b><span>离线 · 最后一次心跳 09:41</span></div>
+                  <span class="spacer"></span>
+                  <span class="tag tag-danger tag-outline">不可用</span>
+                </div>
+                <div class="alert alert-warning" style="margin-top:var(--sp-3)">
+                  <span class="a-ic" data-icon="alert-triangle"></span>
+                  <div>
+                    <div class="a-title">已自动降级</div>
+                    <div class="a-body">笔正将整图批改，置信度整体下调并标注风险；课堂事件暂停产生。恢复后自动补跑。</div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-block" data-toast="正在重连明察…" data-toast-type="info" data-icon="refresh">重连</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><span class="card-title">交接失败 · 可定位</span></div>
+              <div class="card-bd">
+                <div class="emp-trace">
+                  <div class="emp-trace-hd"><span data-icon="list" class="ico-sm"></span><b>执行轨迹 · 停在步骤 2</b></div>
+                  <div class="emp-trace-bd">
+                    <div class="emp-step"><span class="si ico-sm" data-icon="check-circle"></span><div><div class="sn">grade.batch.list</div><div class="sr">成功</div></div><span class="sl">82 ms</span></div>
+                    <div class="emp-step is-fail"><span class="si ico-sm" data-icon="x-circle"></span><div><div class="sn">vision.blocks.extract</div><div class="sr">连接超时，重试 3 次后放弃</div></div><span class="sl">9.0 s</span></div>
+                    <div class="emp-step is-wait"><span class="si ico-sm" data-icon="minus"></span><div><div class="sn">grade.score</div><div class="sr">未执行</div></div><span class="sl">—</span></div>
+                  </div>
+                </div>
+                <div class="row-wrap" style="margin-top:var(--sp-3)">
+                  <button class="btn btn-primary btn-sm" data-loading="1000" data-loading-done="已重新入队" data-icon="refresh">重试本步</button>
+                  <button class="btn btn-ghost btn-sm" data-toast="已跳过该步，降级继续" data-toast-type="warn">跳过并降级</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-hd"><span class="card-title">校验错误 · 表单</span></div>
+              <div class="card-bd">
+                <form data-validate data-reset="off" data-success-toast="已提交审核">
+                  <div class="field">
+                    <label class="field-label">学生学号<span class="req">*</span></label>
+                    <div class="input-icon"><span class="lead" data-icon="user"></span>
+                      <input class="input" data-required data-pattern="^\d{10}$" data-msg="学号必须是 10 位数字"></div>
+                    <span class="field-hint">例如 2023010142，用于把事件归属到学生</span>
+                    <span class="field-msg"></span>
+                  </div>
+                  <div class="field">
+                    <label class="field-label">告警等级<span class="req">*</span></label>
+                    <div class="select-wrap"><select class="select" data-required data-msg="请选择告警等级">
+                      <option value="">请选择…</option>
+                      <option value="info">info · 仅入库</option>
+                      <option value="warning">warning · 进待办</option>
+                      <option value="critical">critical · 立即通知</option>
+                    </select></div>
+                    <span class="field-msg"></span>
+                  </div>
+                  <button class="btn btn-primary btn-block" data-icon="check">提交</button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="emp-section">
+            <div class="emp-section-hd"><h3>平台边界（不是员工能力）</h3><span class="emp-hint">这些能力不参与业务协作，因此不以「员工」形式出现</span></div>
+            <div class="emp-cols-3">
+              <div class="card card-flat"><div class="card-bd"><div class="row"><span class="stat-icon" data-icon="lock"></span><b>用户与权限</b></div><p class="sub" style="margin:var(--sp-2) 0 0">账号、角色、学号绑定。员工不接触账号体系。</p></div></div>
+              <div class="card card-flat"><div class="card-bd"><div class="row"><span class="stat-icon" data-icon="grid"></span><b>组织与班级</b></div><p class="sub" style="margin:var(--sp-2) 0 0">院系、班级、选课关系。员工的可见范围由此推导。</p></div></div>
+              <div class="card card-flat"><div class="card-bd"><div class="row"><span class="stat-icon" data-icon="box"></span><b>模型与算力</b></div><p class="sub" style="margin:var(--sp-2) 0 0">视觉/语言/向量三类模型的接入与切换开关。</p></div></div>
+              <div class="card card-flat"><div class="card-bd"><div class="row"><span class="stat-icon" data-icon="file"></span><b>文件与对象存储</b></div><p class="sub" style="margin:var(--sp-2) 0 0">上传、解析、索引管道。知识库的底座。</p></div></div>
+              <div class="card card-flat"><div class="card-bd"><div class="row"><span class="stat-icon" data-icon="scan"></span><b>审计日志</b></div><p class="sub" style="margin:var(--sp-2) 0 0">谁在什么时候调用了什么工具、结果如何。</p></div></div>
+              <div class="card card-flat"><div class="card-bd"><div class="row"><span class="stat-icon" data-icon="shield"></span><b>系统健康监控</b></div><p class="sub" style="margin:var(--sp-2) 0 0">各服务的在线状态与降级开关。</p></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     弹层：弹窗 / 抽屉 / 菜单
+     ====================================================================== -->
+
+<!-- 派发任务 -->
+<div class="modal" id="modal-dispatch">
+  <div class="modal-hd">
+    <span class="modal-title">派发任务</span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="modal-bd">
+    <form data-validate data-reset="off" data-success-toast="任务已派发，等待员工接单">
+      <div class="field">
+        <label class="field-label">任务标题<span class="req">*</span></label>
+        <input class="input" data-required data-min="4" data-msg="标题至少 4 个字" placeholder="例如：第三章随堂测批改">
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">指派给<span class="req">*</span></label>
+        <div class="select-wrap"><select class="select" data-required data-msg="请选择负责员工">
+          <option value="">请选择员工…</option>
+          <option>笔正 · 批改员工</option>
+          <option>明察 · 视觉员工</option>
+          <option>知问 · 答疑员工</option>
+          <option>知微 · 学情员工</option>
+          <option>守则 · 督导员工</option>
+        </select></div>
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">课程 / 班级</label>
+        <div class="select-wrap"><select class="select">
+          <option>数据结构与算法 · 计科 2201</option>
+          <option>数据结构与算法 · 计科 2202</option>
+          <option>操作系统原理 · 计科 2101</option>
+          <option>计算机网络 · 网工 2201</option>
+        </select></div>
+        <span class="field-hint">员工只能看到你管辖范围内的课程数据</span>
+      </div>
+      <div class="field">
+        <label class="field-label">任务要求</label>
+        <textarea class="textarea" placeholder="写清楚验收标准，例如：错因要写清楚，先不要直接写回成绩"></textarea>
+        <span class="field-hint">写操作一律需要你二次确认，这里不用特别声明</span>
+      </div>
+    </form>
+  </div>
+  <div class="modal-ft">
+    <button class="btn btn-secondary" data-close>取消</button>
+    <button class="btn btn-primary" data-loading="1000" data-loading-done="任务已派发" data-icon="send">派发</button>
+  </div>
+</div>
+
+<!-- 产出物预览 -->
+<div class="modal modal-lg" id="modal-artifact">
+  <div class="modal-hd">
+    <span class="modal-title">批改明细表.xlsx</span>
+    <span class="tag tag-outline" style="margin-left:8px">37 行 × 8 列</span>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="modal-bd">
+    <div class="table-wrap">
+      <table class="table table-stripe">
+        <thead><tr><th>学号</th><th>姓名</th><th>第 1 题</th><th>第 2 题</th><th>第 3 题</th><th>总分</th><th>错因</th></tr></thead>
+        <tbody>
+          <tr><td class="sub num">2023010142</td><td class="td-strong">林嘉禾</td><td class="num-cell">30</td><td class="num-cell">32</td><td class="num-cell">30</td><td class="num-cell">92</td><td class="sub">—</td></tr>
+          <tr><td class="sub num">2023010187</td><td class="td-strong">周雨桐</td><td class="num-cell">28</td><td class="num-cell">30</td><td class="num-cell">27</td><td class="num-cell">85</td><td class="sub">红黑树插入调整</td></tr>
+          <tr><td class="sub num">2023010203</td><td class="td-strong">赵一鸣</td><td class="num-cell">20</td><td class="num-cell">24</td><td class="num-cell">20</td><td class="num-cell">64</td><td class="sub">旋转情形判别</td></tr>
+          <tr><td class="sub num">2023010231</td><td class="td-strong">孙楚</td><td class="num-cell">12</td><td class="num-cell">15</td><td class="num-cell">14</td><td class="num-cell">41</td><td class="sub">平衡因子计算</td></tr>
+          <tr><td class="sub num">2023010256</td><td class="td-strong">钱思远</td><td class="num-cell">—</td><td class="num-cell">—</td><td class="num-cell">—</td><td class="num-cell">—</td><td class="sub">待人工判读</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert alert-info" style="margin-top:var(--sp-4)">
+      <span class="a-ic" data-icon="info"></span>
+      <div><div class="a-body">表格中「—」表示该题块置信度低于 0.6，员工拒绝猜测作答内容，需人工判读后再补分。</div></div>
+    </div>
+  </div>
+  <div class="modal-ft">
+    <button class="btn btn-secondary" data-close>关闭</button>
+    <button class="btn btn-secondary" data-toast="已导出为 xlsx" data-toast-type="success" data-icon="download">导出</button>
+    <button class="btn btn-primary" data-close data-loading="1000" data-loading-done="已写回 37 条成绩" data-icon="check">确认写回</button>
+  </div>
+</div>
+
+<!-- 创建员工 -->
+<div class="modal" id="modal-employee">
+  <div class="modal-hd">
+    <span class="modal-title">创建数字员工</span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="modal-bd">
+    <div class="alert alert-warning" style="margin-bottom:var(--sp-4)">
+      <span class="a-ic" data-icon="alert-triangle"></span>
+      <div><div class="a-body">新增员工必须同时声明<b>数据域</b>与<b>写权限</b>。没有写权限声明的新员工默认只读，不能落库、不能发通知。</div></div>
+    </div>
+    <form data-validate data-reset="off" data-success-toast="员工已创建，默认只读权限">
+      <div class="field">
+        <label class="field-label">员工名称<span class="req">*</span></label>
+        <input class="input" data-required data-min="2" data-max="6" data-msg="名称 2–6 个字" placeholder="例如：教务员工">
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">岗位职责<span class="req">*</span></label>
+        <textarea class="textarea" data-required data-min="10" data-msg="请至少写 10 个字，说清楚它做什么、不做什么"></textarea>
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">可读数据域<span class="req">*</span></label>
+        <div class="row-wrap">
+          <label class="check"><input type="checkbox" checked><span class="box"></span>课程与作业</label>
+          <label class="check"><input type="checkbox"><span class="box"></span>学生成绩</label>
+          <label class="check"><input type="checkbox"><span class="box"></span>视觉事件</label>
+          <label class="check"><input type="checkbox"><span class="box"></span>知识库</label>
+        </div>
+        <span class="field-hint">未勾选的数据域对该员工完全不可见</span>
+      </div>
+      <div class="field">
+        <label class="field-label">是否允许写操作</label>
+        <div class="row"><label class="switch"><input type="checkbox"><span class="track"></span><span class="thumb"></span></label><span class="sub">允许（仍需人工 Gate）</span></div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-ft">
+    <button class="btn btn-secondary" data-close>取消</button>
+    <button class="btn btn-primary" data-loading="1200" data-loading-done="员工已创建" data-icon="plus">创建</button>
+  </div>
+</div>
+
+<!-- 新建规则 -->
+<div class="modal" id="modal-rule">
+  <div class="modal-hd">
+    <span class="modal-title">新建告警规则</span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="modal-bd">
+    <form data-validate data-reset="off" data-success-toast="规则已创建">
+      <div class="field">
+        <label class="field-label">规则名称<span class="req">*</span></label>
+        <input class="input" data-required data-min="3" data-msg="请填写规则名称" placeholder="例如：R-31 实验台未归位">
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">适用场景</label>
+        <div class="select-wrap"><select class="select">
+          <option>不限场景</option>
+          <option>课堂行为</option>
+          <option>实验室安全</option>
+          <option>考场监测</option>
+          <option>拍照批改</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label class="field-label">触发等级<span class="req">*</span></label>
+        <div class="select-wrap"><select class="select" data-required data-msg="请选择触发等级">
+          <option value="">请选择…</option>
+          <option>info · 仅入库不告警</option>
+          <option>warning · 进待办</option>
+          <option>critical · 立即通知</option>
+        </select></div>
+        <span class="field-hint">事件严重度 ≥ 该等级才会触发</span>
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">通知对象</label>
+        <div class="row-wrap">
+          <label class="check"><input type="checkbox" checked><span class="box"></span>学生本人</label>
+          <label class="check"><input type="checkbox" checked><span class="box"></span>任课教师</label>
+          <label class="check"><input type="checkbox"><span class="box"></span>班主任</label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">去重窗口（分钟）</label>
+        <input class="input" data-type="number" data-min="1" value="15" placeholder="15">
+        <span class="field-hint">同一标题在该窗口内只通知一次</span>
+        <span class="field-msg"></span>
+        <span class="field-msg"></span>
+      </div>
+    </form>
+  </div>
+  <div class="modal-ft">
+    <button class="btn btn-secondary" data-close>取消</button>
+    <button class="btn btn-primary" data-loading="1000" data-loading-done="规则已创建并生效" data-icon="check">创建规则</button>
+  </div>
+</div>
+
+<!-- 创建计划 -->
+<div class="modal" id="modal-plan">
+  <div class="modal-hd">
+    <span class="modal-title">创建工作计划</span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="modal-bd">
+    <form data-validate data-reset="off" data-success-toast="计划已创建">
+      <div class="field">
+        <label class="field-label">计划名称<span class="req">*</span></label>
+        <input class="input" data-required data-min="3" data-msg="请填写计划名称" placeholder="例如：每周实验室巡检">
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">执行员工<span class="req">*</span></label>
+        <div class="select-wrap"><select class="select" data-required data-msg="请选择执行员工">
+          <option value="">请选择…</option>
+          <option>明察 · 视觉员工</option>
+          <option>笔正 · 批改员工</option>
+          <option>知微 · 学情员工</option>
+          <option>守则 · 督导员工</option>
+        </select></div>
+        <span class="field-msg"></span>
+      </div>
+      <div class="field">
+        <label class="field-label">频率</label>
+        <div class="select-wrap"><select class="select">
+          <option>每天</option><option>每周一</option><option>每周五</option>
+          <option>每两周一次</option><option>每月 1 日</option><option>一次性</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label class="field-label">执行时间</label>
+        <input class="input" placeholder="09:00">
+      </div>
+      <div class="alert alert-info">
+        <span class="a-ic" data-icon="info"></span>
+        <div><div class="a-body">计划产生的工单与手动派发完全一致，写操作仍会卡在人工 Gate。</div></div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-ft">
+    <button class="btn btn-secondary" data-close>取消</button>
+    <button class="btn btn-primary" data-loading="1000" data-loading-done="计划已创建" data-icon="check">创建计划</button>
+  </div>
+</div>
+
+<!-- 会话上下文抽屉 -->
+<aside class="drawer drawer-right" id="drawer-context">
+  <div class="drawer-hd">
+    <span class="drawer-title">会话上下文</span>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="drawer-bd">
+    <div class="stack">
+      <div>
+        <div class="title" style="margin-bottom:8px">本次会话已用的记忆</div>
+        <div class="stack-sm">
+          <div class="emp-mem">
+            <div class="emp-mem-top"><b>手写模糊不得猜测作答内容</b></div>
+            <div class="emp-mem-body" style="margin-top:4px">命中 3 处，均被标记待判读。</div>
+          </div>
+          <div class="emp-mem">
+            <div class="emp-mem-top"><b>树结构类错误必须授引教材页码</b></div>
+            <div class="emp-mem-body" style="margin-top:4px">应用于 31 / 37 份评语。</div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="title" style="margin-bottom:8px">工具调用计数</div>
+        <dl class="emp-kv">
+          <dt>grade.batch.list</dt><dd class="num">1 次</dd>
+          <dt>vision.blocks.extract</dt><dd class="num">1 次（跨员工）</dd>
+          <dt>rubric.match</dt><dd class="num">1 次</dd>
+          <dt>grade.score</dt><dd class="num">37 次</dd>
+          <dt>grade.writeback</dt><dd class="num">0 次（被拦）</dd>
+        </dl>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="title" style="margin-bottom:8px">运行元信息</div>
+        <dl class="emp-kv">
+          <dt>运行号</dt><dd class="emp-card-code">run-9f31c2</dd>
+          <dt>规划来源</dt><dd>llm_planner</dd>
+          <dt>消耗</dt><dd class="num">12.4k tokens</dd>
+          <dt>总耗时</dt><dd class="num">4.6 s</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-ft">
+    <button class="btn btn-secondary btn-block" data-close>关闭</button>
+  </div>
+</aside>
+
+<!-- 题块识别结果抽屉 -->
+<aside class="drawer drawer-right" id="drawer-artifact">
+  <div class="drawer-hd">
+    <span class="drawer-title">题块识别结果</span>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+  </div>
+  <div class="drawer-bd">
+    <div class="stack">
+      <div class="xs">示例：林嘉禾（2023010142）第 3 题作答区 · 明察识别输出</div>
+
+      <div class="emp-bbox" style="height:200px">
+        <span class="bx" style="left:12%;top:16%;width:34%;height:26%"><i>题目 3 · 0.98</i></span>
+        <span class="bx b2" style="left:12%;top:52%;width:72%;height:34%"><i>作答区 · 0.96</i></span>
+        <span class="bx b3" style="left:56%;top:16%;width:28%;height:26%"><i>批注 · 0.71</i></span>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="a-ic" data-icon="info"></span>
+        <div><div class="a-body">检测框为识别示意。真实结果来自 YOLO 推理，每个框带类别、置信度与坐标，落库后可按需回放。</div></div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table table-stripe">
+          <thead><tr><th>区块</th><th>类别</th><th>置信度</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td class="num-cell">#1</td><td class="sub">题目文本</td><td><span class="emp-conf hi">0.98</span></td><td><span class="tag tag-success tag-outline">可判读</span></td></tr>
+            <tr><td class="num-cell">#2</td><td class="sub">作答区</td><td><span class="emp-conf hi">0.96</span></td><td><span class="tag tag-success tag-outline">可判读</span></td></tr>
+            <tr><td class="num-cell">#3</td><td class="sub">手写批注</td><td><span class="emp-conf mid">0.71</span></td><td><span class="tag tag-warning tag-outline">建议复核</span></td></tr>
+            <tr><td class="num-cell">#4</td><td class="sub">作答区（钱思远）</td><td><span class="emp-conf lo">0.52</span></td><td><span class="tag tag-danger tag-outline">需人工判读</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-ft">
+    <button class="btn btn-secondary" data-close>关闭</button>
+    <button class="btn btn-primary" data-toast="已发送给笔正重新评分" data-toast-type="success" data-icon="send">转人工判读</button>
+  </div>
+</aside>
+
+<!-- 切换员工菜单 -->
+<div class="menu" id="menu-switch">
+  <div class="menu-title">切换到其他员工</div>
+  <button class="menu-item" data-toast="已切换到 知问 · 答疑员工" data-toast-type="success" data-icon="headphones">知问 · 答疑员工</button>
+  <button class="menu-item" data-toast="已切换到 笔正 · 批改员工" data-toast-type="success" data-icon="scan">笔正 · 批改员工</button>
+  <button class="menu-item" data-toast="已切换到 明察 · 视觉员工" data-toast-type="success" data-icon="eye">明察 · 视觉员工</button>
+  <button class="menu-item" data-toast="已切换到 知微 · 学情员工" data-toast-type="success" data-icon="target">知微 · 学情员工</button>
+  <button class="menu-item" data-toast="已切换到 守则 · 督导员工" data-toast-type="success" data-icon="shield">守则 · 督导员工</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item" data-toast="已进入多员工协作模式" data-toast-type="info" data-icon="users">多员工协作…</button>
+</div>
+
+
+      </div><!-- /app -->
+    </div><!-- /stage-frame -->
+  </div><!-- /stage-body -->
+</div><!-- /stage -->
+<script src="/static/js/hifi.js"></script>
+</body>
+</html>

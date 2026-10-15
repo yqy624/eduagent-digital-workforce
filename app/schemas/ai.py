@@ -10,14 +10,28 @@ class QARequest(BaseModel):
 
 
 class Citation(BaseModel):
-    """引用来源"""
+    """引用来源。
+
+    字段分两层：
+    - ``document_id`` 是 **edu 侧**的文件 id（本地检索与前端跳转都用它，保持兼容）；
+    - ``rag_doc_id`` 是 **知识库侧**的文档 ID，仅外置检索时有值，用于溯源。
+    两者含义不同，不要互相赋值。
+    """
     document_id: Optional[int] = None
+    rag_doc_id: Optional[str] = None
     chunk_index: Optional[int] = 0
     content: str
     score: float
     similarity: Optional[float] = None
     source: str
     file_name: Optional[str] = None
+    source_type: Optional[str] = None
+    # 知识库提供的页码定位；无法定位时 locator_status 为 unknown
+    page_start: Optional[int] = None
+    page_end: Optional[int] = None
+    locator_status: Optional[str] = None
+    # 该引用关联的图片（知识库按文档归组返回），供图文回答与插图消费
+    images: List[Dict[str, Any]] = []
 
 
 class QAResponse(BaseModel):

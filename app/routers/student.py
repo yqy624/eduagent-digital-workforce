@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.middleware.auth import require_student
 from app.models.models import User
-from app.schemas.assignment import PeerReviewSubmit, SubmissionSubmit
+from app.schemas.assignment import SubmissionSubmit
 from app.schemas.common import ApiResponse
 from app.services.student_service import StudentService
 
@@ -61,21 +61,6 @@ async def enroll(
         return ApiResponse.error(message=str(e), code=400)
 
 
-@router.post("/drop/{course_id}")
-async def drop(
-    course_id: int,
-    user: User = Depends(require_student),
-    db: AsyncSession = Depends(get_db),
-):
-    """退选课程"""
-    service = StudentService(db)
-    try:
-        await service.drop(course_id, user)
-        return ApiResponse.ok(message="退课成功")
-    except ValueError as e:
-        return ApiResponse.error(message=str(e), code=400)
-
-
 @router.get("/courses/{course_id}/assignments")
 async def course_assignments(
     course_id: int,
@@ -106,36 +91,6 @@ async def submit_assignment(
             assignment_id, user, req.content, file_ref, req.file_name, req.file_ids
         )
         return ApiResponse.ok(data=data, message="提交成功")
-    except ValueError as e:
-        return ApiResponse.error(message=str(e), code=400)
-
-
-@router.get("/peer-reviews")
-async def peer_reviews(
-    user: User = Depends(require_student),
-    db: AsyncSession = Depends(get_db),
-):
-    """我的互评任务"""
-    service = StudentService(db)
-    data = await service.get_my_peer_reviews(user)
-    return ApiResponse.ok(data=data)
-
-
-@router.post("/peer-reviews/{assignment_id}/{target_submission_id}")
-async def submit_peer_review(
-    assignment_id: int,
-    target_submission_id: int,
-    req: PeerReviewSubmit,
-    user: User = Depends(require_student),
-    db: AsyncSession = Depends(get_db),
-):
-    """提交匿名互评"""
-    service = StudentService(db)
-    try:
-        data = await service.submit_peer_review(
-            user, assignment_id, target_submission_id, req.rating, req.comment
-        )
-        return ApiResponse.ok(data=data, message="互评提交成功")
     except ValueError as e:
         return ApiResponse.error(message=str(e), code=400)
 

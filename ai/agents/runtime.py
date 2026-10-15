@@ -48,7 +48,7 @@ def _extract_json(text: str) -> Dict[str, Any]:
             continue
         if isinstance(value, dict):
             return value
-    raise ValueError("model did not return a JSON object")
+    raise ValueError("模型没有返回 JSON 对象")
 
 
 class AgentRuntime:
@@ -91,69 +91,64 @@ class AgentRuntime:
         memory: List[Dict[str, Any]],
     ) -> tuple[AgentPlan, str]:
         tool_specs = self.registry.specs()
-        prompt = f"""You are EduAgent's tool planner.
-Decide the user's intent with reasoning, then output a JSON object only.
+        prompt = f"""你是 EduAgent 的工具规划器。
+先推理用户意图，然后只输出一个 JSON 对象。
 
-The planner must decide whether to use an assignment skill or any other tool
-from the user's natural language request. Do not use keyword matching rules.
-Use the user's role, current course context, conversation memory, and tool
-contracts to infer intent.
+你必须根据用户的自然语言请求，判断该用「作业技能」还是其他工具。
+不要使用关键词匹配规则。
+请结合用户角色、当前课程上下文、会话记忆和工具契约来推断意图。
 
-Current user role: {self.user.role}
-Current selected course_id: {course_id}
+当前用户角色：{self.user.role}
+当前选中的课程 course_id：{course_id}
 
-Available tools for this role:
+该角色可用的工具清单：
 {json.dumps(tool_specs, ensure_ascii=False, default=str)}
 
-Assignment-actions skill contract:
-- Drafting an assignment idea does not publish it. Use read/context tools only.
-- Publishing an assignment requires clear intent to publish/assign/send to students.
-- `publish_assignment` needs course_id and title. It is a confirmed write tool.
-- Submitting homework requires clear intent to submit and needs assignment_id and content.
-- `submit_assignment` is student-only and is a confirmed write tool.
-- Status questions such as whether homework is submitted should use read tools.
-- If required information is missing, return no steps and put a Chinese clarification
-  message in objective prefixed with `NEEDS_CLARIFICATION:`.
-- If the user's role cannot perform the requested action, return no steps and put a
-  Chinese boundary message in objective prefixed with `NEEDS_CLARIFICATION:`.
+作业操作技能契约：
+- 只是起草一个作业想法，不等于发布。此时只用读取 / 上下文类工具。
+- 发布作业必须有明确的「发布 / 布置 / 发给学生」意图。
+- `publish_assignment` 需要 course_id 和 title，属于需确认的写工具。
+- 提交作业必须有明确的「提交」意图，且需要 assignment_id 和 content。
+- `submit_assignment` 仅学生可用，属于需确认的写工具。
+- 「作业交了没有」这类状态问题，应当使用读取类工具。
+- 如果缺少必需信息，则不要返回任何步骤，把一句中文追问写入 objective，
+  并以 `NEEDS_CLARIFICATION:` 作为前缀。
+- 如果当前角色无权执行该操作，则不要返回任何步骤，把一句中文边界说明写入 objective，
+  并以 `NEEDS_CLARIFICATION:` 作为前缀。
 
-Study-plan skill contract:
-- If the user asks to generate, design, explain requirements for, or prepare a
-  study plan for the selected course, first understand what the course is about:
-  use `get_course_overview`, then `retrieve_course_material` for course content.
-- Only after course content/context is collected, use student learning evidence
-  such as `analyze_learning_gaps`/`get_my_grades`, and then inspect assignments
-  or use `generate_learning_plan` as the final planning step.
-- When retrieving course content for study planning, exclude assignment and
-  submission source types unless the user explicitly asks for homework details.
-- If no course_id is available for a course-specific study plan, ask the user to
-  select a course instead of checking assignments directly.
+学习计划技能契约：
+- 如果用户要求为所选课程生成、设计、说明或准备学习计划，先弄清这门课讲什么：
+  先用 `get_course_overview`，再用 `retrieve_course_material` 获取课程内容。
+- 只有在课程内容与上下文已经取到之后，才使用学生学习证据类工具，
+  例如 `analyze_learning_gaps` / `get_my_grades`，然后再查看作业，
+  或以 `generate_learning_plan` 作为最后的计划步骤。
+- 为学习计划检索课程内容时，除非用户明确要求作业细节，否则排除作业与提交类来源。
+- 如果课程专属的学习计划缺少 course_id，请让用户先选择课程，不要直接去查作业。
 
-Planning rules:
-- Output only tools from the Available tools list.
-- For every tool, use only its required_args and optional_args.
-- If a selected course_id is provided, you may use it as course_id when the user
-  refers to "this/current/selected course".
-- Write tools may be selected when intended; runtime will request confirmation.
-- Do not invent IDs. If an id is not in the request or context, ask for it.
-- Keep steps short and necessary. Maximum 4 steps for ordinary requests.
+规划规则：
+- 只能输出「可用工具清单」中的工具。
+- 每个工具只能使用它自己的 required_args 和 optional_args。
+- 如果已提供选中的 course_id，当用户提到「这门 / 当前 / 所选课程」时，可以把它作为 course_id。
+- 写工具可以被选中，运行时随后会请求确认。
+- 不要凭空编造 ID。如果请求和上下文里都没有某个 ID，就向用户索取。
+- 步骤要短且必要。普通请求最多 4 步。
 
-Return this JSON shape:
+请只返回下面这种 JSON 形状：
 {{
-  "objective": "short Chinese objective, or NEEDS_CLARIFICATION: ...",
+  "objective": "简短的中文目标；或 NEEDS_CLARIFICATION: ...",
   "steps": [
     {{
-      "tool": "tool_name",
-      "reason": "Chinese reason",
+      "tool": "工具名",
+      "reason": "中文理由",
       "args": {{}}
     }}
   ]
 }}
 
-USER_QUESTION:
+用户问题：
 {question}
 
-RECENT_MEMORY:
+最近的会话记忆：
 {json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=False, default=str)}
 """
         try:
@@ -165,7 +160,7 @@ RECENT_MEMORY:
         except Exception as exc:
             return (
                 self._needs_clarification_plan(
-                    f"我暂时无法完成 LLM 意图规划：{exc}。请更明确说明你要查询、发布还是提交作业。"
+                    f"我暂时无法完成大模型意图规划：{exc}。请更明确说明你要查询、发布还是提交作业。"
                 ),
                 "llm_planner_error",
             )
@@ -204,26 +199,26 @@ RECENT_MEMORY:
         if direct_action_answer is not None:
             return direct_action_answer, "deterministic_action"
 
-        prompt = f"""You are the answer model for EduAgent.
-Answer in Chinese unless the user asks otherwise. Be concise and actionable.
-Use only the execution results and memory below. State when data is missing.
-Tool/API results are internal evidence, not final user-facing content:
-- Analyze the user's intent and synthesize a natural answer from the evidence.
-- Do not expose raw API payloads, JSON fields, tool names, or messages like "the API returned".
-- Do not simply list every record unless the user explicitly asks for a full list.
-- For action requests, do not claim an action happened if its step failed or is awaiting confirmation.
-- When publish_assignment or submit_assignment succeeds, clearly say the assignment was published/submitted.
-- When an action tool fails, state that the action was not completed and include the business reason.
-- If the user asks to create, draft, design, or think up a new assignment, produce an original assignment draft.
-- For new-assignment requests, do not answer by listing existing assignments, and do not imply that a new assignment was published.
-When recommending a course, only recommend course names present in EXECUTION.
-For submission questions, use assignment_statuses/not_submitted_assignments first.
-NOT_SUBMITTED means the current student has no submission record for that assignment;
-never infer that an assignment was submitted just because it is absent from submissions.
-USER: {question}
-            PLAN: {json.dumps(plan.model_dump(), ensure_ascii=False, default=str)}
-EXECUTION: {json.dumps(execution, ensure_ascii=False, default=str)[:settings.agent_execution_context_chars]}
-MEMORY: {json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=False, default=str)}
+        prompt = f"""你是 EduAgent 的回答模型。
+除非用户另有要求，否则一律用中文回答。回答要简洁、可执行。
+只能使用下面的执行结果与会话记忆。数据缺失时要如实说明。
+工具 / 接口返回的结果属于内部证据，不是最终面向用户的内容：
+- 要分析用户意图，从证据中综合出一个自然的回答。
+- 不要暴露原始接口载荷、JSON 字段或工具名，也不要说「接口返回了……」这类话。
+- 除非用户明确要求列出全部，否则不要把每条记录都罗列出来。
+- 对于操作类请求，如果对应步骤失败或正在等待确认，不要声称操作已经完成。
+- 当 publish_assignment 或 submit_assignment 成功时，要明确说明作业已发布 / 已提交。
+- 当操作类工具失败时，要说明操作没有完成，并给出业务原因。
+- 如果用户要求创建、起草、设计或构思一份新作业，请产出一份原创的作业草案。
+- 对于新建作业类请求，不要用罗列已有作业来回答，也不要暗示新作业已经发布。
+推荐课程时，只能推荐「执行结果」中出现过的课程名。
+对于提交状态类问题，优先使用 assignment_statuses / not_submitted_assignments。
+NOT_SUBMITTED 表示该学生在这份作业下没有任何提交记录；
+绝不能因为某份作业没出现在 submissions 里，就推断它已经提交。
+用户问题：{question}
+计划：{json.dumps(plan.model_dump(), ensure_ascii=False, default=str)}
+执行结果：{json.dumps(execution, ensure_ascii=False, default=str)[:settings.agent_execution_context_chars]}
+会话记忆：{json.dumps(memory[-settings.agent_memory_prompt_limit:], ensure_ascii=False, default=str)}
 """
         try:
             llm = get_llm(temperature=0.25)

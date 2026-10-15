@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="edu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字员工协作台 · EduAgent</title>
+<meta name="description" content="EduAgent 数字员工协作台 —— 答疑、批改、视觉、学情、督导五位数字员工，帮老师和学生把日常教学事务接过去。">
+<link rel="stylesheet" href="/static/css/hifi.css">
+<link rel="stylesheet" href="/static/css/employee-ui.css">
+<link rel="stylesheet" href="/static/css/desktop.css">
+</head>
+<body>
+<div class="app" data-theme="edu">
+  <div class="shell desk-shell">
+
+    <!-- ==================================================================
+         侧栏：常驻导航（桌面端不折叠、不降级为抽屉）
+         ================================================================== -->
+    <aside class="sidebar">
+      <div class="side-logo">
+        <span class="mark"><span data-icon="sparkles" class="ico-sm"></span></span>
+        <span class="name">EduAgent</span>
+      </div>
+
+      <div class="side-group">总览</div>
+      <button class="nav-item is-active" data-goto="p0"><span data-icon="layers"></span>协作全景</button>
+
+      <div class="side-group">日常</div>
+      <button class="nav-item" data-goto="p1"><span data-icon="grid"></span>指挥台</button>
+      <button class="nav-item" data-goto="p2"><span data-icon="message"></span>协作台<span class="badge badge-num" data-panel="nav-unread" hidden>0</span></button>
+
+      <div class="side-group">团队</div>
+      <button class="nav-item" data-goto="p3"><span data-icon="users"></span>数字员工</button>
+
+      <div class="side-foot">
+        <div class="divider" style="margin-bottom:var(--sp-3)"></div>
+        <div class="row">
+          <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">—</span>
+          <div style="min-width:0">
+            <div class="xs" style="color:var(--text-2);font-weight:var(--fw-medium)">加载中…</div>
+            <div class="xxl">—</div>
+          </div>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-icon btn-sm" data-modal-open="#modal-logout" data-icon="log-out" aria-label="退出登录"></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================================================================
+         主区：顶栏（常驻）+ 内容台（唯一滚动容器）
+         ================================================================== -->
+    <div class="main">
+
+      <header class="topbar">
+        <button class="btn btn-ghost btn-sm" data-panel="scope" data-menu-open="#menu-scope"
+                aria-haspopup="menu" aria-label="切换查看范围">
+          <span data-icon="target" class="ico-sm"></span>
+          <span data-panel="scope-name">正在读取…</span>
+          <span data-icon="chevron-down" class="ico-sm"></span>
+        </button>
+        <span class="spacer"></span>
+
+        <div class="desk-search">
+          <span class="s-ic" data-icon="search"></span>
+          <input class="input" type="search" data-panel="search" autocomplete="off"
+                 placeholder="搜索…" aria-label="站内搜索">
+          <!-- 检索结果（内容由 app.js 按真实接口填充） -->
+          <div class="desk-search-res" data-list="search-res" hidden></div>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" data-skeleton="#live-events" data-skeleton-ms="1100" data-icon="refresh">刷新</button>
+        <button class="btn btn-ghost btn-icon btn-sm desk-ico" data-menu-open="#menu-notif" data-icon="bell" aria-label="通知"><span class="desk-dot"></span></button>
+        <button class="btn btn-ghost btn-icon btn-sm" data-modal-open="#modal-settings" data-icon="sliders" aria-label="设置"></button>
+        <span class="avatar avatar-sm" style="--a1:var(--brand-500);--a2:var(--brand-300)">—</span>
+      </header>
+
+      <div class="desk-body">
+
+<!-- ======================================================================
+     P0 · 协作全景
+     ====================================================================== -->
+<section class="page is-active" id="p0" data-pid="P0" data-title="协作全景">
+  <div class="desk-inner">
+
+    <div class="emp-head">
+      <div class="emp-head-main">
+        <h2>协作全景</h2>
+        <p class="emp-desc">五位数字员工各管一摊：答问题、批作业、盯课堂、看学情、发提醒。你只需要交代任务，在关键的地方点个头。</p>
+      </div>
+      <div class="emp-head-actions">
+        <button class="btn btn-secondary btn-sm" data-panel="share" data-icon="link">分享</button>
+        <button class="btn btn-primary btn-sm" data-modal-open="modal-dispatch" data-icon="plus">派任务</button>
+      </div>
+    </div>
+
+    <!-- 组织带（数值由真实接口填充，见 app.js renderBands） -->
+    <div class="emp-band">
+      <span class="emp-avatar emp-avatar-lg"><span data-icon="sparkles" class="ico-lg"></span></span>
+      <div class="bb">
+        <b data-panel="org-name">正在读取…</b>
+        <span data-org="summary">正在读取…</span>
+      </div>
+      <span class="bdiv"></span>
+      <div class="bb"><b class="num" data-panel="emp-count">—</b><span>员工在岗</span></div>
+      <span class="bdiv"></span>
+      <div class="bb"><b class="num" data-org="pending">—</b><span>待处理提醒</span></div>
+      <span class="bdiv"></span>
+      <div class="bb"><b class="num" data-org="rules">—</b><span>生效提醒</span></div>
+      <span class="spacer"></span>
+      <span class="emp-live"><span class="pulse-dot" style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block"></span>实时</span>
+    </div>
+
+    <!-- 在岗员工 -->
+    <div class="emp-section">
+      <div class="emp-section-hd">
+        <h3>在岗员工</h3>
+        <span class="emp-hint">5 位 · 每位负责一类事，随时可以在「数字员工」里调整</span>
+        <span class="spacer"></span>
+        <button class="btn btn-ghost btn-sm" data-goto="p3">查看名册<span data-icon="chevron-right" class="ico-sm"></span></button>
+      </div>
+
+      <!-- 卡片由 app.js 按员工档案渲染（可编辑，见 employees.js） -->
+      <div class="emp-grid-auto" data-list="emp-flow">
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:120px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:120px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:120px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:120px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:120px"></div></div></div>
+      </div>
+    </div>
+
+    <!-- 三条主协作链路 -->
+    <div class="emp-section">
+      <div class="emp-section-hd">
+        <h3>员工怎么接力完成一件事</h3>
+        <span class="emp-hint">前一位的产出直接交给下一位，你不用在中间手动搬运</span>
+      </div>
+      <div class="emp-cols-3">
+
+        <div class="card">
+          <div class="card-hd">
+            <span class="card-title">批一次作业</span>
+            <span class="spacer"></span>
+            <span class="tag tag-info tag-outline">教学场景</span>
+          </div>
+          <div class="card-bd">
+            <div class="emp-flow">
+              <div class="emp-flow-node is-vision"><b>① 明察 · 找出题目和作答</b><span>把每道题、学生的作答区域和题号框出来</span></div>
+            </div>
+            <div class="emp-flow" style="margin-top:8px;flex-direction:column">
+              <div class="emp-flow-node"><b>② 笔正 · 逐题评分</b><span>对照评分标准给出各题得分、错因和评语</span></div>
+              <div class="emp-flow-node is-gate"><b>③ 等你确认</b><span>你点头之后成绩才会计入，这一步跳不过去</span></div>
+              <div class="emp-flow-node"><b>④ 知微 · 记入学习档案</b><span>更新这位学生的知识点掌握情况</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <span class="card-title">盯一堂课</span>
+            <span class="spacer"></span>
+            <span class="tag tag-warning tag-outline">安全 / 纪律</span>
+          </div>
+          <div class="card-bd">
+            <div class="emp-flow">
+              <div class="emp-flow-node is-vision"><b>① 明察 · 发现异常行为</b><span>从课堂影像里认出需要你关注的行为</span></div>
+            </div>
+            <div class="emp-flow" style="margin-top:8px;flex-direction:column">
+              <div class="emp-flow-node"><b>② 守则 · 判断要不要提醒</b><span>按你设定的条件先过滤，小事不打扰你</span></div>
+              <div class="emp-flow-node"><b>③ 通知你或学生</b><span>该提醒谁就提醒谁，同一条不会重复发</span></div>
+              <div class="emp-flow-node"><b>④ 知微 · 记入课堂表现</b><span>折算成课堂参与度，进入学情报告</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <span class="card-title">把答不上的问题补上</span>
+            <span class="spacer"></span>
+            <span class="tag tag-success tag-outline">资料积累</span>
+          </div>
+          <div class="card-bd">
+            <div class="emp-flow">
+              <div class="emp-flow-node"><b>① 知问 · 查资料作答</b><span>从课程资料里找答案，并标出出处</span></div>
+            </div>
+            <div class="emp-flow" style="margin-top:8px;flex-direction:column">
+              <div class="emp-flow-node is-gate"><b>② 标出答不上的问题</b><span>资料里查不到的会被单独记下来</span></div>
+              <div class="emp-flow-node"><b>③ 汇总成待补清单</b><span>问得最多的先列出来，交给你决定补什么</span></div>
+              <div class="emp-flow-node"><b>④ 你补资料后重新可用</b><span>补充之后，这类问题就答得上了</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 用户能拿到的硬约束（不写实现机制） -->
+    <div class="emp-section">
+      <div class="emp-section-hd">
+        <h3>为什么可以放心交给它们</h3>
+        <span class="emp-hint">下面六条是硬约束，不是建议</span>
+      </div>
+      <div class="emp-cols-3">
+
+        <div class="card card-flat">
+          <div class="card-bd">
+            <div class="row"><span class="stat-icon" data-icon="shield"></span><b>改动前一定先问你</b></div>
+            <p class="sub" style="margin:var(--sp-2) 0 0">涉及成绩、通知这类会留下记录的动作，员工只做准备，不会自己执行，必须等你点头。</p>
+          </div>
+        </div>
+
+        <div class="card card-flat">
+          <div class="card-bd">
+            <div class="row"><span class="stat-icon" data-icon="lock"></span><b>只看它该看的</b></div>
+            <p class="sub" style="margin:var(--sp-2) 0 0">每位员工只能看到你管辖范围内的课程和学生，范围之外的内容一律读不到。</p>
+          </div>
+        </div>
+
+        <div class="card card-flat">
+          <div class="card-bd">
+            <div class="row"><span class="stat-icon" data-icon="info"></span><b>答不上来会直说</b></div>
+            <p class="sub" style="margin:var(--sp-2) 0 0">资料里没有的内容，员工会明确告诉你「没找到」，不会编一个听起来合理的答案。</p>
+          </div>
+        </div>
+
+        <div class="card card-flat">
+          <div class="card-bd">
+            <div class="row"><span class="stat-icon" data-icon="users"></span><b>关键结果有人复核</b></div>
+            <p class="sub" style="margin:var(--sp-2) 0 0">重要的结果会由另一位员工独立看一遍，两位都通过才算数，互相把关。</p>
+          </div>
+        </div>
+
+        <div class="card card-flat">
+          <div class="card-bd">
+            <div class="row"><span class="stat-icon" data-icon="zap"></span><b>一个卡住不影响别人</b></div>
+            <p class="sub" style="margin:var(--sp-2) 0 0">员工之间互不牵连：某一位暂时不可用，其他事情照常进行，不会一起停摆。</p>
+          </div>
+        </div>
+
+        <div class="card card-flat" style="background:var(--surface-2);border-style:dashed">
+          <div class="card-bd">
+            <div class="row"><span class="stat-icon" data-icon="edit"></span><b>随时能改</b></div>
+            <p class="sub" style="margin:var(--sp-2) 0 0">名字、岗位、图标、职责和「负责哪些事」都能在「数字员工」里自己调；停用之后，设置也还留着。</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================================================================
+     P1 · 指挥台
+     ====================================================================== -->
+<section class="page" id="p1" data-pid="P1" data-title="指挥台">
+  <div class="desk-inner">
+
+    <div class="emp-head">
+      <div class="emp-head-main">
+        <h2>指挥台</h2>
+        <p class="emp-desc">员工发现的、需要你拍板的事都汇总在这里。凡是会改动数据的事，都会先等你点头。</p>
+      </div>
+      <div class="emp-head-actions">
+        <span class="emp-live"><span class="pulse-dot" style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block"></span>实时更新</span>
+      </div>
+    </div>
+
+    <div class="emp-band">
+      <span class="emp-avatar emp-avatar-lg"><span data-icon="grid" class="ico-lg"></span></span>
+      <div class="bb"><b>今日概况</b><span data-org="summary">正在读取…</span></div>
+      <span class="bdiv"></span>
+      <div class="bb"><b class="num" data-panel="emp-count">—</b><span>员工在岗</span></div>
+      <span class="bdiv"></span>
+      <div class="bb"><b class="num" data-org="pending">—</b><span>待处理提醒</span></div>
+      <span class="bdiv"></span>
+      <div class="bb"><b class="num" data-org="rules">—</b><span>生效提醒</span></div>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary btn-sm" data-icon="refresh">刷新</button>
+      <button class="btn btn-primary btn-sm" data-modal-open="modal-dispatch" data-icon="plus">派任务</button>
+    </div>
+
+    <!-- KPI 四卡：数值来自 /api/vision|review|insight/overview，由 app.js 填充 -->
+    <div class="emp-section emp-stats">
+      <div class="card"><div class="card-bd">
+        <div class="stat-label">—</div>
+        <div class="stat-value num">—</div>
+        <div class="stat-delta"></div>
+        <div class="xxl" style="margin-top:6px"></div>
+      </div></div>
+      <div class="card"><div class="card-bd">
+        <div class="stat-label">—</div>
+        <div class="stat-value num">—</div>
+        <div class="stat-delta"></div>
+        <div class="xxl" style="margin-top:6px"></div>
+      </div></div>
+      <div class="card"><div class="card-bd">
+        <div class="stat-label">—</div>
+        <div class="stat-value num">—</div>
+        <div class="stat-delta"></div>
+        <div class="xxl" style="margin-top:6px"></div>
+      </div></div>
+      <div class="card"><div class="card-bd">
+        <div class="stat-label">—</div>
+        <div class="stat-value num">—</div>
+        <div class="stat-delta"></div>
+        <div class="xxl" style="margin-top:6px"></div>
+      </div></div>
+    </div>
+
+    <!-- 批改质量复核：机器初判的结论与你最终给分对不对得上（内容由 app.js 填充，仅教师与管理员可见） -->
+    <div class="emp-section" data-hide-for="STUDENT">
+      <div class="emp-section-hd">
+        <h3>批改质量复核</h3>
+        <span class="emp-hint">看看机器初判的结论和你最终给分对不对得上，判断哪些需要你亲自过一遍</span>
+      </div>
+      <div class="emp-cols-3" data-panel="grading-quality">
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:62px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:62px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:62px"></div></div></div>
+      </div>
+      <div class="xs" style="margin-top:var(--sp-2)" data-panel="grading-note"></div>
+    </div>
+
+    <!-- 学生学情档案：选课程 → 看名单 → 点开看这位学生的成绩与课堂参与（仅教师与管理员可见） -->
+    <div class="emp-section" data-hide-for="STUDENT">
+      <div class="emp-section-hd">
+        <h3>学生学情档案</h3>
+        <span class="emp-hint">从你的课程里选一位学生，看他的成绩和课堂参与情况</span>
+        <span class="spacer"></span>
+        <div class="select-wrap">
+          <select class="select" data-panel="stu-course" aria-label="选择课程">
+            <option value="">正在读取…</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-bd">
+          <div class="stack-sm" data-panel="stu-list">
+            <div class="skeleton" style="height:42px"></div>
+            <div class="skeleton" style="height:42px"></div>
+            <div class="skeleton" style="height:42px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="emp-section emp-cols-chat">
+
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-title">最新提醒</span>
+          <span class="spacer"></span>
+          <span class="xxl">员工先判断轻重，需要你处理的才会出现在这里</span>
+        </div>
+        <div class="card-bd" id="live-events">
+          <div class="stack-sm">
+            <div class="skeleton" style="height:52px"></div>
+            <div class="skeleton" style="height:52px"></div>
+            <div class="skeleton" style="height:52px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+
+        <div class="card">
+          <div class="card-hd"><span class="card-title">员工忙闲度</span></div>
+          <div class="card-bd">
+            <div class="stack-sm" data-panel="load">
+              <div class="skeleton" style="height:30px"></div>
+              <div class="skeleton" style="height:30px"></div>
+              <div class="skeleton" style="height:30px"></div>
+              <div class="skeleton" style="height:30px"></div>
+              <div class="skeleton" style="height:30px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <span class="card-title">待你处理</span>
+            <span class="spacer"></span>
+            <span class="badge badge-num" data-panel="todo-count">0</span>
+          </div>
+          <div class="card-bd">
+            <div class="stack-sm" data-panel="todo">
+              <div class="skeleton" style="height:44px"></div>
+              <div class="skeleton" style="height:44px"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================================================================
+     P2 · 协作台
+     ====================================================================== -->
+<section class="page" id="p2" data-pid="P2" data-title="协作台">
+  <div class="desk-inner">
+
+    <div class="emp-head">
+      <div class="emp-head-main">
+        <h2>协作台</h2>
+        <p class="emp-desc">直接跟某位员工说话就行。它会先说明打算怎么做，做完把结果交给你；需要你点头的时候会停下来问你。</p>
+      </div>
+      <div class="emp-head-actions">
+        <button class="btn btn-secondary btn-sm" data-menu-open="#menu-switch" data-icon="users">切换员工</button>
+        <button class="btn btn-secondary btn-sm" data-drawer-open="#drawer-context" data-icon="layers">本次详情</button>
+      </div>
+    </div>
+
+    <div class="emp-cols-chat">
+
+      <div class="card">
+        <div class="card-bd">
+          <div class="emp-chat">
+
+            <div class="emp-chat-head">
+              <span class="emp-avatar" data-panel="chat-avatar"><span data-icon="message" class="ico-lg"></span><span class="emp-dot on"></span></span>
+              <div style="min-width:0">
+                <div class="emp-card-name" data-panel="chat-emp">知问</div>
+                <div class="xxl" data-panel="chat-emp-role">答疑员工</div>
+              </div>
+              <span class="spacer"></span>
+              <span class="tag tag-success tag-outline">在线</span>
+              <span class="tag tag-outline">改动前会先问你</span>
+            </div>
+
+            <div class="emp-chat-stream" id="chat-stream">
+              <div class="empty">
+                <span class="stat-icon" data-icon="message"></span>
+                <div class="title">正在准备…</div>
+                <div class="xs" style="margin-top:4px">如果一直没有反应，点右上角的「刷新」再试一次。</div>
+              </div>
+            </div>
+
+            <div class="emp-composer">
+              <div class="emp-quick">
+                <button class="btn btn-ghost btn-sm">最近有哪些学生需要我关注？</button>
+                <button class="btn btn-ghost btn-sm">帮我看看这门课的作业情况</button>
+                <button class="btn btn-ghost btn-sm">给我一份这周的学习建议</button>
+              </div>
+              <div class="emp-composer-row">
+                <textarea class="textarea" id="chat-input" aria-label="输入内容"
+                  placeholder="说说你想让它做什么，例如：帮我看看这门课最近的作业情况"></textarea>
+                <button class="btn btn-primary" id="chat-send" data-icon="send">发送</button>
+              </div>
+              <div class="xxl">涉及成绩和通知的改动，都会先请你确认。</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+
+        <div class="card">
+          <div class="card-hd"><span class="card-title">本次处理</span></div>
+          <div class="card-bd">
+            <dl class="emp-kv" data-panel="task-kv">
+              <dt>状态</dt><dd>还没开始</dd>
+              <dt>把握程度</dt><dd class="num">—</dd>
+              <dt>用到的经验</dt><dd class="num">0 条</dd>
+              <dt>处理时间</dt><dd>—</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <span class="card-title">用到的过往经验</span>
+            <span class="spacer"></span>
+            <span class="badge badge-num" data-panel="mem-count">0</span>
+          </div>
+          <div class="card-bd">
+            <div class="stack-sm" data-panel="memory">
+              <div class="empty">
+                <span class="stat-icon" data-icon="bookmark"></span>
+                <div class="title">这次没有用到过往经验</div>
+                <div class="xs" style="margin-top:4px">跟员工聊过之后，它参考过的历史记录会列在这里。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd"><span class="card-title">还能找谁帮忙</span></div>
+          <div class="card-bd">
+            <div class="stack-sm" data-panel="peers">
+              <div class="skeleton" style="height:28px"></div>
+              <div class="skeleton" style="height:28px"></div>
+              <div class="skeleton" style="height:28px"></div>
+            </div>
+            <div class="divider" style="margin:var(--sp-2) 0"></div>
+            <span class="xxl">只有你能派活，员工之间不会互相使唤。</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================================================================
+     P3 · 数字员工
+     ====================================================================== -->
+<section class="page" id="p3" data-pid="P3" data-title="数字员工">
+  <div class="desk-inner">
+
+    <div class="emp-head">
+      <div class="emp-head-main">
+        <h2>数字员工</h2>
+        <p class="emp-desc">这五位是你手上的员工。名字、岗位、图标、职责、负责哪些事都能自己改；不想用的先停用，设置会留着，随时能请回来。</p>
+      </div>
+      <div class="emp-head-actions">
+        <button class="btn btn-primary btn-sm" data-emp-new data-icon="plus">添加员工</button>
+      </div>
+    </div>
+
+    <div class="emp-section">
+      <div class="emp-section-hd">
+        <h3>员工名册</h3>
+        <span class="emp-hint" data-panel="roster-hint">正在读取…</span>
+      </div>
+
+      <!-- 卡片由 app.js 按员工档案渲染 -->
+      <div class="emp-grid-auto" data-list="emp-roster">
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:150px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:150px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:150px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:150px"></div></div></div>
+        <div class="card"><div class="card-bd"><div class="skeleton" style="height:150px"></div></div></div>
+      </div>
+    </div>
+
+    <!-- 员工能力一览（内容由 app.js 按员工档案渲染） -->
+    <div class="emp-section">
+      <div class="emp-section-hd">
+        <h3>员工能力一览</h3>
+        <span class="emp-hint" data-panel="tool-summary">每位员工能帮你做什么，一眼看清</span>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap">
+          <table class="table table-stripe">
+            <thead>
+              <tr><th>员工</th><th>能帮你做的事</th><th>能查看的内容</th><th>涉及改动时</th><th>遇到意外时</th></tr>
+            </thead>
+            <tbody data-list="emp-matrix">
+              <tr><td colspan="5"><div class="skeleton" style="height:26px"></div></td></tr>
+              <tr><td colspan="5"><div class="skeleton" style="height:26px"></div></td></tr>
+              <tr><td colspan="5"><div class="skeleton" style="height:26px"></div></td></tr>
+              <tr><td colspan="5"><div class="skeleton" style="height:26px"></div></td></tr>
+              <tr><td colspan="5"><div class="skeleton" style="height:26px"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+      </div><!-- /desk-body -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
+
+  <!-- ====================================================================
+       弹层：弹窗 / 抽屉 / 菜单（由引擎自动创建遮罩，无需手写）
+       ==================================================================== -->
+
+  <!-- 派任务 -->
+  <div class="modal" id="modal-dispatch">
+    <div class="modal-hd">
+      <span class="modal-title">派任务</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+    </div>
+    <div class="modal-bd">
+      <form data-validate data-reset="off" data-success-toast="已交办，员工开始处理">
+        <div class="field">
+          <label class="field-label">要办的事<span class="req">*</span></label>
+          <input class="input" data-required data-min="4" data-msg="至少写 4 个字" placeholder="例如：批改第三章随堂测">
+          <span class="field-msg"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">交给谁<span class="req">*</span></label>
+          <div class="select-wrap"><select class="select" data-required data-msg="请选择一位员工"
+            data-panel="dispatch-assignee">
+            <option value="">请选择…</option>
+          </select></div>
+          <span class="field-msg"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">哪门课</label>
+          <input class="input" placeholder="例如：数据结构与算法 · 计科 2201">
+          <span class="field-hint">员工只看得到你管辖的课程和学生</span>
+        </div>
+        <div class="field">
+          <label class="field-label">有什么要求</label>
+          <textarea class="textarea" placeholder="例如：把错因写清楚，先别写回成绩"></textarea>
+          <span class="field-hint">涉及成绩或通知的改动，仍会先请你确认</span>
+        </div>
+      </form>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-secondary" data-close>取消</button>
+      <button class="btn btn-primary" data-loading="1000" data-loading-done="已交办" data-icon="send">派发</button>
+    </div>
+  </div>
+
+  <!-- 退出登录：确认之后才真正退出，避免误点就掉线 -->
+  <div class="modal" id="modal-logout">
+    <div class="modal-hd">
+      <span class="modal-title">退出登录</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+    </div>
+    <div class="modal-bd">
+      <div class="sub">退出后需要重新登录才能回到协作台。你在这台电脑上配置的员工档案会保留。</div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-secondary" data-close>取消</button>
+      <button class="btn btn-primary" data-panel="logout-confirm" data-icon="log-out">退出登录</button>
+    </div>
+  </div>
+
+  <!-- 账户设置（内容由 app.js 从真实个人资料填充） -->
+  <div class="modal" id="modal-settings">
+    <div class="modal-hd">
+      <span class="modal-title">账户设置</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+    </div>
+    <div class="modal-bd">
+      <div class="alert alert-info">
+        <span class="a-ic" data-icon="info"></span>
+        <div>
+          <div class="a-title">改的是你自己的账号</div>
+          <div class="a-body">显示名会出现在员工名册和对话里。密码留空表示这次不改。</div>
+        </div>
+      </div>
+      <div class="stack">
+        <dl class="emp-kv">
+          <dt>登录名</dt><dd data-panel="set-username">—</dd>
+          <dt>身份</dt><dd data-panel="set-role">—</dd>
+        </dl>
+        <div class="divider"></div>
+        <div class="field">
+          <label class="field-label">显示名</label>
+          <input class="input" id="set-display-name" placeholder="例如：张老师" autocomplete="off">
+          <span class="field-msg"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">邮箱</label>
+          <input class="input" id="set-email" type="email" placeholder="例如：teacher01@demo.edu" autocomplete="off">
+          <span class="field-hint">用于接收平台发出的提醒邮件</span>
+          <span class="field-msg"></span>
+        </div>
+        <div class="field">
+          <label class="field-label">新密码</label>
+          <input class="input" id="set-password" type="password" placeholder="留空表示不修改" autocomplete="new-password">
+          <span class="field-hint">至少 6 位。改完下次登录用新密码。</span>
+          <span class="field-msg"></span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" data-close>取消</button>
+      <button class="btn btn-primary" data-panel="settings-save" data-icon="check">保存</button>
+    </div>
+  </div>
+
+  <!-- 创建员工 -->
+  <!-- 隐藏触发按钮：引擎的弹层函数未对外导出，用「模拟点击」驱动它打开 -->
+  <button id="emp-modal-trigger" data-modal-open="modal-employee" hidden aria-hidden="true"></button>
+
+  <div class="modal modal-lg" id="modal-employee">
+    <div class="modal-hd">
+      <span class="modal-title" data-panel="emp-modal-title">编辑员工档案</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+    </div>
+    <div class="modal-bd">
+      <div class="alert alert-info">
+        <span class="a-ic" data-icon="info"></span>
+        <div>
+          <div class="a-title">这里的设置只影响你自己的界面</div>
+          <div class="a-body">改完随时能恢复默认。下面勾选表示你希望这位员工负责哪些事；它实际能做多少，跟着你的账号权限走。</div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div>
+          <div class="card-title" style="margin-bottom:var(--sp-3)">基本信息</div>
+          <div class="row" style="gap:var(--sp-3);align-items:flex-start">
+            <div class="field" style="flex:1">
+              <label class="field-label">显示名<span class="req">*</span></label>
+              <input class="input" id="emp-f-name" placeholder="例如：巡检">
+              <span class="field-msg"></span>
+            </div>
+            <div class="field" style="flex:1">
+              <label class="field-label">岗位称谓<span class="req">*</span></label>
+              <input class="input" id="emp-f-role" placeholder="例如：视觉员工">
+              <span class="field-msg"></span>
+            </div>
+          </div>
+          <div class="row" style="gap:var(--sp-3);align-items:flex-start;margin-top:var(--sp-3)">
+            <div class="field" style="flex:1">
+              <label class="field-label">员工代号<span class="req">*</span></label>
+              <input class="input" id="emp-f-code" placeholder="例如：inspect">
+              <span class="field-hint" data-panel="emp-code-hint">系统内部识别用，只能用英文小写字母、数字、- 或 _</span>
+              <span class="field-msg"></span>
+            </div>
+            <div class="field" style="flex:1">
+              <label class="field-label">显示顺序</label>
+              <input class="input" id="emp-f-order" type="number" min="1" max="99" value="9">
+              <span class="field-msg"></span>
+            </div>
+          </div>
+          <div class="field" style="margin-top:var(--sp-3)">
+            <label class="field-label">职责说明<span class="req">*</span></label>
+            <textarea class="textarea" id="emp-f-persona" rows="3" placeholder="写清它负责什么、不负责什么。例如：负责从课堂影像里发现问题，只负责发现，怎么处理由我决定。"></textarea>
+            <span class="field-hint">这段说明会显示在员工名册和对话里</span>
+            <span class="field-msg"></span>
+          </div>
+          <div class="field" style="margin-top:var(--sp-3)">
+            <label class="field-label">能查看的内容</label>
+            <input class="input" id="emp-f-domain" placeholder="用「·」分隔，例如：课堂与实验室的影像记录">
+            <span class="field-msg"></span>
+          </div>
+          <div class="row" style="gap:var(--sp-3);align-items:flex-start;margin-top:var(--sp-3)">
+            <div class="field" style="flex:1">
+              <label class="field-label">图标</label>
+              <div class="select-wrap"><select class="select" id="emp-f-icon"></select></div>
+              <span class="field-msg"></span>
+            </div>
+            <div class="field" style="flex:1">
+              <label class="field-label">主题色</label>
+              <div class="select-wrap"><select class="select" id="emp-f-tint"></select></div>
+              <span class="field-msg"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <div class="card-title" style="margin-bottom:var(--sp-2)">它能帮你做什么</div>
+          <div class="field">
+            <label class="field-label">负责的事（可多选）</label>
+            <div class="stack-sm" id="emp-f-tools" style="margin-top:6px"></div>
+            <span class="field-hint" data-panel="emp-tools-hint">勾选后，这位员工就会负责对应的事</span>
+            <span class="field-msg"></span>
+          </div>
+          <div class="field" style="margin-top:var(--sp-3)">
+            <label class="field-label">涉及改动时</label>
+            <div class="select-wrap"><select class="select" id="emp-f-write"></select></div>
+            <span class="field-hint">说明这位员工改动数据前需不需要你确认</span>
+            <span class="field-msg"></span>
+          </div>
+          <div class="field" style="margin-top:var(--sp-3)">
+            <label class="field-label">遇到意外时</label>
+            <textarea class="textarea" id="emp-f-fallback" rows="2" placeholder="例如：资料里查不到时，直接告诉我「没找到」，不要凭印象作答"></textarea>
+            <span class="field-msg"></span>
+          </div>
+          <div class="field" style="margin-top:var(--sp-3)">
+            <label class="field-label">是否在岗</label>
+            <label style="margin-top:6px" class="check"><input type="checkbox" id="emp-f-enabled"><span class="box"></span><span>停用后不出现在工作台，设置会保留</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-danger btn-sm" id="emp-delete" data-icon="trash" hidden>删除</button>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" data-close>取消</button>
+      <button class="btn btn-primary" id="emp-save" data-icon="check">保存</button>
+    </div>
+  </div>
+
+  <!-- 本次详情 -->
+  <aside class="drawer drawer-right" id="drawer-context">
+    <div class="drawer-hd">
+      <span class="drawer-title">本次详情</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+    </div>
+    <div class="drawer-bd">
+      <!-- 内容由 app.js 按最近一次处理结果填充 -->
+      <div class="stack" data-panel="ctx">
+        <div class="empty">
+          <span class="stat-icon" data-icon="layers"></span>
+          <div class="title">还没有记录</div>
+          <div class="xs" style="margin-top:4px">在协作台聊一句，这里会显示这次处理的结果和用到的员工。</div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-ft">
+      <button class="btn btn-secondary btn-block" data-close>关闭</button>
+    </div>
+  </aside>
+
+  <!-- 切换员工菜单（内容由 app.js 按名册渲染） -->
+  <div class="menu" id="menu-switch" data-list="emp-switch">
+    <div class="menu-title">切换到其他员工</div>
+    <div class="skeleton" style="height:26px;margin:6px 10px"></div>
+    <div class="skeleton" style="height:26px;margin:6px 10px"></div>
+  </div>
+
+  <!-- 切换查看范围（内容由 app.js 按真实课程列表渲染） -->
+  <div class="menu" id="menu-scope" data-list="scope-list">
+    <div class="menu-title">切换查看范围</div>
+    <div class="skeleton" style="height:26px;margin:6px 10px"></div>
+    <div class="skeleton" style="height:26px;margin:6px 10px"></div>
+  </div>
+
+  <!-- 通知菜单（内容由 app.js 填充真实通知） -->
+  <div class="menu" id="menu-notif" data-list="notif-list">
+    <div class="menu-title">通知</div>
+    <div class="skeleton" style="height:42px;margin:6px 10px"></div>
+    <div class="skeleton" style="height:42px;margin:6px 10px"></div>
+  </div>
+
+  <!-- 学生学情（内容由 app.js 按选中的学生填充） -->
+  <aside class="drawer drawer-right" id="drawer-student">
+    <div class="drawer-hd">
+      <span class="drawer-title" data-panel="stu-drawer-title">学生学情</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close data-icon="x" aria-label="关闭"></button>
+    </div>
+    <div class="drawer-bd">
+      <div class="stack" data-panel="stu-detail">
+        <div class="empty">
+          <span class="stat-icon" data-icon="users"></span>
+          <div class="title">还没有选学生</div>
+          <div class="xs" style="margin-top:4px">在「学生学情档案」里点一位学生，这里会显示他的成绩与课堂参与情况。</div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-ft">
+      <button class="btn btn-secondary btn-block" data-close>关闭</button>
+    </div>
+  </aside>
+
+  <!-- 学生学情抽屉的隐藏触发器：引擎的弹层函数未对外导出，用「模拟点击」驱动它打开 -->
+  <button id="stu-drawer-trigger" data-drawer-open="#drawer-student" hidden aria-hidden="true"></button>
+
+</div><!-- /app -->
+<script src="/static/js/hifi.js"></script>
+<script src="/static/js/hifi-bridge.js"></script>
+<script type="module" src="/static/js/desktop/app.js"></script>
+</body>
+</html>

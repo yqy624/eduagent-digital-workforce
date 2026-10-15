@@ -1,0 +1,130 @@
+/* ==========================================================================
+   desktop.css —— 桌面端应用外壳
+   --------------------------------------------------------------------------
+   与 hifi.css / employee-ui.css 的关系：
+     · 复用 hifi 的布局原语：.shell / .sidebar / .main / .topbar / .page
+     · 复用 employee-ui.css 的 [data-theme="edu"] 令牌与 .emp-* 组件
+     · 本文件只做一件事：把「原型舞台」换成「桌面应用外壳」
+
+   桌面外壳的三条规则（与原型 stage 方案的差异）：
+     1. 视口锁高：html/body 不滚动，整屏应用
+     2. 侧栏常驻：不折叠、不降级成抽屉，自身内部滚动
+     3. 内容区自滚：.desk-body 是唯一滚动容器，各页面在其中绝对定位叠放
+
+   【只做桌面端的明确取舍】
+     不做移动 / 平板适配。窗口过窄时改为横向滚动，而不是把侧栏降级成抽屉 ——
+     因此给 .app 设了 min-width，使 hifi 与 employee-ui 里的容器查询断点
+     （1024 / 720）永不触发。这样"桌面端"是唯一形态，不存在第二种布局分支。
+   ========================================================================== */
+
+/* ==========================================================================
+   1. 视口锁定
+   ========================================================================== */
+:root { --desk-min-w: 1180px; }   /* 低于此宽度转为横向滚动，不做移动端降级 */
+html { overflow-x: auto; overflow-y: hidden; }
+body {
+  min-width: var(--desk-min-w);
+  overflow: hidden;
+  background: var(--bg);          /* 覆盖 hifi 舞台底色 #0f1116 */
+}
+.app {
+  height: 100vh;
+  min-width: var(--desk-min-w);
+  /* 桌面端密度：比 saas 主题略宽舒展（令牌覆写，不改 hifi.css 本体） */
+  --sidebar-w: 248px;
+  --gutter: 28px;
+  --topbar-h: 62px;
+}
+
+/* ==========================================================================
+   2. 外壳：侧栏常驻 + 主区纵向三段
+   ========================================================================== */
+.desk-shell { height: 100%; }
+.desk-shell > .sidebar { flex: none; }
+.desk-shell > .main { height: 100%; overflow: hidden; }
+
+/* 顶栏不再需要 sticky —— 它所在的 .main 本身不滚动 */
+.desk-shell .topbar { position: static; flex: none; }
+
+/* ==========================================================================
+   3. 内容台：唯一滚动容器
+   ========================================================================== */
+.desk-body { position: relative; flex: 1; min-height: 0; }
+.desk-body > .page {
+  padding: var(--gutter);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.desk-inner { max-width: 1680px; margin: 0 auto; }
+
+/* ==========================================================================
+   4. 顶栏内的全局控件
+   ========================================================================== */
+.desk-search { position: relative; flex: 0 1 400px; min-width: 180px; }
+.desk-search input { padding-left: 34px; }
+.desk-search .s-ic {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--text-4); pointer-events: none; display: grid; place-items: center;
+}
+/* 检索结果下拉：挂在搜索框正下方，随输入实时更新 */
+.desk-search-res {
+  position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 70;
+  max-height: 320px; overflow-y: auto; padding: 6px;
+  background: var(--surface-raised); border: 1px solid var(--border);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-3);
+}
+.desk-search-res[hidden] { display: none; }
+.desk-search-res .menu-item { width: 100%; justify-content: flex-start; }
+/* 未读红点：挂在图标按钮右上角 */
+.desk-dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--danger); border: 1.5px solid var(--surface);
+}
+.desk-ico { position: relative; }
+
+/* 全局提示条（顶栏下方，常驻） */
+.desk-notice {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: 6px var(--gutter);
+  background: var(--warning-bg); border-bottom: 1px solid var(--warning-border);
+  font-size: var(--fs-xs); color: var(--text-2); flex: none;
+}
+
+/* ==========================================================================
+   5. 侧栏：导航激活态跟随当前页 + 规划中项置灰
+   --------------------------------------------------------------------------
+   引擎（hifi.js）只切换 .page 的 is-active，不同步导航高亮 —— 它的原设计是
+   每一页各自带一份侧栏、把 is-active 写死。桌面端是「单侧栏常驻」，因此这里
+   用 :has() 把激活态下发给 data-goto 与之匹配的导航项，避免为此写业务 JS。
+   （data-goto 的值与目标 page 的 id 相同，这是引擎的既有约定。）
+   ========================================================================== */
+.app:has(#p0.is-active) .sidebar [data-goto="p0"],
+.app:has(#p1.is-active) .sidebar [data-goto="p1"],
+.app:has(#p2.is-active) .sidebar [data-goto="p2"],
+.app:has(#p3.is-active) .sidebar [data-goto="p3"] {
+  background: var(--brand-50); color: var(--brand-600); font-weight: var(--fw-medium);
+}
+.app:has(#p0.is-active) .sidebar [data-goto="p0"]::before,
+.app:has(#p1.is-active) .sidebar [data-goto="p1"]::before,
+.app:has(#p2.is-active) .sidebar [data-goto="p2"]::before,
+.app:has(#p3.is-active) .sidebar [data-goto="p3"]::before {
+  content: ""; position: absolute; left: -13px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px; border-radius: 0 3px 3px 0; background: var(--brand-500);
+}
+
+.sidebar .nav-item:disabled { opacity: .42; cursor: not-allowed; }
+.sidebar .nav-item:disabled:hover { background: transparent; }
+.sidebar .nav-item .badge { margin-left: auto; }
+
+/* ==========================================================================
+   6. 桌面端通用排版补充
+   ========================================================================== */
+/* 表格在宽屏下保持可读行高 */
+.desk-body .table th,
+.desk-body .table td { white-space: nowrap; }
+.desk-body .table td .sub,
+.desk-body .table td .xs { white-space: normal; }
+
+/* 卡片内的次级说明不被压成一行 */
+.desk-body .card-bd > .sub { line-height: var(--lh-snug); }

@@ -1,0 +1,40 @@
+{
+    "version":  2,
+    "services":  {
+                     "rag":  {
+                                 "pid":  45180,
+                                 "shimPid":  45180,
+                                 "owned":  true,
+                                 "port":  9004,
+                                 "startedAt":  "2026-10-14 15:00:53"
+                             },
+                     "minio":  {
+                                   "pid":  23488,
+                                   "shimPid":  23488,
+                                   "owned":  true,
+                                   "port":  9000,
+                                   "startedAt":  "2026-10-14 14:59:51"
+                               },
+                     "edu":  {
+                                 "pid":  22804,
+                                 "shimPid":  40772,
+                                 "owned":  true,
+                                 "port":  8001,
+                                 "startedAt":  "2026-10-14 15:01:08"
+                             },
+                     "es":  {
+                                "pid":  13120,
+                                "shimPid":  632,
+                                "owned":  true,
+                                "port":  9200,
+                                "startedAt":  "2026-10-14 15:00:44"
+                            },
+                     "yolo":  {
+                                  "pid":  44492,
+                                  "shimPid":  32244,
+                                  "owned":  true,
+                                  "port":  8000,
+                                  "startedAt":  "2026-10-14 15:00:59"
+                              }
+                 }
+}

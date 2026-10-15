@@ -12,9 +12,11 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     """登录响应"""
+    id: int
     token: str
     username: str
     display_name: Optional[str] = None
+    student_no: Optional[str] = None
     role: str
     redirect_url: str
     expires_in: int = 86400000
@@ -26,6 +28,7 @@ class RegisterRequest(BaseModel):
     password: str = Field(..., min_length=6, max_length=255)
     display_name: Optional[str] = None
     email: Optional[str] = None
+    student_no: Optional[str] = Field(default=None, max_length=64)
     role: str = Field(..., pattern="^(ADMIN|TEACHER|STUDENT)$")
 
 
@@ -35,6 +38,7 @@ class UserResponse(BaseModel):
     username: str
     display_name: Optional[str] = None
     email: Optional[str] = None
+    student_no: Optional[str] = None
     role: str
     enabled: bool
     last_login: Optional[str] = None
@@ -51,9 +55,11 @@ class ForgotPasswordRequest(BaseModel):
 
 class ProfileResponse(BaseModel):
     """个人信息"""
+    id: int
     username: str
     display_name: Optional[str] = None
     email: Optional[str] = None
+    student_no: Optional[str] = None
     role: str
 
 

@@ -49,6 +49,45 @@ class AiIndexJob(Base):
     finished_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
 
+class RagDocument(Base):
+    """外部知识库文档映射（edu <-> rag-go 的桥）。
+
+    edu 是业务事实源，知识库是检索事实源，两边靠这张表对齐：
+    知识库返回的每条证据只带 ``doc_id``，必须回查这里才能知道它
+    "属于哪个课程 / 作业 / 提交"，进而做权限判定与引用展示。
+
+    检索外置后，``AiDocumentChunk`` 的检索职责由本表接管
+    （edu 不再持有正文与向量，只保留归属关系）。
+    """
+
+    __tablename__ = "rag_documents"
+    __table_args__ = (
+        Index("idx_rag_doc_course", "course_id"),
+        Index("idx_rag_doc_submission", "submission_id"),
+        Index("idx_rag_doc_library", "library_name"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    # 知识库侧的文档 ID。multipart 单文件上传时可由 edu 自定义，
+    # 走 from-object 时由知识库发号（其请求参数 doc_id 会被忽略）
+    rag_doc_id: Mapped[str] = mapped_column(String(120), unique=True)
+    library_name: Mapped[str] = mapped_column(String(80))  # {prefix}{course_id}
+    course_id: Mapped[int] = mapped_column(BigInteger)
+    file_id: Mapped[Optional[int]] = mapped_column(BigInteger)
+    # 权限判定依据：有 submission_id 的文档默认只对提交者与互评人可见
+    submission_id: Mapped[Optional[int]] = mapped_column(BigInteger)
+    assignment_id: Mapped[Optional[int]] = mapped_column(BigInteger)
+    source: Mapped[str] = mapped_column(String(255))  # 展示名
+    source_type: Mapped[str] = mapped_column(String(50), default="course_material")
+    filename: Mapped[Optional[str]] = mapped_column(String(255))
+    ingest_status: Mapped[str] = mapped_column(
+        String(20), default="pending"
+    )  # pending / processing / ready / failed
+    ingest_error: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+
+
 class AiRun(Base):
     """Agent 运行主记录"""
     __tablename__ = "ai_runs"

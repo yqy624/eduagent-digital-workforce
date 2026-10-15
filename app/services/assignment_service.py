@@ -1,4 +1,5 @@
 """作业与提交服务"""
+import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from sqlalchemy import func, select
@@ -26,8 +27,13 @@ from app.schemas.assignment import (
 )
 from app.services.notification_service import NotificationService
 
+logger = logging.getLogger(__name__)
+
 
 class AssignmentService:
+    # 可作为"拍照批改"输入的图片类型
+    IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
+
     def __init__(self, db: AsyncSession):
         self.db = db
 
@@ -171,7 +177,7 @@ class AssignmentService:
             f"《{course_obj.name}》发布了作业《{assignment.title}》。",
             category="ASSIGNMENT",
             type_="INFO",
-            link=f"/static/student/dashboard.html#assignment-{assignment.id}",
+            link=f"/platform#/review/review-submit",
         )
         if assignment.peer_review_enabled:
             await NotificationService(self.db).create_for_course_students(
@@ -180,7 +186,7 @@ class AssignmentService:
                 f"作业《{assignment.title}》已开启同伴互评。",
                 category="PEER_REVIEW",
                 type_="INFO",
-                link=f"/static/student/dashboard.html#peer-review-{assignment.id}",
+                link=f"/platform#/review/review-peer",
             )
         await self._reindex_course_best_effort(assignment.course_id)
         return assignment
@@ -360,6 +366,40 @@ class AssignmentService:
         await self.db.flush()
         return ",".join(refs)
 
+    async def _register_scan_task_if_image(
+        self, assignment: Assignment, submission: Submission, stored_files: List[StoredFile]
+    ) -> None:
+        """图片类附件提交后，登记一条"待拍照批改"任务。
+
+        这里只登记、不推理：GPU 推理可能要数秒，绝不能挡住学生提交。
+        登记失败也不允许影响提交本身，所以异常只记日志。
+        """
+        if not stored_files:
+            return
+
+        image = None
+        for f in stored_files:
+            ext = (f.extension or "").lower()
+            if ext in self.IMAGE_EXTENSIONS or (f.content_type or "").startswith("image/"):
+                image = f
+                break
+        if image is None:
+            return
+
+        try:
+            from app.services.vision_service import VisionService
+
+            await VisionService(self.db).register_pending_scan(
+                assignment_id=assignment.id,
+                submission_id=submission.id,
+                file_id=image.id,
+                source_ref=image.storage_path,
+                course_id=assignment.course_id,
+                operator=f"submit:{submission.student_id}",
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("登记拍照批改任务失败（不影响提交）: %s", exc)
+
     async def submit(
         self,
         assignment_id: int,
@@ -416,6 +456,9 @@ class AssignmentService:
             await self.db.flush()
             if assignment.peer_review_enabled:
                 await self._generate_peer_reviews(assignment)
+            await self._register_scan_task_if_image(
+                assignment, existing_submission, stored_files
+            )
             await self._reindex_course_best_effort(assignment.course_id)
             return existing_submission
 
@@ -437,6 +480,7 @@ class AssignmentService:
             await self.db.flush()
         if assignment.peer_review_enabled:
             await self._generate_peer_reviews(assignment)
+        await self._register_scan_task_if_image(assignment, submission, stored_files)
         await self._reindex_course_best_effort(assignment.course_id)
         return submission
 
@@ -476,7 +520,7 @@ class AssignmentService:
             f"《{course_obj.name}》的作业《{assignment.title}》已完成评分。",
             category="GRADE",
             type_="INFO",
-            link=f"/static/student/dashboard.html#grade-{submission.id}",
+            link=f"/platform#/review/review-grades",
         )
         return submission
 
@@ -653,7 +697,7 @@ class AssignmentService:
                 f"作业《{assignment.title}》已开启同伴互评。",
                 category="PEER_REVIEW",
                 type_="INFO",
-                link=f"/static/student/dashboard.html#peer-review-{assignment.id}",
+                link=f"/platform#/review/review-peer",
             )
         return await self.get_peer_review_overview(assignment_id)
 

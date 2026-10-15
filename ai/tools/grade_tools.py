@@ -36,7 +36,12 @@ class GradeTools:
                     "assignment_id": sub.assignment_id,
                     "assignment_title": assignment.title if assignment else None,
                     "score": sub.score,
-                    "total_points": assignment.total_points if assignment else 100,
+                    # total_points 在库里可能为 NULL，缺省按 100 分制归一，避免下游除法崩溃
+                    "total_points": (
+                        assignment.total_points
+                        if assignment and assignment.total_points
+                        else 100
+                    ),
                     "status": sub.status,
                     "submitted_at": sub.submitted_at.isoformat()
                     if sub.submitted_at else None,
@@ -66,7 +71,12 @@ class GradeTools:
                 "assignment_id": sub.assignment_id,
                 "assignment_title": assignment.title if assignment else None,
                 "score": sub.score,
-                "total_points": assignment.total_points if assignment else 100,
+                # total_points 在库里可能为 NULL，缺省按 100 分制归一
+                "total_points": (
+                    assignment.total_points
+                    if assignment and assignment.total_points
+                    else 100
+                ),
                 "status": sub.status,
             })
         return grades
@@ -90,11 +100,22 @@ class GradeTools:
     ) -> List[Dict[str, Any]]:
         """获取低分作业（薄弱点识别）"""
         grades = await self.get_student_grades(student_id)
-        low = [
-            g for g in grades
-            if g["score"] is not None
-            and (g["score"] / g["total_points"] * 100) < threshold
-        ]
+        low: List[Dict[str, Any]] = []
+        for g in grades:
+            score = g.get("score")
+            total = g.get("total_points")
+            if score is None:
+                continue
+            # 分母兜底：None/0 一律按 100 分制处理，避免除零或 TypeError
+            denominator = float(total) if total else 100.0
+            if denominator <= 0:
+                denominator = 100.0
+            try:
+                pct = float(score) / denominator * 100
+            except (TypeError, ValueError):
+                continue
+            if pct < threshold:
+                low.append(g)
         return low
 
     async def get_submission_detail(self, submission_id: int) -> Optional[Dict[str, Any]]:

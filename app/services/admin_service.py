@@ -155,7 +155,8 @@ class AdminService:
         user = User(
             username=req.username, password=hash_password(req.password),
             display_name=req.display_name or req.username,
-            email=req.email, role=req.role, enabled=True,
+            email=req.email, student_no=req.student_no,
+            role=req.role, enabled=True,
             created_at=datetime.now(),
         )
         self.db.add(user)
@@ -163,7 +164,8 @@ class AdminService:
         return UserResponse(
             id=user.id, username=user.username,
             display_name=user.display_name,
-            email=user.email, role=user.role,
+            email=user.email, student_no=user.student_no,
+            role=user.role,
             enabled=user.enabled,
             created_at=user.created_at.isoformat() if user.created_at else None,
         )
@@ -346,7 +348,7 @@ class AdminService:
                 f"课程《{course.name}》已重新开放。",
                 category="COURSE",
                 type_="INFO",
-                link=f"/static/student/dashboard.html#course-{course.id}",
+                link=f"/platform#/review/review-courses",
             )
         return await self._course_detail(course)
 
