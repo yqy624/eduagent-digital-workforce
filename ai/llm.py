@@ -2,6 +2,7 @@
 import os
 from typing import Optional
 
+import httpx
 from langchain_openai import ChatOpenAI
 
 from app.config import settings
@@ -18,11 +19,24 @@ def get_llm(temperature: float = 0.3, model_name: Optional[str] = None):
             base_url=f"{settings.ollama_base_url}/v1",
         )
     if settings.openai_api_key:
-        return ChatOpenAI(
-            model=model_name or settings.openai_model or "gpt-4o",
-            temperature=temperature,
-            api_key=settings.openai_api_key,
-        )
+        kwargs = {
+            "model": model_name or settings.openai_model or "gpt-4o",
+            "temperature": temperature,
+            "api_key": settings.openai_api_key,
+            # 网关掉线时不死等：连接 5s / 读取按配置 / 最多重试 llm_max_retries 次。
+            # 默认行为会连续重试到分钟级，前端只能一直转圈。
+            "timeout": httpx.Timeout(
+                connect=5.0,
+                read=float(settings.llm_request_timeout_s),
+                write=30.0,
+                pool=5.0,
+            ),
+            "max_retries": settings.llm_max_retries,
+        }
+        # 自建 / 中转网关（OpenAI 兼容）：必须显式传 base_url，否则会打到官方地址
+        if settings.openai_base_url:
+            kwargs["base_url"] = settings.openai_base_url
+        return ChatOpenAI(**kwargs)
     if settings.dashscope_api_key:
         from langchain_dashscope import ChatDashScope
 

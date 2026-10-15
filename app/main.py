@@ -272,7 +272,11 @@ async def _check_llm() -> dict[str, Any]:
 
     providers = []
     if settings.openai_api_key:
-        providers.append({"provider": "openai", "model": settings.openai_model})
+        entry = {"provider": "openai", "model": settings.openai_model}
+        # 自建/中转网关时把地址一并报出来，便于健康检查定位打到哪去了
+        if settings.openai_base_url:
+            entry["base_url"] = settings.openai_base_url
+        providers.append(entry)
     if settings.dashscope_api_key:
         providers.append({"provider": "dashscope", "model": settings.dashscope_model})
     if settings.anthropic_api_key:

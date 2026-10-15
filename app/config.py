@@ -84,6 +84,14 @@ class Settings(BaseSettings):
     # LLM API Keys
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4o"
+    # 自建 / 中转网关的 OpenAI 兼容地址（如 http://host:port/v1）。
+    # 留空则用官方默认地址；填了就打到自己的网关。
+    openai_base_url: Optional[str] = None
+    # 单次 LLM 请求的读取超时（秒）与最大重试次数。
+    # 网关掉线时不能死等：连接超时固定 5s（见 ai/llm.py），重试默认只 1 次，
+    # 否则默认行为会连续重试到分钟级，接口侧只能一直转圈。
+    llm_request_timeout_s: int = Field(default=60, ge=5, le=600)
+    llm_max_retries: int = Field(default=1, ge=0, le=5)
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-sonnet-4"
     dashscope_api_key: Optional[str] = None
