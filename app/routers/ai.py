@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.config import settings
-from app.core.models.contracts import RetrievalRequest
+from app.core.models.contracts import ErrorKind, ModelError, RetrievalRequest
 from app.core.models.registry import get_retrieval_provider
 from app.middleware.auth import get_current_user, require_teacher
 from app.models.models import Assignment, Course, Enrollment, Notification, PeerReview, Submission, User
@@ -229,6 +229,24 @@ async def _visible_rag_documents(
     ]
 
 
+# rag-go 对「不认识的 doc_id」返回 404 + ``detail='未找到 doc_id=<id>'``。
+# 这里只用来认出"是哪一个"好把它剔掉；格式对不上就不认，退回原行为。
+_STALE_DOC_ID_PATTERN = re.compile(r"doc_id\s*[=:：]\s*([A-Za-z0-9_.\-]+)")
+
+
+def _stale_doc_id_from_error(error: Optional[ModelError]) -> Optional[str]:
+    """从检索失败里认出「知识库不认识的那个 doc_id」。
+
+    ``INVALID_INPUT`` 是本项目对 4xx 的统一归类，但 4xx 未必都因为 doc_id
+    （也可能是 libraries 为空、参数校验不过）。所以这里还要求能解析出具体
+    id 才认账，否则返回 ``None``，由调用方按原有语义处理。
+    """
+    if error is None or error.kind is not ErrorKind.INVALID_INPUT:
+        return None
+    match = _STALE_DOC_ID_PATTERN.search(error.message or "")
+    return match.group(1) if match else None
+
+
 async def _search_via_external(
     db: AsyncSession,
     course_id: int,
@@ -251,15 +269,45 @@ async def _search_via_external(
     by_doc_id = {doc.rag_doc_id: doc for doc in documents}
 
     provider = get_retrieval_provider("http-rag")
-    request = RetrievalRequest(
-        query=question,
-        libraries=[_library_name_for(course_id)],
-        doc_ids=list(by_doc_id),
-        text_top_k=min(20, max(1, max_citations * 3)),
-    )
-    result = await provider.invoke(request)
-    if not result.ok or result.data is None:
-        error = result.error
+    text_top_k = min(20, max(1, max_citations * 3))
+
+    # 快照会滞后于知识库：知识库侧已删掉的文档，edu 这边可能仍记着 ready。
+    # 而 rag-go 对**任一**未知 doc_id 都是整单 404（不是"跳过那一条"），
+    # 不管的话一条脏快照就能让整门课静默退回本地检索。
+    # 这里逐个剔除"知识库不认识"的 doc_id 后重试；正常路径只发一次请求。
+    # 4xx 归类为 NonRetryableError —— 立即终止且不计入熔断（见 policy.py），
+    # 所以剔除重试既不会放大延迟，也不会把下游熔断器打开。
+    pending = list(by_doc_id)
+    result = None
+    for _ in range(len(pending) + 1):
+        result = await provider.invoke(
+            RetrievalRequest(
+                query=question,
+                libraries=[_library_name_for(course_id)],
+                doc_ids=pending,
+                text_top_k=text_top_k,
+            )
+        )
+        if result.ok:
+            break
+        stale = _stale_doc_id_from_error(result.error)
+        if stale is None or stale not in pending:
+            # 不是"知识库不认识 doc_id"这类问题 → 保持原有语义，不猜着改
+            break
+        pending.remove(stale)
+        logger.warning(
+            "知识库不认识 doc_id=%s（edu 快照滞后），已从本次检索白名单剔除；课程 %s 还剩 %s 个文档",
+            stale,
+            course_id,
+            len(pending),
+        )
+        # 剔空后不能再发请求：doc_ids 为空时适配器会省略该字段，
+        # 外部服务随即返回全库结果，等于白名单失效（越权内容会流转）。
+        if not pending:
+            break
+
+    if result is None or not result.ok or result.data is None:
+        error = result.error if result is not None else None
         return None, f"{error.kind.value}: {error.message}" if error else "unknown-error"
 
     # 图片按文档归组，挂到对应引用上，供图文回答与 PPT 插图消费
