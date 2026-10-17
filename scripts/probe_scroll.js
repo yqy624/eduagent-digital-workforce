@@ -12,6 +12,7 @@
  *   SMOKE_TOKEN=<token> NODE_PATH=<workspace>/node_modules node scripts/probe_scroll.js http://127.0.0.1:18010
  */
 const fs = require("fs");
+const os = require("os");
 const puppeteer = require("puppeteer-core");
 
 const BASE = process.argv[2] || "http://127.0.0.1:18010";
@@ -112,7 +113,7 @@ function check(name, ok, detail) {
 
   await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
   await new Promise((r) => setTimeout(r, 200));
-  await page.screenshot({ path: "~/AppData/Local/Temp/scroll_probed.png" });
+  await page.screenshot({ path: require("path").join(os.tmpdir(), "scroll_probed.png") });
   await browser.close();
 
   console.log("\nRESULT: " + pass + " 通过 / " + fail + " 失败\n");

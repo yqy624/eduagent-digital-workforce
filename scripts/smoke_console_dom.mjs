@@ -23,8 +23,9 @@ import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const WORKSPACE = process.env.WB_NODE_WORKSPACE
-  || "~/.workbuddy/binaries/node/workspace";
+// jsdom 装在任意 node_modules 目录时，用 WB_NODE_WORKSPACE 指向它；
+// 缺省按当前工作目录解析（npm i jsdom 即可）
+const WORKSPACE = process.env.WB_NODE_WORKSPACE || process.cwd();
 const require = createRequire(WORKSPACE.endsWith("/") ? WORKSPACE : WORKSPACE + "/");
 const { JSDOM, VirtualConsole } = require("jsdom");
 

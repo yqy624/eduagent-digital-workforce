@@ -10,6 +10,7 @@
  *   SMOKE_TOKEN=<token> NODE_PATH=<workspace>/node_modules node scripts/check_scroll.js http://127.0.0.1:18010
  */
 const fs = require("fs");
+const os = require("os");
 const puppeteer = require("puppeteer-core");
 
 const BASE = process.argv[2] || "http://127.0.0.1:18010";
@@ -17,7 +18,7 @@ const TOKEN = process.env.SMOKE_TOKEN || "";
 const EDGE = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const EXE = fs.existsSync(CHROME) ? CHROME : EDGE;
-const OUT_DIR = process.env.TMPDIR || "~/AppData/Local/Temp";
+const OUT_DIR = process.env.TMPDIR || os.tmpdir();
 
 function snap(el, cs) {
   return {

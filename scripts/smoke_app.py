@@ -26,7 +26,8 @@ from fastapi.testclient import TestClient  # noqa: E402
 from app.main import app  # noqa: E402
 
 USERNAME = "teacher01"
-PASSWORD = "Demo@12345"
+# 演示账号口令（与 scripts/seed_demo.py 保持一致，公开的演示值，非生产凭据）
+DEMO_PASSWORD = "Demo@12345"
 _failed: list[str] = []
 
 
@@ -60,7 +61,7 @@ def main() -> int:
         print("\n== 登录 ==")
         r = client.post(
             "/api/auth/login",
-            json={"username": USERNAME, "password": PASSWORD, "role": "TEACHER"},
+            json={"username": USERNAME, "password": DEMO_PASSWORD, "role": "TEACHER"},
         )
         if r.status_code != 200:
             print(f"  登录失败 HTTP {r.status_code}: {r.text[:200]}")

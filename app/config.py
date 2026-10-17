@@ -109,7 +109,8 @@ class Settings(BaseSettings):
     model_embedding_backend: str = "placeholder"  # placeholder | hf | ollama ...
 
     # 视觉模型：转发到 yolo-platform 子进程推理（每次请求重新加载权重）
-    yolo_platform_dir: str = "~/Desktop/yolo-platform"
+    # 默认按「兄弟仓库」相对本项目根目录解析；子进程模式才需要，常驻 HTTP 服务不需要
+    yolo_platform_dir: str = "../yolo-platform"
     yolo_platform_python: str = ".venv/Scripts/python.exe"
     vision_weights: str = "yolo11n.pt"
 
