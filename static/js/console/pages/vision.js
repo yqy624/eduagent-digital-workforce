@@ -286,7 +286,7 @@ function taskResult(d) {
       body: h`<dl class="kv">
         <dt>编号</dt><dd><span class="mono">${esc(d.taskCode || d.task_code || "—")}</span> ${badge(statusText(d.status), statusTone(d.status))}</dd>
         <dt>场景</dt><dd>${esc(sceneText(d.scene))}</dd>
-        <dt>素材</dt><dd class="mono t-xs">${esc(d.sourceRef || d.source_ref || "—")}</dd>
+        <dt>素材</dt><dd class="mono t-xs">${esc(d.sourceName || d.source_name || "—")}</dd>
         <dt>进度</dt><dd><div style="max-width:180px">${raw(meter(d.progress || 0, statusTone(d.status) === "ok" ? "ok" : "", true))}</div></dd>
       </dl>`,
     })}

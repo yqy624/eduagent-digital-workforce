@@ -1,7 +1,9 @@
 """课程、作业相关 Schema"""
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from app.utils.display import public_file_names
 
 
 # ===== 课程 =====
@@ -104,6 +106,12 @@ class AssignmentResponse(BaseModel):
     peer_review_enabled: bool
     status: str = "PUBLISHED"
     submission_count: int = 0
+
+    @field_validator("attachment_paths", mode="before")
+    @classmethod
+    def _mask_attachment_paths(cls, value: Any) -> Any:
+        """附件只给文件名：存的是服务端句柄，可能是本机绝对路径。"""
+        return public_file_names(value) if value else value
 
 
 # ===== 作业提交 =====

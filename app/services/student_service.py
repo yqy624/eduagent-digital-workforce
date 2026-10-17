@@ -23,6 +23,7 @@ from app.schemas.assignment import (
 )
 from app.services.course_service import CourseService
 from app.services.assignment_service import AssignmentService
+from app.utils.display import public_file_names
 
 
 class StudentService:
@@ -213,13 +214,18 @@ class StudentService:
                 "courseId": a.course_id,
                 "teacherId": a.teacher_id,
                 "createdAt": a.created_at.isoformat() if a.created_at else None,
-                "assignmentAttachmentPaths": a.attachment_paths,
+                # 附件与提交文件只给名字：库里存的是服务端句柄，可能是本机绝对路径
+                "assignmentAttachmentPaths": public_file_names(a.attachment_paths)
+                if a.attachment_paths
+                else None,
                 "peerReviewEnabled": a.peer_review_enabled,
                 "status": self.assignment_service.assignment_status(a),
                 "submissionStatus": sub_obj.status if sub_obj else "NOT_SUBMITTED",
                 "submissionId": sub_obj.id if sub_obj else None,
                 "content": sub_obj.content if sub_obj else None,
-                "filePaths": sub_obj.file_paths if sub_obj else None,
+                "filePaths": public_file_names(sub_obj.file_paths)
+                if sub_obj and sub_obj.file_paths
+                else None,
                 "fileName": sub_obj.file_name if sub_obj else None,
                 "score": sub_obj.score if sub_obj else None,
                 "teacherComment": sub_obj.teacher_comment if sub_obj else None,
@@ -288,7 +294,9 @@ class StudentService:
                             "submissionId": t_sub_obj.id,
                             "studentName": t_stu_obj.display_name or t_stu_obj.username if t_stu_obj else "同学",
                             "content": t_sub_obj.content or "",
-                            "filePaths": t_sub_obj.file_paths,
+                            "filePaths": public_file_names(t_sub_obj.file_paths)
+                            if t_sub_obj and t_sub_obj.file_paths
+                            else None,
                             "submittedAt": t_sub_obj.submitted_at.isoformat() if t_sub_obj.submitted_at else None,
                         }
 

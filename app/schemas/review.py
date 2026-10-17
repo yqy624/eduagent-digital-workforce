@@ -69,12 +69,16 @@ class ScanResult(ReviewModel):
 
 
 class ScanTaskItem(ReviewModel):
-    """扫描任务列表项，供教师工作台列出"待批改"。"""
+    """扫描任务列表项，供教师工作台列出"待批改"。
+
+    只下发 `source_name`（文件名），**不下发 `source_ref`**：那是服务端的定位句柄，
+    可能是本机绝对路径，进页面就会把用户名和目录结构带出去。
+    """
 
     task_code: str
     status: str
     scene: str
-    source_ref: str
+    source_name: str = "—"
     assignment_id: Optional[int] = None
     submission_id: Optional[int] = None
     is_placeholder: Optional[bool] = True

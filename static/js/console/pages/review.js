@@ -505,7 +505,7 @@ function capOverview(ctx, el) {
         rows: list.map((t) => ([
           h`<span class="t-code">${esc(t.taskCode || t.task_code || "—")}</span>`,
           badge(statusText(t.status), statusTone(t.status)),
-          h`<span class="t-code">${esc(t.sourceRef || t.source_ref || "—")}</span>`,
+          h`<span class="t-code">${esc(t.sourceName || t.source_name || "—")}</span>`,
         ])),
         emptyTitle: "暂无拍照批改记录",
       }),
@@ -699,7 +699,7 @@ function capScan(ctx, el) {
       flush: true, title: "待批改清单", sub: list.length + " 条",
       body: list.length ? h`<div>${raw(list.map((t) => taskRow({
         state: String(t.status) === "succeeded" ? "done" : String(t.status) === "failed" ? "fail" : "run",
-        text: h`<b class="mono">${t.taskCode || t.task_code}</b> · ${t.sourceRef || t.source_ref || "—"}`,
+        text: h`<b class="mono">${t.taskCode || t.task_code}</b> · ${t.sourceName || t.source_name || "—"}`,
         time: t.latencyMs == null ? "" : Number(t.latencyMs).toFixed(0) + "ms",
       })).join(""))}</div>` : emptyState({ icon: "scan", title: "暂无待批改任务" }),
     });

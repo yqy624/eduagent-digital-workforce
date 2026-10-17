@@ -26,6 +26,7 @@ from app.schemas.assignment import (
     AssignmentAnalysis,
 )
 from app.services.notification_service import NotificationService
+from app.utils.display import public_file_names
 
 logger = logging.getLogger(__name__)
 
@@ -770,7 +771,10 @@ class AssignmentService:
             student_name=stu.display_name or stu.username if stu else None,
             content=submission.content,
             file_name=submission.file_name,
-            file_paths=submission.file_paths,
+            # 只回文件名：file_paths 是服务端句柄，可能是本机绝对路径
+            file_paths=public_file_names(submission.file_paths)
+            if submission.file_paths
+            else None,
             status=submission.status,
             score=submission.score,
             teacher_comment=submission.teacher_comment,

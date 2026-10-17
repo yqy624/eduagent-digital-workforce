@@ -8,9 +8,10 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 from app.core.models.contracts import VisionScene
+from app.utils.display import public_file_name
 
 VALID_SCENES = [s.value for s in VisionScene]
 
@@ -48,10 +49,19 @@ class VisionTaskOut(BaseModel):
     id: int
     task_code: str
     scene: str
-    source_ref: str
+    # 只暴露文件名：source_ref 是服务端定位句柄，可能是本机绝对路径，不进响应。
+    # validation_alias 让服务端对象仍按 ORM 的 source_ref 取值，随后脱敏成名字。
+    source_name: str = Field(
+        default="—", validation_alias=AliasChoices("source_name", "source_ref")
+    )
     source_type: Optional[str] = None
     status: str
     progress: Optional[int] = 0
+
+    @field_validator("source_name", mode="before")
+    @classmethod
+    def _mask_source(cls, value: Any) -> str:
+        return public_file_name(value)
 
     provider: Optional[str] = None
     model_name: Optional[str] = None

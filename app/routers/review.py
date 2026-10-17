@@ -38,6 +38,7 @@ from app.schemas.review import (
 from app.services.assignment_service import AssignmentService
 from app.services.student_service import StudentService
 from app.services.teacher_service import TeacherService
+from app.utils.display import public_file_name
 from app.services.vision_service import VisionService
 
 # AI 批改与批改反馈确认：迁移期直接复用 ai.py 里已实现的能力，
@@ -111,7 +112,8 @@ async def list_scan_tasks(
                 task_code=t.task_code,
                 status=t.status,
                 scene=t.scene,
-                source_ref=t.source_ref,
+                # 只给文件名：source_ref 可能是本机绝对路径，不下发
+                source_name=public_file_name(t.source_ref),
                 assignment_id=t.assignment_id,
                 submission_id=t.submission_id,
                 is_placeholder=t.is_placeholder,
