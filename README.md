@@ -8,6 +8,8 @@ EduAgent 是一个可演示、可复现的教学场景多员工 Agent 平台：F
 Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG 做课程资料检索。
 所有「写动作」（记成绩、发通知、落事件）默认停在人工确认这一道闸门前。
 
+![数字员工协作台：协作全景](docs/assets/screenshots/02-workspace.jpg)
+
 ---
 
 ## 目录
@@ -15,6 +17,7 @@ Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG �
 - [为什么叫数字员工](#为什么叫数字员工)
 - [五位数字员工](#五位数字员工)
 - [平台能力](#平台能力)
+- [界面预览](#界面预览)
 - [系统架构](#系统架构)
 - [技术栈](#技术栈)
 - [快速开始](#快速开始)
@@ -64,6 +67,33 @@ Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG �
 | 智能问答 | 课程资料入库、资料问答（带引用）、智能对话、规范对照、AI 处理记录 | 全部角色 |
 | 提醒与通知 | 态势总览、实时提醒（WebSocket）、提醒条件、提醒处理、通知中心 | 全部角色 |
 | 平台管理 | 治理总览、用户、组织、算力、文件、审计 | 管理员 |
+
+## 界面预览
+
+以下截图来自本地演示数据（`DB_BACKEND=sqlite` + `python scripts/seed_demo.py`），不是设计稿：
+起一个临时实例后跑 `node scripts/shot_docs.mjs` 就能重新生成，界面改了图会跟着变。
+脚本只读页面、不触发任何写操作。
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/screenshots/03-employees.jpg" alt="数字员工名单"><br>
+      <sub><b>数字员工名单</b>：职责、能查看什么、改动前要不要问，都写在卡片上</sub></td>
+    <td width="50%"><img src="docs/assets/screenshots/04-vision-overview.jpg" alt="感知总览"><br>
+      <sub><b>感知总览</b>：今天有多少设备在跑、抓到多少事、多少待确认</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/05-alerts.jpg" alt="告警处置"><br>
+      <sub><b>告警处置</b>：按严重程度分派给责任人，处置留痕</sub></td>
+    <td><img src="docs/assets/screenshots/06-platform-overview.jpg" alt="平台概览"><br>
+      <sub><b>平台概览</b>：账号构成、活跃课程、待处理事项</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/07-student-view.jpg" alt="学生视图"><br>
+      <sub><b>学生视图</b>：同一套员工，换成学生身份只看自己的课</sub></td>
+    <td><img src="docs/assets/screenshots/01-login.jpg" alt="登录页"><br>
+      <sub><b>登录页</b>：左侧是实时课堂识别画面，右侧按角色进入</sub></td>
+  </tr>
+</table>
 
 ## 系统架构
 
