@@ -2007,7 +2007,7 @@ function bindRefresh() {
  * 两点必须写对，否则就是「点了没用」或「退出后被送错页」：
  *   1. 光弹提示不算退出 —— 必须真清会话（清 localStorage 里的令牌与用户信息）。
  *   2. 回跳地址必须写 "/"。loginUrl() 不传参时缺省是 /platform，
- *      那会把桌面端用户退出后送去控制台的登录页，登录完也回不来。
+ *      那会把桌面端用户退出后送去业务台的登录页，登录完也回不来。
  */
 function bindLogout() {
   const btn = $('[data-panel="logout-confirm"]');
