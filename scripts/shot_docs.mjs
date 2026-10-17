@@ -50,7 +50,7 @@ async function login(account) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function shoot(page, { name, url, wait = 2600, before }) {
+async function shoot(page, { name, url, wait = 2600, before, goto }) {
   const errors = [];
   const onErr = (msg) => {
     const text = String(msg.text ? msg.text() : msg);
@@ -63,6 +63,14 @@ async function shoot(page, { name, url, wait = 2600, before }) {
   await page.goto(url, { waitUntil: "networkidle2", timeout: 45000 }).catch(() => {});
   await sleep(wait);
   if (before) await before(page);
+  else if (goto) {
+    // 协作台是单页多视图，靠侧栏按钮切页；数据由脚本填充，切完再等一拍
+    await page.evaluate((pid) => {
+      const btn = document.querySelector(`[data-goto="${pid}"]`);
+      if (btn) btn.click();
+    }, goto);
+    await sleep(1400);
+  }
   await sleep(700);
 
   const file = path.join(OUT, `${name}.jpg`);
@@ -78,24 +86,15 @@ async function shoot(page, { name, url, wait = 2600, before }) {
 const SHOTS = (process.env.SHOT_PAGES || "").trim()
   ? JSON.parse(process.env.SHOT_PAGES)
   : [
-  { name: "01-login", guest: true, url: "/login.html?next=/", wait: 1500 },
-  { name: "02-workspace", role: "admin", url: "/workspace" },
-  {
-    name: "03-employees",
-    role: "admin",
-    url: "/workspace",
-    wait: 2200,
-    before: async (page) => {
-      await page.evaluate(() => {
-        const btn = document.querySelector('[data-goto="p3"]');
-        if (btn) btn.click();
-      });
-    },
-  },
-  { name: "04-vision-overview", role: "admin", url: "/platform#/vision/vision-overview", wait: 3200 },
-  { name: "05-alerts", role: "admin", url: "/platform#/situation/situation-alerts", wait: 3200 },
-  { name: "06-review-overview", role: "admin", url: "/platform#/review/review-overview", wait: 3200 },
-  { name: "07-student-view", role: "student", url: "/workspace" },
+  // 编号即 README 里的展示顺序：先协作台（数字员工），再控制台（员工产出落地）
+  { name: "01-workspace", role: "admin", url: "/workspace" },
+  { name: "02-employees", role: "admin", url: "/workspace", goto: "p3", wait: 2200 },
+  { name: "03-command", role: "admin", url: "/workspace", goto: "p1", wait: 3000 },
+  { name: "04-chat", role: "admin", url: "/workspace", goto: "p2", wait: 4200 },
+  { name: "05-vision", role: "admin", url: "/platform#/vision/vision-overview", wait: 3200 },
+  { name: "06-review", role: "admin", url: "/platform#/review/review-overview", wait: 3200 },
+  { name: "07-student", role: "student", url: "/workspace" },
+  { name: "08-login", guest: true, url: "/login.html?next=/", wait: 1500 },
 ];
 
 async function main() {
