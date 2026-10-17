@@ -8,7 +8,7 @@ EduAgent 是一个可演示、可复现的教学场景多员工 Agent 平台：F
 Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG 做课程资料检索。
 所有「写动作」（记成绩、发通知、落事件）默认停在人工确认这一道闸门前。
 
-![数字员工协作台：协作全景](docs/assets/screenshots/02-workspace.jpg)
+![数字员工协作台：协作全景](docs/assets/screenshots/01-workspace.jpg)
 
 ---
 
@@ -70,27 +70,33 @@ Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG �
 
 ## 界面预览
 
-以下截图来自本地演示数据（`DB_BACKEND=sqlite` + `python scripts/seed_demo.py`），不是设计稿：
-起一个临时实例后跑 `node scripts/shot_docs.mjs` 就能重新生成，界面改了图会跟着变。
-脚本只读页面、不触发任何写操作。
+两个入口，一套数据：**协作台**（`/`）是你跟员工说话、看它干活的地方；**控制台**（`/platform`）
+是员工把结果落到课程、作业、学情里的地方。截图取自本地演示数据，跑一次 `node scripts/shot_docs.mjs`
+就能重新生成。
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/assets/screenshots/03-employees.jpg" alt="数字员工名单"><br>
-      <sub><b>数字员工名单</b>：职责、能查看什么、改动前要不要问，都写在卡片上</sub></td>
-    <td width="50%"><img src="docs/assets/screenshots/04-vision-overview.jpg" alt="感知总览"><br>
-      <sub><b>感知总览</b>：今天有多少设备在跑、抓到多少事、多少待确认</sub></td>
+    <td width="50%"><img src="docs/assets/screenshots/01-workspace.jpg" alt="协作全景"><br>
+      <sub><b>协作全景</b>：五位员工在岗情况、今天有哪些活、员工之间怎么接力</sub></td>
+    <td width="50%"><img src="docs/assets/screenshots/02-employees.jpg" alt="数字员工名单"><br>
+      <sub><b>数字员工</b>：每个岗位能看什么、能做什么、动数据前要不要先问你</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/assets/screenshots/05-alerts.jpg" alt="告警处置"><br>
-      <sub><b>告警处置</b>：按严重程度分派给责任人，处置留痕</sub></td>
-    <td><img src="docs/assets/screenshots/06-review-overview.jpg" alt="评阅总览"><br>
-      <sub><b>评阅总览</b>：拍照批改记录，素材只显示文件名不暴露路径</sub></td>
+    <td><img src="docs/assets/screenshots/03-command.jpg" alt="指挥台"><br>
+      <sub><b>指挥台</b>：员工发现的、等你拍板的事都汇在这里，也可以直接派活</sub></td>
+    <td><img src="docs/assets/screenshots/04-chat.jpg" alt="协作台"><br>
+      <sub><b>协作台</b>：直接跟某位员工对话，它会先说打算怎么做，需要你点头时停下来</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/assets/screenshots/07-student-view.jpg" alt="学生视图"><br>
-      <sub><b>学生视图</b>：同一套员工，换成学生身份只看自己的课</sub></td>
-    <td><img src="docs/assets/screenshots/01-login.jpg" alt="登录页"><br>
+    <td><img src="docs/assets/screenshots/05-vision.jpg" alt="感知总览"><br>
+      <sub><b>明察的产出</b>：今天有多少路设备在跑、抓到多少异常、多少等你确认</sub></td>
+    <td><img src="docs/assets/screenshots/06-review.jpg" alt="评阅总览"><br>
+      <sub><b>笔正的产出</b>：拍照批改记录与进度，素材只显示文件名、不暴露服务器路径</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/07-student.jpg" alt="学生视图"><br>
+      <sub><b>学生看到的</b>：同一套员工换身份登录，只看得到自己的课</sub></td>
+    <td><img src="docs/assets/screenshots/08-login.jpg" alt="登录页"><br>
       <sub><b>登录页</b>：左侧是实时课堂识别画面，右侧按角色进入</sub></td>
   </tr>
 </table>
