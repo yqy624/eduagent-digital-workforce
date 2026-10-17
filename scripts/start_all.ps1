@@ -271,7 +271,7 @@ function Get-HealthText {
 # 为什么要两级指纹：IdentMatch 只是健康响应里的一个关键词，**同源代码的副本也会命中**。
 # 曾经的事故——桌面上的毕设副本（…\01_源代码）与本项目同源，其 /api/health 同样含
 # "project": "EduAgent"，于是脚本把它当"自己人"复用了，而那个副本根本没有
-# /workspace 路由、static/ 里也没有 desktop.html，用户打开 8001 看到的是智慧教育平台。
+# /workspace 路由、static/ 里也没有 desktop.html，用户打开 8001 看到的是旧版页面。
 # 因此对 edu 追加 IdentProbe（只有本项目才有的二级探针）：
 #   · IdentProbe             必须返回 HTTP 200
 #   · IdentProbeMustContain  可选，响应正文必须包含该关键词
@@ -704,7 +704,7 @@ foreach ($s in $Services) {
 Write-Host ''
 Write-Host '  主入口（数字员工协作台）：' -NoNewline -ForegroundColor White
 Write-Host 'http://127.0.0.1:18010/' -ForegroundColor Green
-Write-Host '  智慧教育平台：' -NoNewline -ForegroundColor White
+Write-Host '  业务台（员工产出落到课程作业里）：' -NoNewline -ForegroundColor White
 Write-Host 'http://127.0.0.1:18010/platform' -ForegroundColor Green
 Write-Host '  登录页：' -NoNewline -foregroundColor White
 Write-Host 'http://127.0.0.1:18010/login.html?next=%2F' -ForegroundColor Green

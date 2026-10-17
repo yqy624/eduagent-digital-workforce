@@ -52,8 +52,8 @@ export function mountShell(root, opts) {
       <div class="spine-brand">
         <span class="spine-mark">${raw(icon("scan"))}</span>
         <span>
-          <b>智慧教育平台</b>
-          <span>课堂 · 作业 · 学情 · 通知</span>
+          <b>数字员工平台</b>
+          <span>课堂 · 作业 · 学情 · 提醒</span>
         </span>
       </div>
       <nav class="spine-body" id="spineNav">${raw(navHtml)}</nav>
