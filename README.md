@@ -1,226 +1,212 @@
-# EduAgent — 基于多 Agent 的智慧教育学习运营平台
+# EduAgent · 多员工 Agent 教育数字员工平台
 
-> 在原有智慧教育管理系统基础上，将 Java 后端迁移为 Python FastAPI，并引入 LangChain 多 Agent 工作流，
-> 从「记录课程、作业、成绩」升级为「基于课程资料和学习行为进行诊断、答疑、规划、批改和教学建议生成」。
+> 把教育系统里的功能菜单，换成一屋子能派活的「数字员工」：
+> 会答疑的、会批改的、盯课堂的、看学情的、管纪律的各司其职，
+> 你只负责决定「这件事要不要照它说的办」。
 
-## 项目定位
+EduAgent 是一个可演示、可复现的教学场景多员工 Agent 平台：FastAPI 做业务底座，LangChain 做
+Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG 做课程资料检索。
+所有「写动作」（记成绩、发通知、落事件）默认停在人工确认这一道闸门前。
 
-EduAgent 当前定位为 **AI 教育平台 Preview / MVP**：它已经具备可演示的三角色工作台、课程与作业管理、学生学习任务、匿名互评、AI 学情诊断、课程资料问答和教师 AI 辅助批改闭环。
+---
 
-本项目适合用于开源展示、课程设计、毕业设计原型和 AI 教育产品 MVP 验证。当前版本不建议直接包装为完整生产级教育平台，生产环境仍需要补齐权限审计、密钥管理、文件安全、测试覆盖、监控告警和部署方案。
+## 目录
 
-## 架构图
+- [为什么叫数字员工](#为什么叫数字员工)
+- [五位数字员工](#五位数字员工)
+- [平台能力](#平台能力)
+- [系统架构](#系统架构)
+- [技术栈](#技术栈)
+- [快速开始](#快速开始)
+- [演示账号](#演示账号)
+- [目录结构](#目录结构)
+- [工程约定](#工程约定)
+- [已知限制](#已知限制)
+- [路线图](#路线图)
+- [文档索引](#文档索引)
+- [许可](#许可)
 
-![EduAgent 架构图](static/architecture.svg)
+---
+
+## 为什么叫数字员工
+
+传统教务系统是「一堆页面，等人来点」。这里换了个组织方式：
+
+1. **一个员工 = 岗位 + 可读的数据 + 可用工具 + 写权限级别**，而不是一个菜单项。
+   不想要某个岗位，停用它即可，其余员工的协作关系不变。
+2. **员工只出建议，写动作过闸门**。批改结果要教师确认才写成绩，提醒要按条件才发出去。
+3. **看得见它怎么想的**。每次执行都留运行记录，可回看调用了哪些工具、读了哪些资料。
+
+## 五位数字员工
+
+| 员工 | 岗位 | 它读什么 | 它做什么 | 写权限 |
+|------|------|----------|----------|--------|
+| **知问** | 答疑员工 | 课程资料、常见问题 | 回答课程与作业问题，每条答案附资料出处；资料里没有就直说找不到 | 只读 |
+| **笔正** | 批改员工 | 学生提交、评分标准 | 逐题给出得分、错因和评语 | 需教师确认 |
+| **明察** | 视觉员工 | 课堂、实验室、作业与考试影像 | 识别异常并落成事件；只负责发现，不负责处理 | 写事件 |
+| **知微** | 学情员工 | 成绩、课堂表现、作业情况 | 汇总薄弱环节、给改进建议，不替人下结论 | 只读 |
+| **守则** | 督导员工 | 事件、通知记录 | 按设定条件提醒相关人，同一提醒不重复打扰 | 需人工确认 |
+
+除五个内置岗位，还支持新建自定义岗位：填名称、职责描述、可读数据域、可用工具，选择写权限级别即可。
+
+## 平台能力
+
+平台有两个入口，同一套后端：
+
+- **`/` 数字员工协作台** —— 以「员工」为单位的工作台，看员工在做什么、给它派活、看它交付了什么
+- **`/platform` 三端控制台** —— 以「业务模块」为单位的完整后台，按角色显示不同菜单
+
+| 模块 | 关键能力 | 主要角色 |
+|------|----------|----------|
+| 课堂与考场监测 | 感知总览、识别模型、训练图片集、识别任务、课堂行为/考场/实验室三种场景、拍照批改、记录回看与学生对应 | 教师、管理员 |
+| 作业与评阅 | 作业发布、在线作答、人工批改、AI 批改、拍照上传批改、同伴互评、成绩查询、批改建议确认、教师评语库、批改质量复核 | 教师、学生 |
+| 学情分析 | 学情总览、学生画像、学习诊断、学习路径规划、课堂参与度、学业与行为预警、学情报告 | 教师、学生、管理员 |
+| 智能问答 | 课程资料入库、资料问答（带引用）、智能对话、规范对照、AI 处理记录 | 全部角色 |
+| 提醒与通知 | 态势总览、实时提醒（WebSocket）、提醒条件、提醒处理、通知中心 | 全部角色 |
+| 平台管理 | 治理总览、用户、组织、算力、文件、审计 | 管理员 |
+
+## 系统架构
+
+```mermaid
+graph TD
+    A["数字员工协作台 /"] --> C["FastAPI 应用层"]
+    B["三端控制台 /platform"] --> C
+    C --> D["业务服务层<br/>课程 · 作业 · 批改 · 学情 · 通知 · 治理"]
+    C --> E["AI 编排层<br/>Agent 循环 · 工具注册 · 批改链 · 规划链"]
+    E --> F["检索层<br/>本地 FAISS / 外置 rag-go"]
+    E --> G["模型层<br/>OpenAI 兼容网关 / Ollama / Claude"]
+    C --> H["视觉接入层<br/>事件派生 · 告警规则引擎"]
+    H --> I["YOLO 推理服务<br/>课堂 · 考场 · 实验室 · 拍照批改"]
+    D --> J[("数据库<br/>MySQL / SQLite")]
+    E --> J
+```
+
+关键设计：视觉服务只回答「画面里有什么」，语义事件由业务侧规则派生。
+因此换场景改的是规则，不是重训模型 —— 详见 [视觉感知链路](docs/02-架构设计/视觉感知链路.md)。
 
 ## 技术栈
 
-| 层级 | 技术 | 说明 |
+| 层级 | 选型 | 说明 |
 |------|------|------|
-| 后端 | FastAPI + SQLAlchemy 2.0 Async | 异步高性能 Web 框架 |
-| 数据库 | MySQL 8.0（原 student_db） | 业务数据持久化 |
-| 缓存 | Redis | 会话与缓存 |
-| 认证 | JWT（兼容原前端） | 无状态认证 |
-| AI 编排 | LangChain | Runnable 链与多 Agent 工具编排 |
-| AI 组件 | LangChain | LLM 调用与工具集成 |
-| 向量库 | Chroma / FAISS | 课程资料语义检索 |
-| LLM | OpenAI / 通义千问 / Claude | 可切换的大语言模型 |
+| Web 框架 | FastAPI 0.115 + Uvicorn | 异步接口 + WebSocket + 自动 OpenAPI |
+| 数据层 | SQLAlchemy 2.0 Async | MySQL（生产）/ SQLite（演示）双后端 |
+| 认证 | JWT | 三角色：管理员 / 教师 / 学生 |
+| Agent 编排 | LangChain Runnable 链 + 自研循环 | 工具注册、决策契约、收敛出口 |
+| 大模型 | OpenAI 兼容网关 / Ollama / Claude / 通义千问 | 可切换，缺省走规则降级 |
+| 检索 | FAISS 本地检索，可外置 rag-go | 引用可溯源，无资料时拒答 |
+| 视觉 | YOLO11 + 规则派生 | 端到端推理约 37 FPS（RTX 4060 Laptop） |
+| 前端 | 原生 ES Module + 自研控制台框架 | 无构建步骤，改完刷新即生效 |
 
-## 核心功能
+## 快速开始
 
-### 1. 课程 RAG 助教
-- 课程资料上传、切片、向量索引
-- 学生提问时检索课程文档 + 作业附件 + 教师讲义
-- 回答必须带引用来源，无资料支撑时明确拒答
-
-### 2. 学情诊断与学习路径规划 Agent
-- 读取学生课程、作业、提交、成绩、互评记录
-- 识别薄弱点，生成一周学习计划 + 推荐练习
-- LangChain Runnable 链：collect_profile → analyze_weakness → retrieve_materials → plan_tasks → generate_exercises → validate_plan → save_report
-
-### 3. 教师批改与讲评 Agent
-- AI 根据题目要求、学生答案、评分标准给出建议分数和评语
-- 教师确认后才写回正式成绩（Human-in-the-loop）
-- 评语记忆复用与教学讲评生成
-
-## 当前基线状态
-
-项目已经具备 FastAPI、三角色业务接口、静态前端工作台和 AI 工作流骨架。登录入口已统一，三端均提供演示路径和新用户引导；教师端 AI 批改已从简单长度规则升级为基于作业要求、提交内容、互评和附件状态的本地内容感知建议。
-
-已知限制：
-
-- 完整运行需要 MySQL、Redis；部分 AI 能力需要至少一个可用的 LLM 或本地 Ollama。
-- `python scripts/check_baseline.py` 会区分代码错误、核心依赖缺失和可选 AI 依赖缺失。
-- 教师 AI 辅助批改当前默认提供稳定的本地内容感知建议，不等同于真实 LLM 自动阅卷。
-- RAG、学习计划 Agent、教学建议和部分数据分析能力仍适合作为 Preview/MVP 能力继续迭代。
-
-## 快速启动
+**环境**：Python 3.11+（实测 3.12/3.13），Windows / macOS / Linux 均可。首次跑不需要数据库。
 
 ```bash
-# 1. 克隆项目
-git clone <repo-url> edu-ai-platform
+git clone <仓库地址> edu-ai-platform
 cd edu-ai-platform
 
-# 2. 创建并激活虚拟环境（Windows PowerShell）
-py -3 -m venv .venv
-.venv\Scripts\Activate.ps1
+python -m venv .venv
+# Windows: .venv\Scripts\Activate.ps1
+# macOS / Linux: source .venv/bin/activate
 
-# 3. 安装依赖
-python -m pip install --upgrade pip
-python -m pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+pip install -r requirements.txt
+cp .env.example .env          # 默认 DB_BACKEND=sqlite，开箱即用
 
-# 4. 配置环境变量
-cp .env.example .env
-# 编辑 .env 填入 MySQL 密码和 LLM API Key
-
-# 5. 执行基线检查
-python scripts/check_baseline.py
-
-# 6. 启动服务
-python run.py
-# 访问 http://localhost:8001/docs 查看 API 文档
+python scripts/seed_demo.py   # 可选：写入演示课程、作业与学生数据
+python run.py                 # http://127.0.0.1:18010
 ```
 
-Linux/macOS 可将虚拟环境路径替换为 `.venv/bin/python`，启动命令仍然是
-`python run.py` 或 `.venv/bin/python run.py`。
+打开：
 
-## 环境变量
+| 地址 | 内容 |
+|------|------|
+| `http://127.0.0.1:18010/` | 数字员工协作台（默认入口） |
+| `http://127.0.0.1:18010/platform` | 三端控制台 |
+| `http://127.0.0.1:18010/docs` | Swagger 接口文档 |
 
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `DB_PASSWORD` | `change-me` | MySQL 密码 |
-| `APP_ENV` | `development` | 运行环境 |
-| `LOG_LEVEL` | `INFO` | 日志级别 |
-| `CORS_ORIGINS` | 本地前端地址 | 允许的前端来源，逗号分隔 |
-| `REDIS_HOST` | `localhost` | Redis 地址 |
-| `JWT_SECRET` | 示例值 | JWT 签名密钥，生产环境必须修改 |
-| `UPLOAD_DIR` | `uploads` | 本地上传目录 |
-| `MAX_UPLOAD_SIZE_MB` | `20` | 单文件大小上限 |
-| `AI_ENABLED` | `true` | 是否加载 AI 功能 |
-| `VECTOR_STORE` | `chroma` | 向量存储实现 |
-| `OPENAI_API_KEY` | - | OpenAI API Key（可选） |
-| `DASHSCOPE_API_KEY` | - | 通义千问 API Key（可选） |
-| `ANTHROPIC_API_KEY` | - | Claude API Key（可选） |
+**想完全离线演示**：`.env` 里设 `AI_ENABLED=false`，所有 AI 入口走规则降级，界面照常可点。
+**想用真实模型**：填 `OPENAI_API_KEY` + `OPENAI_BASE_URL`（带 `/v1`），或改用 Ollama。
+**想用 MySQL**：`DB_BACKEND=mysql` 并补齐 `DB_*`，再执行 `alembic upgrade head`。
 
-## Demo 账号
+## 演示账号
 
-执行 `python scripts/seed_demo_data.py` 可重置演示环境账号数据。脚本会清空现有账号及关联业务数据，只保留三类演示账号；登录首页不会展示演示账号，请由部署者仅向授权测试者单独提供。
+| 账号 | 角色 | 说明 |
+|------|------|------|
+| `admin` | 管理员 | 全校口径：治理、审计、告警规则 |
+| `teacher01` | 教师 | 张老师，带课程与作业 |
+| `student01` | 学生 | 李同学，学号 `S2024001` |
 
-## 项目结构
+密码统一为 `Demo@12345`，由 `scripts/seed_demo.py` 写入，仅供本地演示，部署到公网前必须更换。
+
+## 目录结构
 
 ```
 edu-ai-platform/
-├── app/                    # FastAPI 应用
-│   ├── main.py             # 入口
-│   ├── config.py           # 配置
-│   ├── database.py         # 数据库连接
-│   ├── models/             # SQLAlchemy 模型
-│   ├── schemas/            # Pydantic 序列化
-│   ├── routers/            # API 路由
-│   │   ├── auth.py         # 认证
-│   │   ├── admin.py        # 管理员
-│   │   ├── teacher.py      # 教师
-│   │   ├── student.py      # 学生
-│   │   ├── files.py        # 文件
-│   │   └── ai.py           # AI 接口
-│   ├── services/           # 业务逻辑
-│   ├── middleware/         # 中间件
-│   └── utils/              # 工具函数
-├── ai/                     # AI 功能模块
-│   ├── llm.py              # LLM 配置
-│   ├── prompts.py          # 提示词模板
-│   ├── rag/                # RAG 模块
-│   ├── tools/              # Agent 工具
-│   ├── workflows/          # LangChain Runnable 工作流
-│   └── evals/              # 评测
-├── scripts/                # 工具脚本
-├── static/                 # 前端静态文件
-├── uploads/                # 上传文件
-└── logs/                   # 日志
+├── app/                 # FastAPI 应用
+│   ├── main.py          # 入口与页面路由
+│   ├── config.py        # 配置（全部来自环境变量）
+│   ├── models/          # SQLAlchemy 模型
+│   ├── schemas/         # Pydantic 出入参
+│   ├── routers/         # 15 个路由模块（auth/teacher/student/vision/review/...）
+│   ├── services/        # 业务逻辑
+│   ├── middleware/      # 认证、响应驼峰化、缓存控制
+│   └── core/            # 模型注册表、场景映射、事件派生
+├── ai/                  # AI 层
+│   ├── llm.py           # 唯一真实模型通道
+│   ├── agents/          # Agent 循环、工具注册、记忆、教学参考实现
+│   ├── rag/             # 检索（本地 / 外置）
+│   ├── tools/           # 员工可调用的工具
+│   └── workflows/       # 批改链、规划链
+├── static/              # 前端（无构建步骤）
+│   ├── desktop.html     # 数字员工协作台
+│   ├── platform.html    # 三端控制台
+│   ├── login.html
+│   └── js/ css/
+├── scripts/             # 种子数据、冒烟脚本、校验脚本
+├── docs/                # 项目文档（见下）
+├── alembic/             # 数据库迁移
+└── run.py               # 启动入口
 ```
 
-## API 文档
+## 工程约定
 
-启动服务后访问 http://localhost:8001/docs 查看 Swagger 文档。
+二次开发前值得先知道的几条「反直觉」规则：
 
-### 核心业务接口
+- **请求体用 `snake_case`，响应用 `camelCase`**：中间件只转换响应，不转换请求。
+- **业务失败也可能返回 HTTP 200**：判断成功要看响应体里的 `code`（成功值是 `200`，不是 `0`）。
+- **页面与 `/static/*` 一律 `no-cache` + ETag**：前端是多个独立 ES Module，必须避免只刷新到一半的新旧混搭。
+- **检索必须显式指定课程范围**：否则会串到其他课程的资料。
+- **写动作过闸门**：任何 AI 产出的成绩、通知、事件，落库前都要有人确认。
 
-| 接口 | 角色 | 功能 |
-|------|------|------|
-| `POST /api/auth/login` | ALL | 用户登录 |
-| `POST /api/auth/register` | ALL | 用户注册 |
-| `POST /api/auth/forgot-password` | ALL | 找回密码 |
-| `GET /api/admin/users` | ADMIN | 用户管理 |
-| `GET /api/admin/dashboard` | ADMIN | 管理后台 |
-| `GET /api/teacher/courses` | TEACHER | 我的课程 |
-| `POST /api/teacher/courses` | TEACHER | 创建课程 |
-| `POST /api/teacher/assignments` | TEACHER | 发布作业 |
-| `POST /api/teacher/submissions/{id}/grade` | TEACHER | 批改作业 |
-| `GET /api/student/courses` | STUDENT | 可选课程 |
-| `GET /api/student/my-courses` | STUDENT | 我的课程 |
-| `POST /api/student/enroll/{courseId}` | STUDENT | 选课 |
-| `POST /api/student/assignments/{id}/submit` | STUDENT | 提交作业 |
-| `GET /api/student/grades` | STUDENT | 我的成绩 |
+## 已知限制
 
-### 阶段二接口契约
+- 这是**可演示的 MVP**，不是生产级教务系统：缺权限审计、限流、灰度与监控告警。
+- 未配置大模型时，问答与批改走检索式降级：能用，但正文未润色。
+- 视觉场景中，拍照批改依赖专用类别权重（`question_block` / `handwriting`），需自训；
+  其余场景复用 COCO 预训练权重即可。
+- 自动化测试覆盖有限，主要靠 `scripts/` 下的冒烟与结构校验脚本兜底。
 
-- 所有 JSON 请求体使用后端 Schema 定义的 `snake_case` 字段，例如 `max_students`、`course_id`、`due_date`、`total_points`、`file_path` 和 `file_name`。
-- JSON 响应继续由 CamelCase 中间件转换为前端使用的 `camelCase` 字段。请求字段不会由中间件转换。
-- 文件上传：`POST /api/files/upload` 返回 `id`、`originalName`、`storagePath`、`size` 和 `contentType`。提交作业时将 `id` 作为 `file_path`，文件名作为 `file_name`；历史提交引用格式为 `id::fileName`。
-- 文件预览：`GET /api/files/{file_id}/preview`；文件下载：`GET /api/files/{file_id}/download`。文件不存在或磁盘文件缺失时返回 HTTP `404`。
-- 教师互评配置：`POST` 或 `PUT /api/teacher/assignments/{assignment_id}/peer-review`，请求字段包括 `peer_review_enabled`、`peer_review_open_at`、`peer_review_close_at`、`peer_review_required_count`、`peer_review_bonus_per_review`、`peer_review_bonus_cap` 和 `peer_review_prompt`。
-- 通知 REST：`GET /api/notifications`、`GET /api/notifications/unread-count`、`PUT /api/notifications/{notification_id}/read`、`PUT /api/notifications/read-all`。
-- 通知实时推送：连接 `ws(s)://<host>/ws/notifications?token=<JWT>`。连接成功返回 `CONNECTED`，新通知返回 `NOTIFICATION` 消息。
-
-### AI 接口
-
-| 接口 | 角色 | 功能 |
-|------|------|------|
-| `POST /api/ai/courses/{course_id}/qa` | ALL | 课程 RAG 问答 |
-| `POST /api/ai/students/{student_id}/diagnosis` | SELF/TEACHER | 学情诊断 |
-| `POST /api/ai/students/{student_id}/learning-plan` | SELF/TEACHER | 生成学习计划 |
-| `POST /api/ai/teacher/submissions/{id}/grade-suggestion` | TEACHER | AI 批改建议 |
-| `GET /api/ai/runs/{run_id}` | OWNER/ADMIN | Agent 运行轨迹 |
-
-## Agent 工作流说明
-
-### 学习路径规划 Agent
-
-```
-User Input → [收集画像] → [薄弱分析] → [检索资料] → [规划任务] → [生成练习] → [校验] → [保存报告]
-```
-
-- **State**: user_id, role, course_id, profile, grades, submissions, weakness, plan, exercises
-- **Tool**: 查成绩、查作业、查提交、检索课程资料、生成练习
-- **Memory**: 短期 LangChain Runnable 状态，长期 ai_learning_reports
-- **Fallback**: LLM 不可用时返回基于规则的学习建议
-
-### 教师批改 Agent
-
-```
-{提交ID} → [读取作业+答案] → [获取评分标准] → [AI 评分] → [等待教师确认] → [写回成绩]
-```
-
-- Human-in-the-loop: AI 只生成建议，教师采纳后写回
-- 评语记忆：自动保存和复用教师常用评语
-
-## 评测结果
-
-详见 `ai/evals/` 目录。
-
-| 评测项 | 指标 | 状态 |
-|--------|------|------|
-| RAG 问答 | 引用覆盖率、拒答准确率 | 未完成基线评测 |
-| 批改建议 | 平均误差、采纳率 | 未完成基线评测 |
-| 学习计划 | 可执行性、资料覆盖 | 未完成基线评测 |
-
-## 开发计划
+## 路线图
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| Phase 0 | 基线、编码、依赖和配置统一 | 进行中 |
-| Phase 1 | 认证 + 三角色核心业务接口 | 部分完成 |
-| Phase 2 | 文件与课程知识库 | 未开始 |
-| Phase 3 | 学生学习 Agent | 骨架已存在，未完成 |
-| Phase 4 | 教师批改 Agent | 骨架已存在，未完成 |
-| Phase 5 | 评测与交付 | 未开始 |
+| M1 | 三角色业务闭环、认证与权限 | 已完成 |
+| M2 | 数字员工协作台、控制台六模块 | 已完成 |
+| M3 | 视觉感知链路、告警规则引擎、拍照批改 | 已完成 |
+| M4 | Agent 循环重写：工具 → 模型 → 决策契约 → 循环 → 收敛 | 进行中 |
+| M5 | 评测基线（检索引用率、批改误差、规划可执行性） | 待开始 |
+
+## 文档索引
+
+| 分类 | 文档 |
+|------|------|
+| 产品 | [项目概述](docs/01-产品定位/项目概述.md) · [数字员工能力矩阵](docs/01-产品定位/数字员工能力矩阵.md) · [数字员工协作平台设计说明](docs/01-产品定位/数字员工协作平台设计说明.md) · [功能模块重构规划](docs/01-产品定位/功能模块重构规划.md) |
+| 架构 | [视觉感知链路](docs/02-架构设计/视觉感知链路.md) · [告警规则引擎](docs/02-架构设计/告警规则引擎.md) · [RAG 检索外置对接契约](docs/02-架构设计/RAG检索外置对接契约.md) |
+| 开发 | [启动指南](docs/03-开发指南/启动指南.md) · [桌面端接口接入说明](docs/03-开发指南/桌面端接口接入说明.md) · [模型接入清单](docs/03-开发指南/模型接入清单.md) |
+| 方案 | [教育大模型前期验证](docs/04-技术方案/教育大模型前期验证.md) · [YOLO 平台复刻方案](docs/04-技术方案/YOLO平台复刻方案.md) · [从零到一自学复现指南](docs/04-技术方案/自学复现指南.md) |
+| 交付 | [项目计划书](docs/05-交付材料/项目计划书.md) · [工作成果梳理](docs/05-交付材料/工作成果梳理.md) |
+| 归档 | [路由审计](docs/09-历史归档/路由审计报告_2026-10-12.md) · [旧页面下线](docs/09-历史归档/旧页面下线与路由收敛_2026-10-12.md) · [环境重建](docs/09-历史归档/环境重建与工作区清理_2026-10-10.md) · [身份连接键修复](docs/09-历史归档/身份连接键修复_2026-10-10.md) |
+
+## 许可
+
+[MIT](LICENSE) © 2026 yqy624
