@@ -84,8 +84,8 @@ Agent 编排与工具调用，YOLO 做课堂与实验室的视觉感知，RAG �
   <tr>
     <td><img src="docs/assets/screenshots/05-alerts.jpg" alt="告警处置"><br>
       <sub><b>告警处置</b>：按严重程度分派给责任人，处置留痕</sub></td>
-    <td><img src="docs/assets/screenshots/06-platform-overview.jpg" alt="平台概览"><br>
-      <sub><b>平台概览</b>：账号构成、活跃课程、待处理事项</sub></td>
+    <td><img src="docs/assets/screenshots/06-review-overview.jpg" alt="评阅总览"><br>
+      <sub><b>评阅总览</b>：拍照批改记录，素材只显示文件名不暴露路径</sub></td>
   </tr>
   <tr>
     <td><img src="docs/assets/screenshots/07-student-view.jpg" alt="学生视图"><br>

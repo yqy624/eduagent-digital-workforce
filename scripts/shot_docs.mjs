@@ -94,7 +94,7 @@ const SHOTS = (process.env.SHOT_PAGES || "").trim()
   },
   { name: "04-vision-overview", role: "admin", url: "/platform#/vision/vision-overview", wait: 3200 },
   { name: "05-alerts", role: "admin", url: "/platform#/situation/situation-alerts", wait: 3200 },
-  { name: "06-platform-overview", role: "admin", url: "/platform#/governance/governance-overview", wait: 3200 },
+  { name: "06-review-overview", role: "admin", url: "/platform#/review/review-overview", wait: 3200 },
   { name: "07-student-view", role: "student", url: "/workspace" },
 ];
 
