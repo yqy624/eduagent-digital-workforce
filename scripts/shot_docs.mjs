@@ -130,6 +130,12 @@ async function main() {
         localStorage.setItem("ea.token", token);
         localStorage.setItem("ea.session", ses);
       }, data.token || "", JSON.stringify(session));
+    } else {
+      // 访客页（登录页）必须清干净：同源 localStorage 会被上一个角色的登录态污染，
+      // 不清的话登录页一加载就判定「已登录」直接跳走，截出来是别人的页面
+      await page.evaluateOnNewDocument(() => {
+        try { localStorage.clear(); } catch { /* 首屏无 origin 时忽略 */ }
+      });
     }
     const errors = await shoot(page, { ...shot, url: BASE + shot.url });
     if (errors.length) failures.push(`${shot.name}: ${errors[0]}`);
